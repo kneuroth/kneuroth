@@ -2,6 +2,13 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.1.8.
 
+## What's the tech?
+- NVM
+- Node 22.* 
+- Angular 19
+- PrimeNG 19
+- Tailwindcss 4
+
 ## Development server
 
 To start a local development server, run:

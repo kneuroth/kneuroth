@@ -28,7 +28,8 @@
             ],
             "styles": [
               "src/styles.css",
-              "src/output.css"
+              "src/output.css",
+              "node_modules/primeicons/primeicons.css"
             ],
             "scripts": []
           },

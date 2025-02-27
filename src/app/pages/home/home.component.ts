@@ -10,4 +10,8 @@ import { CardModule } from 'primeng/card';
 })
 export class HomeComponent {
 
+  onClickCard(page: string) {
+    window.location.href = page;
+  }
+
 }

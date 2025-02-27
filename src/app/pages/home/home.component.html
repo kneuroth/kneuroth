@@ -10,25 +10,30 @@
       <div class="mx-auto max-w-2xl lg:mx-0">
         
         <h2 class="text-5xl font-semibold tracking-tight text-white sm:text-7xl">Hello, I'm Kelly</h2>
-        <p class="mt-8 text-lg font-medium text-pretty text-gray-400 sm:text-xl/8">Here, you can get to know me and what I'm all about.</p>
-        <p class="md:hidden text-gray-300">Are you checking if I know responsive design or just on visiting on your phone? ;)</p>
+        <p class="mt-8 text-lg font-medium text-pretty text-gray-400 sm:text-xl/8">Treat this site like an interactive resume. It's also a place where you can find things about me as a person.</p>
+        <p class="md:hidden font-medium text-pretty text-gray-300">Are you checking if I know responsive design or just visiting on your phone? ;)</p>
       </div>
       <div class="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-6 sm:mt-20 lg:mx-0 lg:max-w-none lg:grid-cols-3 lg:gap-8">
 
-        <p-card header="Art" styleClass="text-gray-300! ring-1! bg-white/5! ring-white/10 ring-inset!">
-            <ng-template #title><i class="pi pi-home" style="color:var(--p-primary-500)"></i><span class="font-semibold text-white"> Media</span></ng-template>
-
-              <p class="mt-2 text-gray-300"> words</p>
+        <p-card header="Art" styleClass="text-gray-300! ring-1! bg-white/5! ring-white/10 ring-inset! hover:bg-white/10! cursor-pointer!" (click)="onClickCard('/about')">
+            <ng-template #title>
+                <!-- <i class="pi pi-home" style="color:var(--p-primary-500)"></i><span class="font-semibold text-white">  -->
+                    <span class="font-semibold text-white"> I want to read about your qualifications</span>  
+            </ng-template>
+            <ng-template #subtitle><span class="text-gray-400">This is a resume*</span></ng-template>
+            <ng-template #footer>
+                <span class="text-gray-500 text-sm">*Available for download at no extra cost</span>
+            </ng-template>
         </p-card>
-        <p-card header="Art" styleClass="text-gray-300! ring-1! bg-white/5! ring-white/10 ring-inset!">
-            <ng-template #title><i class="pi pi-home" style="color:var(--p-primary-500)"></i><span class="font-semibold text-white"> Media</span></ng-template>
-
-              <p class="mt-2 text-gray-300"> words</p>
+        <p-card header="Art" styleClass="text-gray-300! ring-1! bg-white/5! ring-white/10 ring-inset! hover:bg-white/10! cursor-pointer!" (click)="onClickCard('/about')">
+            <ng-template #title><span class="font-semibold text-white"> I want to see your skills</span></ng-template>
+            <ng-template #subtitle> <span class="text-gray-400">This has fun interactive things!</span> </ng-template>
         </p-card>
-        <p-card header="Art" styleClass="text-gray-300! ring-1! bg-white/5! ring-white/10 ring-inset!">
-            <ng-template #title><i class="pi pi-home" style="color:var(--p-primary-500)"></i><span class="font-semibold text-white"> Media</span></ng-template>
-
-              <p class="mt-2 text-gray-300"> words</p>
+        <p-card header="Art" styleClass="text-gray-300! ring-1! bg-white/5! ring-white/10 ring-inset! hover:bg-white/10! cursor-pointer!" (click)="onClickCard('/about')">
+            <ng-template #title>
+                <!-- <i class="pi pi-home" style="color:var(--p-primary-500)"></i> -->
+                <span class="font-semibold text-white"> I want to get to know YOU</span></ng-template>
+            <ng-template #subtitle><span class="text-gray-400">I'm flattered!</span> </ng-template>
         </p-card>
 
       </div>

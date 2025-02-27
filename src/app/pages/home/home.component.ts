@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
+import { PanelModule } from 'primeng/panel';
+import { CardModule } from 'primeng/card';
 
 @Component({
   selector: 'app-home',
-  imports: [],
+  imports: [CardModule, PanelModule],
   templateUrl: './home.component.html',
   standalone: true
 })

@@ -35,7 +35,7 @@
 
   <!-- Mobile menu (show/hide via isMenuOpen) -->
   <!-- The backdrop and slide-over container both appear only if isMenuOpen -->
-  @if (isMenuOpen) {
+  @if (open()) {
     <div class="lg:hidden" role="dialog" aria-modal="true">
       <!-- Background backdrop -->
       <div class="fixed inset-0 z-10 bg-gray-900/50"></div>

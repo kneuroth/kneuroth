@@ -1,17 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink, RouterModule } from '@angular/router';
 import { Button } from 'primeng/button';
+import { HeaderService } from './header.service';
 
 @Component({
   selector: 'app-header',
   imports: [RouterModule, Button],
   templateUrl: './header.component.html',
-  standalone: true,
 })
 export class HeaderComponent {
-  isMenuOpen = true;
+  headerService = inject(HeaderService);
+
+  open = this.headerService.isMenuOpen;
 
   toggleMenu(): void {
-    this.isMenuOpen = !this.isMenuOpen;
+    this.headerService.toggleMenuOpen();
   }
 }

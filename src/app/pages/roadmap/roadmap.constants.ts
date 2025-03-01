@@ -4,14 +4,15 @@ export enum RoadmapItemType {
 }
 
 export enum RoadmapItemStatus {
-  Done,
-  InProgress,
-  Backlog,
+  Done = 'Done',
+  InProgress = 'In Progress',
+  Backlog = 'Backlog',
 }
 
 export type RoadmapItem = {
-  title: string;
+  name: string;
   description: string;
   type: RoadmapItemType;
   status: RoadmapItemStatus;
+  link: string | undefined;
 };

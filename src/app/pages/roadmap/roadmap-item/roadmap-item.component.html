@@ -1,0 +1,18 @@
+<p-panel>
+  <ng-template #header>
+    <div class="flex items-center gap-2">
+      <span class="font-bold">{{ name() }}</span>
+      <p-tag [rounded]="true" [value]="status()"></p-tag>
+    </div>
+  </ng-template>
+  <p>{{ description() }}</p>
+  <ng-template #footer>
+    @if (link()) {
+      <p-button
+        label="See project"
+        severity="secondary"
+        (click)="onClickLink(link()!)"
+      ></p-button>
+    }
+  </ng-template>
+</p-panel>

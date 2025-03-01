@@ -1,1 +1,7 @@
-<p>roadmap works!</p>
+<ul class="md:m-10 divide-y divide-gray-100">
+  @for (item of roadmapItems; track item) {
+    <li>
+      <app-roadmap-item [roadmapItem]="item"></app-roadmap-item>
+    </li>
+  }
+</ul>

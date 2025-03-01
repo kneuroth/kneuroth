@@ -7,7 +7,7 @@ import { HeaderComponent } from './header/header.component';
   selector: 'app-root',
   imports: [RouterOutlet, ButtonModule, HeaderComponent],
   templateUrl: './app.component.html',
-  standalone: true
+  standalone: true,
 })
 export class AppComponent {
   title = 'kneuroth';

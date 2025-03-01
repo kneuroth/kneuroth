@@ -1,0 +1,13 @@
+# Ignore the entire dist folder
+/dist
+
+# Ignore node_modules
+/node_modules
+
+# Ignore specific files
+package-lock.json
+package.json
+angular.json
+
+# Ignore files starting with "lint-"
+lint-*

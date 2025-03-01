@@ -20,7 +20,7 @@
     "allowJs": true,
     "baseUrl": "./",
     "paths": {
-      "@app/*": ["src/app/*"],  // Example alias, adjust based on your structure
+      "@app/*": ["src/app/*"], // Example alias, adjust based on your structure
       "@shared/*": ["src/app/shared/*"]
     }
   },
@@ -30,6 +30,6 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true
   },
-  "include": ["src/**/*"],  // ✅ Ensures VSCode indexes all source files
+  "include": ["src/**/*"], // ✅ Ensures VSCode indexes all source files
   "exclude": ["node_modules", "dist"]
 }

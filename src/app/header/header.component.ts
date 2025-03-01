@@ -6,14 +6,12 @@ import { Button } from 'primeng/button';
   selector: 'app-header',
   imports: [RouterModule, Button],
   templateUrl: './header.component.html',
-  standalone: true
+  standalone: true,
 })
 export class HeaderComponent {
-
   isMenuOpen = true;
 
   toggleMenu(): void {
     this.isMenuOpen = !this.isMenuOpen;
   }
-
 }

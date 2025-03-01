@@ -6,12 +6,10 @@ import { CardModule } from 'primeng/card';
   selector: 'app-home',
   imports: [CardModule, PanelModule],
   templateUrl: './home.component.html',
-  standalone: true
+  standalone: true,
 })
 export class HomeComponent {
-
   onClickCard(page: string) {
     window.location.href = page;
   }
-
 }

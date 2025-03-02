@@ -7,6 +7,7 @@ import {
 import { Panel } from 'primeng/panel';
 import { Tag } from 'primeng/tag';
 import { Button } from 'primeng/button';
+import { Tooltip } from 'primeng/tooltip';
 
 type TagSeverity =
   | 'success'
@@ -19,7 +20,7 @@ type TagSeverity =
 
 @Component({
   selector: 'app-roadmap-item',
-  imports: [Panel, Tag, Button],
+  imports: [Panel, Tag, Button, Tooltip],
   templateUrl: './roadmap-item.component.html',
 })
 export class RoadmapItemComponent {
@@ -31,8 +32,8 @@ export class RoadmapItemComponent {
   status = computed(() => this.roadmapItem().status);
   link = computed(() => this.roadmapItem().link);
 
-  statusSeverity(status: RoadmapItemStatus): TagSeverity {
-    switch (status) {
+  statusSeverity = computed(() => {
+    switch (this.status()) {
       case RoadmapItemStatus.Done:
         return 'success';
       case RoadmapItemStatus.InProgress:
@@ -42,7 +43,33 @@ export class RoadmapItemComponent {
       default:
         return undefined;
     }
-  }
+  });
+
+  typeIcon = computed(() => {
+    switch (this.type()) {
+      case RoadmapItemType.Bug:
+        return 'pi pi-asterisk';
+      case RoadmapItemType.Enhancement:
+        return 'pi pi-star';
+      case RoadmapItemType.Feature:
+        return 'pi pi-flag-fill';
+      default:
+        return undefined;
+    }
+  });
+
+  typeDescription = computed(() => {
+    switch (this.type()) {
+      case RoadmapItemType.Bug:
+        return 'Bug';
+      case RoadmapItemType.Enhancement:
+        return 'Enhancement';
+      case RoadmapItemType.Feature:
+        return 'Feature';
+      default:
+        return undefined;
+    }
+  });
 
   onClickLink(link: string) {
     window.location.href = link;

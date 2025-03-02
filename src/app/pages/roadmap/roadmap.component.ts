@@ -1,4 +1,4 @@
-import { Component, computed } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RoadmapItemComponent } from './roadmap-item/roadmap-item.component';
 import {
@@ -6,10 +6,11 @@ import {
   RoadmapItemStatus,
   RoadmapItemType,
 } from './roadmap.constants';
+import { PageTitleComponent } from '../../shared/components/page-title/page-title.component';
 
 @Component({
   selector: 'app-roadmap',
-  imports: [FormsModule, RoadmapItemComponent],
+  imports: [FormsModule, RoadmapItemComponent, PageTitleComponent],
   templateUrl: './roadmap.component.html',
 })
 export class RoadmapComponent {
@@ -17,10 +18,26 @@ export class RoadmapComponent {
     {
       name: 'Resume',
       description:
-        'Create the resume page. Make it available for download as a pdf.',
+        'Create the resume page plus a nice looking resume. Allow downloading as pdf (free of charge)',
       type: RoadmapItemType.Feature,
       status: RoadmapItemStatus.InProgress,
       link: '/resume',
+    },
+    {
+      name: 'Sort Roadmap',
+      description:
+        'Add date started and date completed fields to RoadmapItem plus implement a sorting function. Group sorted items by status also.',
+      type: RoadmapItemType.Enhancement,
+      status: RoadmapItemStatus.Backlog,
+      link: undefined,
+    },
+    {
+      name: 'Identify Roadmap Item Types',
+      description:
+        'Add a UI feature that utilizes RoadmapItemTypes to identify if a RoadmapItem is a Bug, Feature, Enhancement or other type of roadmap item.',
+      type: RoadmapItemType.Enhancement,
+      status: RoadmapItemStatus.Done,
+      link: undefined,
     },
     {
       name: 'Roadmap',
@@ -31,11 +48,11 @@ export class RoadmapComponent {
       link: '/roadmap',
     },
     {
-      name: 'Sort Roadmap',
+      name: 'Title Component',
       description:
-        'Add date started and date completed fields to RoadmapItem plus implement a sorting function. Group sorted items by type also.',
+        'Create a general title component that can be used across pages.',
       type: RoadmapItemType.Feature,
-      status: RoadmapItemStatus.Backlog,
+      status: RoadmapItemStatus.Done,
       link: undefined,
     },
   ];

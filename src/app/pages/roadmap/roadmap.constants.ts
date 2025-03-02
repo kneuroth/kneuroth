@@ -1,6 +1,7 @@
 export enum RoadmapItemType {
   Bug,
   Feature,
+  Enhancement,
 }
 
 export enum RoadmapItemStatus {

@@ -5,7 +5,7 @@
       <p-tag
         [rounded]="true"
         [value]="status()"
-        [severity]="statusSeverity(status())"
+        [severity]="statusSeverity()"
       ></p-tag>
     </div>
   </ng-template>
@@ -20,4 +20,11 @@
       ></p-button>
     }
   </div>
+  <ng-template #icons>
+    <i
+      [class]="typeIcon()"
+      [pTooltip]="typeDescription()"
+      tooltipPosition="top"
+    ></i>
+  </ng-template>
 </p-panel>

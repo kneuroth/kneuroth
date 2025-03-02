@@ -1,6 +1,6 @@
-<ul class="md:m-10 divide-y divide-gray-100">
+<ul class="md:m-10">
   @for (item of roadmapItems; track item) {
-    <li>
+    <li class="mb-1 mt-1">
       <app-roadmap-item [roadmapItem]="item"></app-roadmap-item>
     </li>
   }

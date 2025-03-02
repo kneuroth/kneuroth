@@ -1,8 +1,21 @@
 import { Component, computed, input } from '@angular/core';
-import { RoadmapItem, RoadmapItemType } from '../roadmap.constants';
+import {
+  RoadmapItem,
+  RoadmapItemStatus,
+  RoadmapItemType,
+} from '../roadmap.constants';
 import { Panel } from 'primeng/panel';
 import { Tag } from 'primeng/tag';
 import { Button } from 'primeng/button';
+
+type TagSeverity =
+  | 'success'
+  | 'secondary'
+  | 'info'
+  | 'warn'
+  | 'danger'
+  | 'contrast'
+  | undefined;
 
 @Component({
   selector: 'app-roadmap-item',
@@ -18,8 +31,20 @@ export class RoadmapItemComponent {
   status = computed(() => this.roadmapItem().status);
   link = computed(() => this.roadmapItem().link);
 
+  statusSeverity(status: RoadmapItemStatus): TagSeverity {
+    switch (status) {
+      case RoadmapItemStatus.Done:
+        return 'success';
+      case RoadmapItemStatus.InProgress:
+        return 'info';
+      case RoadmapItemStatus.Backlog:
+        return 'secondary';
+      default:
+        return undefined;
+    }
+  }
+
   onClickLink(link: string) {
-    console.log(link);
     window.location.href = link;
   }
 }

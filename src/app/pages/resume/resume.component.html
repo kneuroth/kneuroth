@@ -97,6 +97,9 @@
       <ng-template #header>
         <span class="text-2xl">Professional Experience</span>
       </ng-template>
+      @for (item of workExperience; track item) {
+        <app-work-experience [workExperience]="item"></app-work-experience>
+      }
     </p-panel>
   </div>
 </p-panel>

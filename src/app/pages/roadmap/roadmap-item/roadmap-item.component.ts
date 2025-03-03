@@ -3,20 +3,11 @@ import {
   RoadmapItem,
   RoadmapItemStatus,
   RoadmapItemType,
-} from '../roadmap.constants';
+} from '../roadmap-item/roadmap-item.model';
 import { Panel } from 'primeng/panel';
 import { Tag } from 'primeng/tag';
 import { Button } from 'primeng/button';
 import { Tooltip } from 'primeng/tooltip';
-
-type TagSeverity =
-  | 'success'
-  | 'secondary'
-  | 'info'
-  | 'warn'
-  | 'danger'
-  | 'contrast'
-  | undefined;
 
 @Component({
   selector: 'app-roadmap-item',

@@ -1,1 +1,102 @@
-<p>resume works!</p>
+<p-toast />
+<p-panel class="grid m-10">
+  <ng-template #header>
+    <div class="flex items-center gap-4">
+      <img class="sm:w-32 sm:h-32 rounded-full" src="/grapefruit-slice.jpg" />
+      <div>
+        <p class="text-4xl">Kelly Neuroth</p>
+        <p class="text-xl text-gray-500">Software Engineer</p>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template #icons>
+    <div class="lg:flex lg:flex-col gap-2">
+      <p-tag
+        class="cursor-pointer!"
+        icon="pi pi-github"
+        severity="warn"
+        value="https://github.com/kneuroth"
+        (click)="onClickGithub()"
+      ></p-tag>
+      <p-tag
+        class="cursor-pointer!"
+        icon="pi pi-envelope"
+        severity="info"
+        value="kelly.neuroth@outlook.com"
+        (click)="onClickEmail()"
+      ></p-tag>
+      <p-tag
+        class="cursor-pointer!"
+        icon="pi pi-phone"
+        severity="info"
+        value="518-915-8080"
+        (click)="onClickPhone('518-915-8080')"
+      ></p-tag>
+    </div>
+  </ng-template>
+  <div class="grid grid-cols-4 gap-y-10 gap-x-2">
+    <!-- About me -->
+    <div class="col-span-4">
+      <span class="text-2xl">About me</span>
+      <p class="text-gray-500">
+        This is a paragraph about kelly adn why you should hire me and all the
+        cool good stuff i will give your compnay and your boss will give you a
+        raise because you can select good people for the job and then his or her
+        boss will be happy and theyll give them a raise because their employees
+        are so good a getting good talent and then that boss will get a raise
+        because their department heads are so good at managing a lot of poepl
+        who get a long of good talent and then that boss will be happy because
+        he gets a raise because his people under him have such a good way of
+        managing the poeple that manage the people that manage the people that
+        find good talent that actually do the work and im the lowest level
+        please give me a job
+      </p>
+    </div>
+    <!-- Skills -->
+    <p-panel class="col-span-2">
+      <ng-template #header>
+        <span class="text-2xl">Skills</span>
+      </ng-template>
+      <ul>
+        <li>Object oriented design</li>
+        <li>Web architechture</li>
+        <li>UX design</li>
+        <li>REST design</li>
+        <li>Microservice design</li>
+        <li>Containerization</li>
+      </ul>
+    </p-panel>
+    <p-panel class="col-span-2">
+      <ng-template #header>
+        <span class="text-2xl">Tech</span>
+      </ng-template>
+      <ul>
+        <li class="flex flex-col">
+          <span class="font-bold">Languages</span>
+          <span class="text-gray-500"
+            >Javascript, Python, HTML, CSS, Bash (shell scripting), Java,
+            SQL</span
+          >
+        </li>
+        <li class="flex flex-col">
+          <span class="font-bold">Frameworks</span>
+          <span class="text-gray-500 float-right"
+            >Angular, PrimeNg, Tailwindcss, Spring</span
+          >
+        </li>
+        <li class="flex flex-col">
+          <span class="font-bold">DevOps/CICD</span>
+          <span class="text-gray-500 float-right"
+            >Linux RHEL, Cron, Docker, Gitlab Pipelines, Automic Scheduler,
+            Google Cloud Platform</span
+          >
+        </li>
+      </ul>
+    </p-panel>
+    <p-panel class="col-span-4">
+      <ng-template #header>
+        <span class="text-2xl">Professional Experience</span>
+      </ng-template>
+    </p-panel>
+  </div>
+</p-panel>

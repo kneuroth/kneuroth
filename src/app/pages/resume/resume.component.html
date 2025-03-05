@@ -44,58 +44,48 @@
       {{ resume().description }}
     </p>
   </div>
+  <br />
 
   <!-- Skills -->
-  <div class="grid grid-cols-4">
-    <p-panel class="col-span-2">
-      <ng-template #header>
-        <span class="text-2xl">Skills</span>
-      </ng-template>
-      <ul>
-        <li>Object oriented design</li>
-        <li>Web architechture</li>
-        <li>UX design</li>
-        <li>REST design</li>
-        <li>Microservice design</li>
-        <li>Containerization</li>
-      </ul>
-    </p-panel>
-    <p-panel class="col-span-2">
-      <ng-template #header>
-        <span class="text-2xl">Tech</span>
-      </ng-template>
-      <ul>
-        <li class="flex flex-col">
-          <span class="font-bold">Languages</span>
-          <span class="text-gray-500"
-            >Javascript, Python, HTML, CSS, Bash (shell scripting), Java,
-            SQL</span
-          >
-        </li>
-        <li class="flex flex-col">
-          <span class="font-bold">Frameworks</span>
-          <span class="text-gray-500 float-right"
-            >Angular, PrimeNg, Tailwindcss, Spring</span
-          >
-        </li>
-        <li class="flex flex-col">
-          <span class="font-bold">DevOps/CICD</span>
-          <span class="text-gray-500 float-right"
-            >Linux RHEL, Cron, Docker, Gitlab Pipelines, Automic Scheduler,
-            Google Cloud Platform</span
-          >
-        </li>
-      </ul>
-    </p-panel>
+  <div class="grid grid-cols-3 gap-2">
+    @for (skillType of skillTypes(); track skillType) {
+      <p-panel class="col-span-1">
+        <ng-template #header>
+          <span class="text-2xl">{{ skillType }}</span>
+        </ng-template>
+        <ul>
+          @for (skill of getFilteredSkills(skillType); track skill) {
+            <li>{{ skill.name }}</li>
+          }
+        </ul>
+      </p-panel>
+    }
   </div>
+  <br />
 
   <!-- Experience -->
   <p-panel class="col-span-4">
     <ng-template #header>
       <span class="text-2xl">Professional Experience</span>
     </ng-template>
-    @for (item of resume().workExperiences; track item) {
-      <app-work-experience [workExperience]="item"></app-work-experience>
-    }
+    <div class="flex flex-col gap-2">
+      @for (item of resume().workExperiences; track item) {
+        <app-work-experience [workExperience]="item"></app-work-experience>
+      }
+    </div>
   </p-panel>
+
+  @if (resume().personalProjects) {
+    <!-- Personal Projects -->
+    <p-panel class="col-span-4">
+      <ng-template #header>
+        <span class="text-2xl">Personal Projects</span>
+      </ng-template>
+      <div class="flex flex-col gap-2">
+        @for (item of resume().personalProjects; track item) {
+          <app-personal-project [personalProject]="item"></app-personal-project>
+        }
+      </div>
+    </p-panel>
+  }
 </p-panel>

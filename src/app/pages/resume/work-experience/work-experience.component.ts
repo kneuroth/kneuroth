@@ -12,6 +12,9 @@ export class WorkExperienceComponent {
   workExperience = input.required<WorkExperience>();
 
   employer = computed(() => this.workExperience().employer);
+  location = computed(() => this.workExperience().location);
+  title = computed(() => this.workExperience().title);
   startDate = computed(() => this.workExperience().startDate);
   endDate = computed(() => this.workExperience().endDate);
+  bullets = computed(() => this.workExperience().bullets);
 }

@@ -15,5 +15,5 @@ export type RoadmapItem = {
   description: string;
   type: RoadmapItemType;
   status: RoadmapItemStatus;
-  link: string | undefined;
+  link?: string;
 };

@@ -22,6 +22,13 @@ export const roadmapItems: RoadmapItem[] = [
     link: undefined,
   },
   {
+    name: 'Resume bullets lists',
+    description: 'Resume is missing nice bullets',
+    type: RoadmapItemType.Enhancement,
+    status: RoadmapItemStatus.Backlog,
+    link: undefined,
+  },
+  {
     name: 'Backendify Resume',
     description:
       'Create a backend that stores resume items like work experience and other personal information.',

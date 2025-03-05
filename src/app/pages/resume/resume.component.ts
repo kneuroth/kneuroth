@@ -1,15 +1,22 @@
-import { Component, inject, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { Panel } from 'primeng/panel';
 import { Tag } from 'primeng/tag';
 import { Toast } from 'primeng/toast';
 import { WorkExperienceComponent } from './work-experience/work-experience.component';
-import { Resume } from './resume.model';
+import { Resume, SkillType } from './resume.model';
 import { resume } from './resume.data';
+import { PersonalProjectComponent } from './personal-project/personal-project.component';
 
 @Component({
   selector: 'app-resume',
-  imports: [Panel, Tag, Toast, WorkExperienceComponent],
+  imports: [
+    Panel,
+    Tag,
+    Toast,
+    WorkExperienceComponent,
+    PersonalProjectComponent,
+  ],
   templateUrl: './resume.component.html',
 })
 export class ResumeComponent {
@@ -18,6 +25,14 @@ export class ResumeComponent {
   DEFAULT_RESUME = resume;
 
   resume = input<Resume>(this.DEFAULT_RESUME);
+
+  skillTypes = computed(
+    () => new Set(this.resume().skills.map((skill) => skill.type)),
+  );
+
+  getFilteredSkills(skillType: SkillType) {
+    return this.resume().skills.filter((skill) => skill.type === skillType);
+  }
 
   onClickLink(link: string) {
     window.location.href = link;

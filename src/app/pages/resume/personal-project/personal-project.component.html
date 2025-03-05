@@ -1,0 +1,20 @@
+<p-panel>
+  <ng-template #header>
+    <div class="w-full">
+      <span class="text-xl mr-2">{{ name() }}</span>
+      @if (link()) {
+        <p-button
+          class="float-right"
+          label="See project"
+          severity="secondary"
+          (click)="onClickLink(link()!)"
+        ></p-button>
+      }
+    </div>
+  </ng-template>
+  <ul>
+    @for (bullet of bullets(); track bullet) {
+      <li>{{ bullet }}</li>
+    }
+  </ul>
+</p-panel>

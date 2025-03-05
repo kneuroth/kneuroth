@@ -1,9 +1,22 @@
 <p-panel>
   <ng-template #header>
-    <span class="text-xl">{{ employer() }}</span>
-    <span class="text-l text-gray-500"
-      >{{ startDate() | conditionalDate }} -
-      {{ endDate() | conditionalDate }}</span
-    >
+    <div class="w-full">
+      <div class="flex gap-2 items-baseline">
+        <span class="text-xl mr-2">{{ employer() }}</span>
+        <span class="text-sm text-gray-500">{{ location() }}</span>
+      </div>
+      <div>
+        <span class="text-l">{{ title() }}</span>
+        <span class="text-l text-gray-500 float-right"
+          >{{ startDate() | conditionalDate }} -
+          {{ endDate() | conditionalDate }}</span
+        >
+      </div>
+    </div>
   </ng-template>
+  <ul>
+    @for (bullet of bullets(); track bullet) {
+      <li>{{ bullet }}</li>
+    }
+  </ul>
 </p-panel>

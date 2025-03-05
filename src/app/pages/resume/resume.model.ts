@@ -7,13 +7,14 @@ export type Resume = {
   description: string;
   skills: Skill[];
   workExperiences: WorkExperience[];
+  personalProjects?: PersonalProject[];
 };
 
 export enum SkillType {
-  Skill = 'Skill',
+  Skill = 'General Skills',
   Tech = 'Tech',
-  Soft = 'Soft',
-  Language = 'Language',
+  Soft = 'Soft Skills',
+  Language = 'Languages',
 }
 
 export type Skill = {
@@ -24,7 +25,15 @@ export type Skill = {
 export type WorkExperience = {
   employer: string;
   location: string;
+  title: string;
   startDate: Date;
   endDate: Date | 'Present' | 'Ongoing';
   bullets: string[];
+};
+
+export type PersonalProject = {
+  name: string;
+  description?: string;
+  bullets: string[];
+  link?: string;
 };

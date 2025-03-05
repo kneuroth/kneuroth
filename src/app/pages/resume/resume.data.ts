@@ -1,4 +1,5 @@
-import { WorkExperience } from './work-experience.model';
+import { WorkExperience } from './resume.model';
+import { Resume } from './resume.model';
 
 export const workExperience: WorkExperience[] = [
   {
@@ -18,3 +19,15 @@ export const workExperience: WorkExperience[] = [
     bullets: ['Got learned on SAS'],
   },
 ];
+
+export const resume: Resume = {
+  name: 'Kelly Neuroth',
+  title: 'Software Engineer',
+  links: ['https://github.com/kneuroth'],
+  email: 'kelly.neuroth@outlook.com',
+  phone: '518-915-8080',
+  description:
+    'Lots of words here to describe the type of guy and person and person i am i want a job so badly please please pelasepleas',
+  skills: [],
+  workExperiences: workExperience,
+};

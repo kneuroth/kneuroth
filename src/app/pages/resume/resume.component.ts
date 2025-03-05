@@ -1,10 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { Panel } from 'primeng/panel';
 import { Tag } from 'primeng/tag';
 import { Toast } from 'primeng/toast';
-import { workExperience } from './work-experience/work-experience.data';
 import { WorkExperienceComponent } from './work-experience/work-experience.component';
+import { Resume } from './resume.model';
+import { resume } from './resume.data';
 
 @Component({
   selector: 'app-resume',
@@ -14,14 +15,16 @@ import { WorkExperienceComponent } from './work-experience/work-experience.compo
 export class ResumeComponent {
   constructor(private messageService: MessageService) {}
 
-  workExperience = workExperience;
+  DEFAULT_RESUME = resume;
 
-  onClickGithub() {
-    window.location.href = 'https://github.com/kneuroth';
+  resume = input<Resume>(this.DEFAULT_RESUME);
+
+  onClickLink(link: string) {
+    window.location.href = link;
   }
 
-  onClickEmail() {
-    window.location.href = 'mailto:kelly.neuroth@outlook.com?&body=Hi Kelly,';
+  onClickEmail(email: string) {
+    window.location.href = `mailto:${email}?&body=Hi ${this.resume().name},`;
   }
 
   // Little counter intuitive argument naming and typing

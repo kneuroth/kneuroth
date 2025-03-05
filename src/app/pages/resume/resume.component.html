@@ -4,55 +4,49 @@
     <div class="flex items-center gap-4">
       <img class="sm:w-32 sm:h-32 rounded-full" src="/grapefruit-slice.jpg" />
       <div>
-        <p class="text-4xl">Kelly Neuroth</p>
-        <p class="text-xl text-gray-500">Software Engineer</p>
+        <p class="text-4xl">{{ resume().name }}</p>
+        <p class="text-xl text-gray-500">{{ resume().title }}</p>
       </div>
     </div>
   </ng-template>
   <ng-template #icons>
     <div class="lg:flex lg:flex-col gap-2">
-      <p-tag
-        class="cursor-pointer!"
-        icon="pi pi-github"
-        severity="warn"
-        value="https://github.com/kneuroth"
-        (click)="onClickGithub()"
-      ></p-tag>
+      @for (link of resume().links; track $index) {
+        <p-tag
+          class="cursor-pointer!"
+          icon="pi pi-link"
+          severity="warn"
+          [value]="link"
+          (click)="onClickLink(link)"
+        ></p-tag>
+      }
       <p-tag
         class="cursor-pointer!"
         icon="pi pi-envelope"
         severity="info"
-        value="kelly.neuroth@outlook.com"
-        (click)="onClickEmail()"
+        [value]="resume().email"
+        (click)="onClickEmail(resume().email)"
       ></p-tag>
       <p-tag
         class="cursor-pointer!"
         icon="pi pi-phone"
         severity="info"
-        value="518-915-8080"
-        (click)="onClickPhone('518-915-8080')"
+        [value]="resume().phone"
+        (click)="onClickPhone(resume().phone)"
       ></p-tag>
     </div>
   </ng-template>
-  <div class="grid grid-cols-4 gap-y-10 gap-x-2">
-    <!-- About me -->
-    <div class="col-span-4">
-      <span class="text-2xl">About me</span>
-      <p class="text-gray-500">
-        This is a paragraph about kelly adn why you should hire me and all the
-        cool good stuff i will give your compnay and your boss will give you a
-        raise because you can select good people for the job and then his or her
-        boss will be happy and theyll give them a raise because their employees
-        are so good a getting good talent and then that boss will get a raise
-        because their department heads are so good at managing a lot of poepl
-        who get a long of good talent and then that boss will be happy because
-        he gets a raise because his people under him have such a good way of
-        managing the poeple that manage the people that manage the people that
-        find good talent that actually do the work and im the lowest level
-        please give me a job
-      </p>
-    </div>
-    <!-- Skills -->
+
+  <!-- About me -->
+  <div>
+    <span class="text-2xl">About me</span>
+    <p class="text-gray-500">
+      {{ resume().description }}
+    </p>
+  </div>
+
+  <!-- Skills -->
+  <div class="grid grid-cols-4">
     <p-panel class="col-span-2">
       <ng-template #header>
         <span class="text-2xl">Skills</span>
@@ -93,13 +87,15 @@
         </li>
       </ul>
     </p-panel>
-    <p-panel class="col-span-4">
-      <ng-template #header>
-        <span class="text-2xl">Professional Experience</span>
-      </ng-template>
-      @for (item of workExperience; track item) {
-        <app-work-experience [workExperience]="item"></app-work-experience>
-      }
-    </p-panel>
   </div>
+
+  <!-- Experience -->
+  <p-panel class="col-span-4">
+    <ng-template #header>
+      <span class="text-2xl">Professional Experience</span>
+    </ng-template>
+    @for (item of resume().workExperiences; track item) {
+      <app-work-experience [workExperience]="item"></app-work-experience>
+    }
+  </p-panel>
 </p-panel>

@@ -1,7 +1,6 @@
 import { Component, computed, input } from '@angular/core';
 import { Panel } from 'primeng/panel';
-import { WorkExperience } from './work-experience.model';
-import { DatePipe } from '@angular/common';
+import { WorkExperience } from '../resume.model';
 import { ConditionalDatePipe } from '../../../shared/pipes/conditional-date.pipe';
 
 @Component({

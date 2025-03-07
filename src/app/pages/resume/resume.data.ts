@@ -33,7 +33,7 @@ export const personalProjects: PersonalProject[] = [
       'Inserted scores into SQLLite database',
       'Hosted with Google Cloud Platform',
     ],
-    link: 'https://github.com/kneuroth',
+    link: 'https://github.com/kneuroth/wordle-telegram-bot',
   },
 ];
 

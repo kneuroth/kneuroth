@@ -7,6 +7,7 @@ import { WorkExperienceComponent } from './work-experience/work-experience.compo
 import { Resume, SkillType } from './resume.model';
 import { resume } from './resume.data';
 import { PersonalProjectComponent } from './personal-project/personal-project.component';
+import { Button } from 'primeng/button';
 
 @Component({
   selector: 'app-resume',
@@ -14,10 +15,12 @@ import { PersonalProjectComponent } from './personal-project/personal-project.co
     Panel,
     Tag,
     Toast,
+    Button,
     WorkExperienceComponent,
     PersonalProjectComponent,
   ],
   templateUrl: './resume.component.html',
+  styleUrl: './resume.component.css',
 })
 export class ResumeComponent {
   constructor(private messageService: MessageService) {}
@@ -29,6 +32,10 @@ export class ResumeComponent {
   skillTypes = computed(
     () => new Set(this.resume().skills.map((skill) => skill.type)),
   );
+
+  onClickPrint() {
+    window.print();
+  }
 
   getFilteredSkills(skillType: SkillType) {
     return this.resume().skills.filter((skill) => skill.type === skillType);

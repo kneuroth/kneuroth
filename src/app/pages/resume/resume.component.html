@@ -9,10 +9,12 @@
     (click)="onClickPrint()"
   />
 
+  <p-divider />
+
   <!-- Resume -->
   <div>
     <!-- Header -->
-    <div class="flex items-center gap-4">
+    <div class="sm:flex items-center gap-4">
       <!-- Name and pic -->
       <div>
         <img class="sm:w-32 sm:h-32 rounded-full" src="/grapefruit-slice.jpg" />
@@ -49,10 +51,11 @@
         ></p-tag>
       </div>
     </div>
+
     <br />
     <!-- About me -->
     <div>
-      <span class="text-xl">About me</span>
+      <span class="text-2xl">About me</span>
       <p class="text-gray-500">
         {{ resume().description }}
       </p>
@@ -68,7 +71,13 @@
           </ng-template>
           <ul>
             @for (skill of getFilteredSkills(skillType); track skill) {
-              <li>{{ skill.name }}</li>
+              <li class="flex items-center">
+                <i
+                  class="pi pi-circle-fill md:hidden!"
+                  style="font-size: 0.25rem"
+                ></i>
+                &nbsp;{{ skill.name }}
+              </li>
             }
           </ul>
         </p-panel>
@@ -100,5 +109,13 @@
         </div>
       </div>
     }
+    <br />
+    <div>
+      <span class="text-2xl">Education</span>
+      @for (education of resume().education; track education) {
+        <app-education [education]="education"></app-education>
+      }
+    </div>
+    <br />
   </div>
 </div>

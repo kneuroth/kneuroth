@@ -1,4 +1,9 @@
-import { PersonalProject, SkillType, WorkExperience } from './resume.model';
+import {
+  Education,
+  PersonalProject,
+  SkillType,
+  WorkExperience,
+} from './resume.model';
 import { Resume } from './resume.model';
 
 export const workExperiences: WorkExperience[] = [
@@ -34,6 +39,15 @@ export const personalProjects: PersonalProject[] = [
       'Hosted with Google Cloud Platform',
     ],
     link: 'https://github.com/kneuroth/wordle-telegram-bot',
+  },
+];
+
+export const education: Education[] = [
+  {
+    name: 'University of Western Ontario',
+    degree: 'Software Engineering',
+    startDate: new Date(2016, 10, 1),
+    endDate: new Date(2021, 5, 1),
   },
 ];
 
@@ -91,10 +105,11 @@ export const resume: Resume = {
       type: SkillType.Tech,
     },
     {
-      name: 'Linux RHEL / Docker / Gitlab Pipelines / GCP',
+      name: 'Linux RHEL / Docker / Gitlab Pipelines / Google Cloud Platform',
       type: SkillType.Tech,
     },
   ],
   workExperiences: workExperiences,
   personalProjects: personalProjects,
+  education: education,
 };

@@ -1,0 +1,19 @@
+<p-panel>
+  <ng-template #header>
+    <div class="w-full">
+      <div class="flex gap-2 items-baseline">
+        <span class="text-xl mr-2">{{ name() }}</span>
+        <!-- <span class="text-sm text-gray-500">{{ degree() }}</span> -->
+      </div>
+
+      <div class="text-l">
+        {{ degree() }}
+        <span class="text-l text-gray-500 float-right"
+          >{{ startDate() | conditionalDate }} -
+          {{ endDate() | conditionalDate }}</span
+        >
+      </div>
+    </div>
+  </ng-template>
+  <ng-template #icons> </ng-template>
+</p-panel>

@@ -8,6 +8,9 @@ import { Resume, SkillType } from './resume.model';
 import { resume } from './resume.data';
 import { PersonalProjectComponent } from './personal-project/personal-project.component';
 import { Button } from 'primeng/button';
+import { Divider } from 'primeng/divider';
+import { EducationComponent } from './education/education.component';
+import { ɵINTERNAL_BROWSER_DYNAMIC_PLATFORM_PROVIDERS } from '@angular/platform-browser-dynamic';
 
 @Component({
   selector: 'app-resume',
@@ -16,8 +19,10 @@ import { Button } from 'primeng/button';
     Tag,
     Toast,
     Button,
+    Divider,
     WorkExperienceComponent,
     PersonalProjectComponent,
+    EducationComponent,
   ],
   templateUrl: './resume.component.html',
   styleUrl: './resume.component.css',

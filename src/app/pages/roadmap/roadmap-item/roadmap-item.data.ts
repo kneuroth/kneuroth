@@ -6,12 +6,12 @@ import {
 
 export const roadmapItems: RoadmapItem[] = [
   {
-    name: 'Resume',
+    name: 'Customizable Resume',
     description:
-      'Create the resume page plus a nice looking resume. Allow downloading as pdf (free of charge)',
+      'Give user control of what data is displayed on the resume. Allow them to select from a pool of all of your skills, educations, work experiences, personal projects. Apply the results and then the user can export the PDF.',
     type: RoadmapItemType.Feature,
     status: RoadmapItemStatus.InProgress,
-    link: '/resume',
+    link: undefined,
   },
   {
     name: 'Sort Roadmap',
@@ -43,6 +43,14 @@ export const roadmapItems: RoadmapItem[] = [
     type: RoadmapItemType.Enhancement,
     status: RoadmapItemStatus.Done,
     link: undefined,
+  },
+  {
+    name: 'Resume',
+    description:
+      'Create the resume page plus a nice looking resume. Allow downloading as pdf (free of charge)',
+    type: RoadmapItemType.Feature,
+    status: RoadmapItemStatus.Done,
+    link: '/resume',
   },
   {
     name: 'Roadmap',

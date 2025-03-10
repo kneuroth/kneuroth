@@ -25,6 +25,17 @@ export const workExperiences: WorkExperience[] = [
     endDate: new Date(2021, 6, 1),
     bullets: ['Got learned on SAS'],
   },
+  {
+    employer: 'IBM Canada',
+    location: 'Markham, ON',
+    title: 'Intern',
+    startDate: new Date(2019, 10, 1),
+    endDate: new Date(2020, 10, 1),
+    bullets: [
+      'Created Vue framework',
+      'Did other stuff that has to do with other things',
+    ],
+  },
 ];
 
 export const personalProjects: PersonalProject[] = [
@@ -105,7 +116,11 @@ export const resume: Resume = {
       type: SkillType.Tech,
     },
     {
-      name: 'Linux RHEL / Docker / Gitlab Pipelines / Google Cloud Platform',
+      name: 'Linux RHEL / Docker',
+      type: SkillType.Tech,
+    },
+    {
+      name: 'Gitlab Pipelines / Google Cloud Platform',
       type: SkillType.Tech,
     },
   ],

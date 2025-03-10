@@ -71,13 +71,7 @@
           </ng-template>
           <ul>
             @for (skill of getFilteredSkills(skillType); track skill) {
-              <li class="flex items-center">
-                <i
-                  class="pi pi-circle-fill md:hidden!"
-                  style="font-size: 0.25rem"
-                ></i>
-                &nbsp;{{ skill.name }}
-              </li>
+              <li class="flex items-center">&nbsp;- {{ skill.name }}</li>
             }
           </ul>
         </p-panel>

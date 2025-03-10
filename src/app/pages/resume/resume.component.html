@@ -12,9 +12,9 @@
   <p-divider class="no-print" />
 
   <!-- Resume -->
-  <div>
+  <div class="grid grid-cols-3 gap-6">
     <!-- Header -->
-    <div class="sm:flex items-center gap-4">
+    <div class="sm:flex items-center gap-4 col-span-3">
       <!-- Name and pic -->
       <div>
         <img class="sm:w-32 sm:h-32 rounded-full" src="/grapefruit-slice.jpg" />
@@ -52,64 +52,62 @@
       </div>
     </div>
 
-    <br />
-    <!-- About me -->
-    <div>
-      <span class="text-2xl">About me</span>
-      <p class="text-gray-500">
-        {{ resume().description }}
-      </p>
-    </div>
-    <br />
-
     <!-- Skills -->
-    <div class="grid grid-cols-3 gap-2">
+    <div class="col-span-1">
       @for (skillType of skillTypes(); track skillType) {
-        <p-panel class="col-span-1">
+        <p-panel class="p-1">
           <ng-template #header>
-            <span class="text-xl">{{ skillType }}</span>
+            <span class="text-l">{{ skillType }}</span>
           </ng-template>
           <ul>
             @for (skill of getFilteredSkills(skillType); track skill) {
-              <li class="flex items-center">&nbsp;- {{ skill.name }}</li>
+              <li class="flex items-center text-gray-500">
+                &nbsp;- {{ skill.name }}
+              </li>
             }
           </ul>
         </p-panel>
       }
     </div>
-    <br />
 
-    <!-- Experience -->
-    <div class="col-span-4">
-      <span class="text-2xl">Professional Experience</span>
-      <div class="flex flex-col gap-2">
-        @for (item of resume().workExperiences; track item) {
-          <app-work-experience [workExperience]="item"></app-work-experience>
-        }
+    <div class="col-span-2 flex flex-col gap-2">
+      <!-- About me -->
+      <div class="flex flex-col">
+        <span class="text-xl">About me</span>
+        <p class="text-gray-500">
+          {{ resume().description }}
+        </p>
       </div>
-    </div>
-    <br />
 
-    @if (resume().personalProjects) {
-      <!-- Personal Projects -->
-      <div class="col-span-4">
-        <span class="text-2xl">Personal Projects</span>
+      <!-- Experience -->
+      <div class="flex flex-col">
+        <span class="text-xl">Professional Experience</span>
         <div class="flex flex-col gap-2">
-          @for (item of resume().personalProjects; track item) {
-            <app-personal-project
-              [personalProject]="item"
-            ></app-personal-project>
+          @for (item of resume().workExperiences; track item) {
+            <app-work-experience [workExperience]="item"></app-work-experience>
           }
         </div>
       </div>
-    }
-    <br />
-    <div>
-      <span class="text-2xl">Education</span>
-      @for (education of resume().education; track education) {
-        <app-education [education]="education"></app-education>
+
+      @if (resume().personalProjects) {
+        <!-- Personal Projects -->
+        <div class="flex flex-col">
+          <span class="text-xl">Personal Projects</span>
+          <div class="flex flex-col gap-2">
+            @for (item of resume().personalProjects; track item) {
+              <app-personal-project
+                [personalProject]="item"
+              ></app-personal-project>
+            }
+          </div>
+        </div>
       }
+      <div class="flex flex-col">
+        <span class="text-xl">Education</span>
+        @for (education of resume().education; track education) {
+          <app-education [education]="education"></app-education>
+        }
+      </div>
     </div>
-    <br />
   </div>
 </div>

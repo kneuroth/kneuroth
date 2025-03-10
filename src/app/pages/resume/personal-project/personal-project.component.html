@@ -1,7 +1,7 @@
 <p-panel>
   <ng-template #header>
     <div class="w-full">
-      <span class="text-xl mr-2">{{ name() }}</span>
+      <span class="text-l mr-2">{{ name() }}</span>
       @if (link()) {
         <p-button
           class="float-right no-print"
@@ -14,7 +14,7 @@
   </ng-template>
   <ul>
     @for (bullet of bullets(); track bullet) {
-      <li>{{ bullet }}</li>
+      <li class="text-sm text-gray-500">{{ bullet }}</li>
     }
   </ul>
 </p-panel>

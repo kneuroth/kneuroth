@@ -3,10 +3,11 @@ import { ResumeComponent } from '@app/resume/resume.component';
 import { Button } from 'primeng/button';
 import { Divider } from 'primeng/divider';
 import { ResumeTailorService } from './resume-tailor.service';
+import { ResumeTailorComponent } from './resume-tailor/resume-tailor.component';
 
 @Component({
   selector: 'app-resume-page',
-  imports: [ResumeComponent, Button, Divider],
+  imports: [ResumeComponent, Button, Divider, ResumeTailorComponent],
   template: ` <div class="flex flex-col m-10 gap-4">
     <div class="flex no-print ml-auto gap-2">
       <!-- Controls -->
@@ -17,13 +18,14 @@ import { ResumeTailorService } from './resume-tailor.service';
         (click)="onClickPrint()"
       />
       <p-button
-        label="Customize"
+        [label]="hideTailor ? 'Customize' : 'Stop Customizing'"
         class="no-print ml-auto"
         severity="info"
         (click)="onClickCustomize()"
       />
     </div>
 
+    <app-resume-tailor class="no-print" [hidden]="hideTailor" />
     <p-divider class="no-print" />
     <app-resume [resume]="resume()" />
   </div>`,
@@ -33,11 +35,13 @@ export class ResumePageComponent {
 
   resume = this.tailorService.resume;
 
+  hideTailor = true;
+
   onClickPrint() {
     window.print();
   }
 
   onClickCustomize() {
-    console.log('Implement me!');
+    this.hideTailor = !this.hideTailor;
   }
 }

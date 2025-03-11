@@ -1,14 +1,11 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { Panel } from 'primeng/panel';
 import { Tag } from 'primeng/tag';
 import { Toast } from 'primeng/toast';
 import { WorkExperienceComponent } from './work-experience/work-experience.component';
 import { Resume, SkillType } from './resume.model';
-import { resume } from './resume.data';
 import { PersonalProjectComponent } from './personal-project/personal-project.component';
-import { Button } from 'primeng/button';
-import { Divider } from 'primeng/divider';
 import { EducationComponent } from './education/education.component';
 
 @Component({
@@ -17,8 +14,6 @@ import { EducationComponent } from './education/education.component';
     Panel,
     Tag,
     Toast,
-    Button,
-    Divider,
     WorkExperienceComponent,
     PersonalProjectComponent,
     EducationComponent,
@@ -29,17 +24,13 @@ import { EducationComponent } from './education/education.component';
 export class ResumeComponent {
   constructor(private messageService: MessageService) {}
 
-  DEFAULT_RESUME = resume;
-
-  resume = input<Resume>(this.DEFAULT_RESUME);
+  resume = input.required<Resume>();
 
   skillTypes = computed(
     () => new Set(this.resume().skills.map((skill) => skill.type)),
   );
 
-  onClickPrint() {
-    window.print();
-  }
+  onChangeResume() {}
 
   getFilteredSkills(skillType: SkillType) {
     return this.resume().skills.filter((skill) => skill.type === skillType);

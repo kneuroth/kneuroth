@@ -62,7 +62,7 @@ export const education: Education[] = [
   },
 ];
 
-export const resume: Resume = {
+export const defaultResume: Resume = {
   name: 'Kelly Neuroth',
   title: 'Software Engineer',
   links: ['https://github.com/kneuroth'],

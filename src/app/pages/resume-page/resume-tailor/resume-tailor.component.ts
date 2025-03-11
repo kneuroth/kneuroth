@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { Button } from 'primeng/button';
-import { ResumeTailorService } from '../resume-tailor.service';
+import { ResumeTailorService } from './resume-tailor.service';
 
 @Component({
   selector: 'app-resume-tailor',

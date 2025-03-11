@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { ResumeComponent } from '@app/resume/resume.component';
 import { Button } from 'primeng/button';
 import { Divider } from 'primeng/divider';
-import { ResumeTailorService } from './resume-tailor.service';
+import { ResumeTailorService } from './resume-tailor/resume-tailor.service';
 import { ResumeTailorComponent } from './resume-tailor/resume-tailor.component';
 
 @Component({

@@ -1,13 +1,13 @@
 <div class="p-3 rounded-r-2xl border border-gray-300 border-double w-full">
-  <div class="flex gap-2 items-baseline text-l">
+  <div class="flex gap-2 items-baseline text-base">
     <span class="mr-2">{{ name() }}</span>
-  </div>
-
-  <div class="text-base">
-    {{ degree() }}
-    <span class="text-gray-500 float-right text-sm"
+    <span class="text-gray-500 ml-auto text-sm"
       >{{ startDate() | conditionalDate }} -
       {{ endDate() | conditionalDate }}</span
     >
+  </div>
+
+  <div class="text-sm">
+    {{ degree() }}
   </div>
 </div>

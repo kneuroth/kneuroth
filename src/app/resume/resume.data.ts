@@ -10,11 +10,14 @@ export const workExperiences: WorkExperience[] = [
   {
     employer: 'M&T Bank',
     location: 'Buffalo, NY',
-    title: 'Software Engineer I',
+    title: 'Contractor / Software Engineer I',
     startDate: new Date(2021, 7, 1),
     endDate: 'Present',
     bullets: [
-      'Built and grew full-stack data viewing and internal actioning application to over 400 concurrent users',
+      "Designed full-stack features in Spring/Angular for use by over 400 users in M&T's financial crimes department",
+      'Successfully migrated application from Angular v17 to Angular v19',
+      'Held design and pain point discovery sessions with business users',
+      'Deployed custom data monitoring python scripts to monitor over 15 table batch loads with <10 minute response time',
     ],
   },
   {
@@ -23,7 +26,7 @@ export const workExperiences: WorkExperience[] = [
     title: 'Software Consultant',
     startDate: new Date(2020, 9, 1),
     endDate: new Date(2021, 6, 1),
-    bullets: ['Got learned on SAS'],
+    bullets: [],
   },
   {
     employer: 'IBM Canada',
@@ -32,8 +35,8 @@ export const workExperiences: WorkExperience[] = [
     startDate: new Date(2019, 10, 1),
     endDate: new Date(2020, 10, 1),
     bullets: [
-      'Created Vue framework',
-      'Did other stuff that has to do with other things',
+      'Built Vue.js app for asset visualizations for business',
+      'Communicated with app users to create efficiencies in parts ordering process',
     ],
   },
 ];
@@ -44,9 +47,8 @@ export const personalProjects: PersonalProject[] = [
     description:
       "A bot on the Telegram messaging app that tracks a groupchat's wordle scores via user submissions",
     bullets: [
-      'Used python to build rest endpoints',
-      "Learned telegram's API service to parse user messages",
-      'Inserted scores into SQLLite database',
+      'Telegram (messaging app) API Bot connected to a python flask application',
+      'REST API to transact and store scores in SQLLite database',
       'Hosted with Google Cloud Platform',
     ],
     link: 'https://github.com/kneuroth/wordle-telegram-bot',
@@ -69,7 +71,7 @@ export const defaultResume: Resume = {
   email: 'kelly.neuroth@outlook.com',
   phone: '518-915-8080',
   description:
-    'Lots of words here to describe the type of guy and person and person i am i want a job so badly please please pelasepleas',
+    "I'm a software engineer interested in designing creative solutions to unique problems. I currently work in the web development domain, have strong frontend skills in the latest Angular version (19), and a sturdy fountation and understanding of backend tech and infrastructure. I like to stay informed on new technology and best engineering standards. I am looking for interesting opportunities that I can feel good contributing to.",
   skills: [
     {
       name: 'Object oriented design',

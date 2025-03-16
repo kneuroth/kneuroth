@@ -11,7 +11,6 @@ import { EducationComponent } from './education/education.component';
 @Component({
   selector: 'app-resume',
   imports: [
-    Panel,
     Tag,
     Toast,
     WorkExperienceComponent,

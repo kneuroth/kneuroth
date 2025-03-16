@@ -5,7 +5,7 @@ import { Button } from 'primeng/button';
 
 @Component({
   selector: 'app-personal-project',
-  imports: [Panel, Button],
+  imports: [Button],
   templateUrl: './personal-project.component.html',
 })
 export class PersonalProjectComponent {

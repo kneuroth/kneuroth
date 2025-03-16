@@ -6,6 +6,13 @@ import {
 
 export const roadmapItems: RoadmapItem[] = [
   {
+    name: 'Remove p-cards from resume',
+    description:
+      'P cards are too big and hard to customize. Get em out of the resume to you can fine tune and make the whole thing more dense',
+    type: RoadmapItemType.Enhancement,
+    status: RoadmapItemStatus.InProgress,
+  },
+  {
     name: 'Customizable Resume',
     description:
       'Give user control of what data is displayed on the resume. Allow them to select from a pool of all of your skills, educations, work experiences, personal projects. Apply the results and then the user can export the PDF.',

@@ -1,9 +1,9 @@
 <p-toast />
-<div class="flex flex-col m-10 gap-4">
+<div class="flex flex-col gap-4">
   <!-- Resume -->
-  <div class="grid grid-cols-3 gap-6">
+  <div class="grid grid-cols-3">
     <!-- Header -->
-    <div class="sm:flex items-center gap-4 col-span-3">
+    <div class="sm:flex items-center col-span-3">
       <!-- Name and pic -->
       <div>
         <img class="sm:w-32 sm:h-32 rounded-full" src="/grapefruit-slice.jpg" />
@@ -42,35 +42,35 @@
     </div>
 
     <!-- Skills -->
-    <div class="col-span-1">
+    <div
+      class="col-span-1 p-3 mr-2 rounded-l-2xl border border-gray-300 border-double flex flex-col justify-between"
+    >
       @for (skillType of skillTypes(); track skillType) {
-        <p-panel class="p-1">
-          <ng-template #header>
-            <span class="text-l">{{ skillType }}</span>
-          </ng-template>
+        <div class="p-1">
+          <h1 class="text-lg">{{ skillType }}</h1>
           <ul>
             @for (skill of getFilteredSkills(skillType); track skill) {
-              <li class="flex items-center text-gray-500">
+              <li class="flex items-center text-gray-500 text-base">
                 &nbsp;- {{ skill.name }}
               </li>
             }
           </ul>
-        </p-panel>
+        </div>
       }
     </div>
 
     <div class="col-span-2 flex flex-col gap-2">
       <!-- About me -->
       <div class="flex flex-col">
-        <span class="text-xl">About me</span>
-        <p class="text-gray-500">
+        <span class="text-base">About me</span>
+        <p class="text-gray-500 text-sm">
           {{ resume().description }}
         </p>
       </div>
 
       <!-- Experience -->
       <div class="flex flex-col">
-        <span class="text-xl">Professional Experience</span>
+        <span class="text-lg">Professional Experience</span>
         <div class="flex flex-col gap-2">
           @for (item of resume().workExperiences; track item) {
             <app-work-experience [workExperience]="item"></app-work-experience>
@@ -81,7 +81,7 @@
       @if (resume().personalProjects) {
         <!-- Personal Projects -->
         <div class="flex flex-col">
-          <span class="text-xl">Personal Projects</span>
+          <span class="text-lg">Personal Projects</span>
           <div class="flex flex-col gap-2">
             @for (item of resume().personalProjects; track item) {
               <app-personal-project
@@ -92,7 +92,7 @@
         </div>
       }
       <div class="flex flex-col">
-        <span class="text-xl">Education</span>
+        <span class="text-lg">Education</span>
         @for (education of resume().education; track education) {
           <app-education [education]="education"></app-education>
         }

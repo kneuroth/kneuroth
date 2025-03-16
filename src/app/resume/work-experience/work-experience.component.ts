@@ -5,7 +5,7 @@ import { ConditionalDatePipe } from '../../shared/pipes/conditional-date.pipe';
 
 @Component({
   selector: 'app-work-experience',
-  imports: [Panel, ConditionalDatePipe],
+  imports: [ConditionalDatePipe],
   templateUrl: './work-experience.component.html',
 })
 export class WorkExperienceComponent {

@@ -5,7 +5,7 @@ import { Panel } from 'primeng/panel';
 
 @Component({
   selector: 'app-education',
-  imports: [ConditionalDatePipe, Panel],
+  imports: [ConditionalDatePipe],
   templateUrl: './education.component.html',
 })
 export class EducationComponent {

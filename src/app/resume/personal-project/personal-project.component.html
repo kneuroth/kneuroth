@@ -1,20 +1,19 @@
-<p-panel>
-  <ng-template #header>
-    <div class="w-full">
-      <span class="text-l mr-2">{{ name() }}</span>
-      @if (link()) {
-        <p-button
-          class="float-right no-print"
-          label="See project"
-          severity="secondary"
-          (click)="onClickLink(link()!)"
-        ></p-button>
-      }
-    </div>
-  </ng-template>
+<div class="p-3 rounded-r-2xl border border-gray-300 border-double">
+  <div class="w-full">
+    <span class="text-base mr-2">{{ name() }}</span>
+    @if (link()) {
+      <p-button
+        size="small"
+        class="float-right no-print"
+        label="See project"
+        severity="secondary"
+        (click)="onClickLink(link()!)"
+      ></p-button>
+    }
+  </div>
   <ul>
     @for (bullet of bullets(); track bullet) {
       <li class="text-sm text-gray-500">{{ bullet }}</li>
     }
   </ul>
-</p-panel>
+</div>

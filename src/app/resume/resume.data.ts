@@ -94,6 +94,10 @@ export const defaultResume: Resume = {
       type: SkillType.Skill,
     },
     {
+      name: 'Agile Practices / SCRUM',
+      type: SkillType.Skill,
+    },
+    {
       name: 'Containerization',
       type: SkillType.Skill,
     },

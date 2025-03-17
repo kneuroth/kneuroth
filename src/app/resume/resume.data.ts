@@ -94,7 +94,7 @@ export const defaultResume: Resume = {
       type: SkillType.Skill,
     },
     {
-      name: 'Agile Practices / SCRUM',
+      name: 'Agile practices / SCRUM',
       type: SkillType.Skill,
     },
     {

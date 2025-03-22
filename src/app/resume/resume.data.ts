@@ -89,8 +89,28 @@ export const defaultResume: Resume = {
       name: 'REST design',
       type: SkillType.Skill,
     },
+    // {
+    //   name: 'Microservice design',
+    //   type: SkillType.Skill,
+    // },
+    // {
+    //   name: 'Building for scale',
+    //   type: SkillType.Skill,
+    // },
+    // {
+    //   name: 'Prototyping and MVP-based development',
+    //   type: SkillType.Skill,
+    // },
     {
-      name: 'Microservice design',
+      name: 'GenAI as a development tool',
+      type: SkillType.Skill,
+    },
+    {
+      name: 'Integration with OAuth',
+      type: SkillType.Skill,
+    },
+    {
+      name: 'Containerization',
       type: SkillType.Skill,
     },
     {
@@ -98,7 +118,15 @@ export const defaultResume: Resume = {
       type: SkillType.Skill,
     },
     {
-      name: 'Containerization',
+      name: 'Product / feature ownership',
+      type: SkillType.Skill,
+    },
+    {
+      name: 'Technical and non-technical communication',
+      type: SkillType.Skill,
+    },
+    {
+      name: 'Analytical thinking / problem solving / adaptability',
       type: SkillType.Skill,
     },
     {

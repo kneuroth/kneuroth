@@ -1,8 +1,8 @@
 <app-page-title
   title="Roadmap"
-  subtitle="A place where I map out my plans for this website. It's my own personal Jira just for the fun of it."
+  subtitle='A place where I map out my plans for this website. "We have Jira at home"'
 ></app-page-title>
-<ul class="md:m-10">
+<ul class="m-10">
   @for (item of roadmapItems; track item) {
     <li class="mb-1 mt-1">
       <app-roadmap-item [roadmapItem]="item"></app-roadmap-item>

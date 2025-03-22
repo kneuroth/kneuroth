@@ -5,7 +5,14 @@ import { RoadmapComponent } from './pages/roadmap/roadmap.component';
 import { ResumePageComponent } from './pages/resume-page/resume-page.component';
 
 export const routes: Routes = [
-  { title: '', path: '', component: HomeComponent },
+  {
+    title: '',
+    path: '',
+    component: HomeComponent,
+    data: {
+      background: 'buffalo-building-1.JPG',
+    },
+  },
   { title: 'About Kelly', path: 'about', component: AboutComponent },
   { title: 'Resume', path: 'resume', component: ResumePageComponent },
   { title: 'Roadmap', path: 'roadmap', component: RoadmapComponent },

@@ -1,3 +1,9 @@
-<app-banner class="no-print"></app-banner>
-<app-header class="no-print"></app-header>
+@if (backgroundImg) {
+  <img
+    [src]="backgroundImg"
+    alt=""
+    class="absolute inset-0 -z-10 size-full object-cover object-right md:object-center brightness-50"
+  />
+}
+<app-header class="no-print -mt-20"></app-header>
 <router-outlet></router-outlet>

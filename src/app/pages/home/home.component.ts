@@ -8,8 +8,4 @@ import { CardModule } from 'primeng/card';
   templateUrl: './home.component.html',
   standalone: true,
 })
-export class HomeComponent {
-  onClickCard(page: string) {
-    window.location.href = page;
-  }
-}
+export class HomeComponent {}

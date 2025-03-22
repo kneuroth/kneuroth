@@ -14,9 +14,38 @@ export const roadmapItems: RoadmapItem[] = [
     link: undefined,
   },
   {
+    name: 'More personal home page',
+    description:
+      'Add your own photos and a personal statement to the home page',
+    type: RoadmapItemType.Enhancement,
+    status: RoadmapItemStatus.InProgress,
+  },
+  {
+    name: 'Add "Projects" page',
+    description:
+      'Add a page to display and link various personal projects, sorted by type',
+    type: RoadmapItemType.Feature,
+    status: RoadmapItemStatus.Backlog,
+  },
+  {
+    name: 'Personalize header and side menu',
+    description: "They're kinda boring",
+    type: RoadmapItemType.Enhancement,
+    status: RoadmapItemStatus.Backlog,
+  },
+  {
     name: 'Sort Roadmap',
     description:
       'Add date started and date completed fields to RoadmapItem plus implement a sorting function. Group sorted items by status also.',
+    type: RoadmapItemType.Enhancement,
+    status: RoadmapItemStatus.Backlog,
+    link: undefined,
+  },
+
+  {
+    name: 'Backendify Resume',
+    description:
+      'Create a backend that stores resume items like work experience and other personal information.',
     type: RoadmapItemType.Enhancement,
     status: RoadmapItemStatus.Backlog,
     link: undefined,
@@ -25,15 +54,7 @@ export const roadmapItems: RoadmapItem[] = [
     name: 'Resume bullets lists',
     description: 'Resume is missing nice bullets',
     type: RoadmapItemType.Enhancement,
-    status: RoadmapItemStatus.Backlog,
-    link: undefined,
-  },
-  {
-    name: 'Backendify Resume',
-    description:
-      'Create a backend that stores resume items like work experience and other personal information.',
-    type: RoadmapItemType.Enhancement,
-    status: RoadmapItemStatus.Backlog,
+    status: RoadmapItemStatus.Done,
     link: undefined,
   },
   {

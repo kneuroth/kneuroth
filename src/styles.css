@@ -5,3 +5,11 @@
     display: none !important;
   }
 }
+
+@theme {
+  --color-brownsugar: #b75f3d;
+  --color-galcier: #6886b2;
+  --color-charcoal: #3b404d;
+  --color-frenchgrey: #bbb9be;
+  --color-smokey: #0c0607;
+}

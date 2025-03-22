@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { RouterLink, RouterModule } from '@angular/router';
 import { Button } from 'primeng/button';
 import { HeaderService } from './header.service';

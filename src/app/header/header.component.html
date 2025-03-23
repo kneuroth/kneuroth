@@ -8,92 +8,13 @@
     <a href="">
       <i class="pi pi-home" style="font-size: x-large"></i>
     </a>
-    <!-- Mobile Menu Toggle (Hamburger) -->
-    <div class="flex sm:hidden">
-      <p-button
-        icon="pi pi-bars"
-        [text]="true"
-        class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
-        (click)="toggleMenu()"
-      >
-        <span class="sr-only">Open main menu</span>
-      </p-button>
-    </div>
 
     <!-- Desktop Nav Links -->
-    <div class="hidden sm:flex sm:gap-x-12">
+    <div class="flex gap-x-12">
       <a href="#" class="text-sm/6 font-semibold invert-10">Home</a>
       <a href="resume" class="text-sm/6 font-semibold">Resume</a>
       <!-- <a href="about" class="text-sm/6 font-semibold text-gray-900">About</a> -->
       <a href="roadmap" class="text-sm/6 font-semibold">Roadmap</a>
     </div>
   </nav>
-
-  <!-- Mobile menu (show/hide via isMenuOpen) -->
-  <!-- The backdrop and slide-over container both appear only if isMenuOpen -->
-  @if (open()) {
-    <div class="lg:hidden" role="dialog" aria-modal="true">
-      <!-- Background backdrop -->
-      <div class="fixed inset-0 z-10 bg-gray-900/50"></div>
-
-      <!-- Slide-over panel -->
-      <div
-        class="fixed inset-y-0 right-0 z-20 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10"
-      >
-        <div class="flex items-center justify-between">
-          <!-- Logo (repeated for the mobile panel) -->
-          <a href="#" class="-m-1.5 p-1.5">
-            <span class="sr-only">Your Company</span>
-            <img
-              class="h-8 w-auto"
-              src="https://tailwindui.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-              alt="Logo"
-            />
-          </a>
-
-          <!-- Close button (X) -->
-          <p-button
-            icon="pi pi-times"
-            class="-m-2.5 rounded-md p-2.5 text-gray-700"
-            [text]="true"
-            (click)="toggleMenu()"
-          >
-            <span class="sr-only">Close menu</span>
-          </p-button>
-        </div>
-
-        <!-- Mobile Nav Links -->
-        <div class="mt-6 flow-root">
-          <div class="-my-6 divide-y divide-gray-500/10">
-            <div class="space-y-2 py-6">
-              <a
-                href="#"
-                class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
-              >
-                Home
-              </a>
-              <!-- <a
-                href="about"
-                class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
-              >
-                About
-              </a> -->
-              <a
-                href="resume"
-                class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
-              >
-                Resume
-              </a>
-              <a
-                href="roadmap"
-                class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
-              >
-                Roadmap
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  }
 </header>

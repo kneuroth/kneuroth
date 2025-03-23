@@ -10,7 +10,7 @@ export const routes: Routes = [
     path: '',
     component: HomeComponent,
     data: {
-      background: 'buffalo-building-1.JPG',
+      background: 'buffalo-building-1.jpg',
     },
   },
   { title: 'About Kelly', path: 'about', component: AboutComponent },

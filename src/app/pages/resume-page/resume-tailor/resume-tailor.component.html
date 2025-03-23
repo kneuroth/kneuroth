@@ -1,2 +1,16 @@
 <p>resume-tailor works!</p>
-<p-button (click)="onChangeName()">Change title</p-button>
+<form [formGroup]="form">
+  @for (description of descriptions; track description) {
+    <p-panel>
+      <p>{{ description }}</p>
+      <ng-template #icons>
+        <p-radioButton
+          name="description"
+          [value]="description"
+          formControlName="description"
+        ></p-radioButton>
+      </ng-template>
+    </p-panel>
+  }
+</form>
+<!-- <p-button (click)="onChangeName()">Change title</p-button> -->

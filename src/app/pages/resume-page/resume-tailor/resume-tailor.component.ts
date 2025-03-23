@@ -1,17 +1,21 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Button } from 'primeng/button';
 import { ResumeTailorService } from './resume-tailor.service';
+import { RadioButton, RadioButtonModule } from 'primeng/radiobutton';
+import { Panel } from 'primeng/panel';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-resume-tailor',
-  imports: [Button],
+  imports: [ReactiveFormsModule, FormsModule, Panel, RadioButton],
   templateUrl: './resume-tailor.component.html',
-  styleUrl: './resume-tailor.component.css',
 })
 export class ResumeTailorComponent {
   tailorService = inject(ResumeTailorService);
 
-  onChangeName() {
-    this.tailorService.changeName();
-  }
+  form = this.tailorService.resumeTailorForm;
+
+  descriptions = this.tailorService.resumeOptions?.descriptions;
+
+  options = this.tailorService.resumeOptions;
 }

@@ -29,8 +29,6 @@ export class ResumeComponent {
     () => new Set(this.resume().skills.map((skill) => skill.type)),
   );
 
-  onChangeResume() {}
-
   getFilteredSkills(skillType: SkillType) {
     return this.resume().skills.filter((skill) => skill.type === skillType);
   }

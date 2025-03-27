@@ -4,6 +4,7 @@ import { ResumeTailorService } from './resume-tailor.service';
 import { RadioButton, RadioButtonModule } from 'primeng/radiobutton';
 import { Panel } from 'primeng/panel';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { descriptions, names } from './data/resume-options.data';
 
 @Component({
   selector: 'app-resume-tailor',
@@ -15,7 +16,8 @@ export class ResumeTailorComponent {
 
   form = this.tailorService.resumeTailorForm;
 
-  descriptions = this.tailorService.resumeOptions?.descriptions;
+  //options = this.tailorService.resumeOptions;
 
-  options = this.tailorService.resumeOptions;
+  nameOptions = names;
+  descriptionOptions = descriptions;
 }

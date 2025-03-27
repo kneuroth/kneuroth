@@ -1,16 +1,34 @@
-<p>resume-tailor works!</p>
 <form [formGroup]="form">
-  @for (description of descriptions; track description) {
-    <p-panel>
-      <p>{{ description }}</p>
-      <ng-template #icons>
-        <p-radioButton
-          name="description"
-          [value]="description"
-          formControlName="description"
-        ></p-radioButton>
-      </ng-template>
-    </p-panel>
-  }
+  <!-- TODO: make this a beautiful form -->
+  <!-- Names -- why are you changing your name? -->
+  <div>
+    @for (name of nameOptions; track name) {
+      <p-panel>
+        <p>{{ name }}</p>
+        <ng-template #icons>
+          <p-radioButton
+            name="name"
+            [value]="name"
+            formControlName="name"
+          ></p-radioButton>
+        </ng-template>
+      </p-panel>
+    }
+  </div>
+  <!-- Descriptions -->
+  <div>
+    @for (description of descriptionOptions; track description) {
+      <p-panel>
+        <p>{{ description }}</p>
+        <ng-template #icons>
+          <p-radioButton
+            name="description"
+            [value]="description"
+            formControlName="description"
+          ></p-radioButton>
+        </ng-template>
+      </p-panel>
+    }
+  </div>
 </form>
 <!-- <p-button (click)="onChangeName()">Change title</p-button> -->

@@ -1,9 +1,23 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { rxResource, toSignal } from '@angular/core/rxjs-interop';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Resume } from '@app/resume/resume.model';
-import { of } from 'rxjs';
-import { RESUME_OPTIONS } from './resume-tailor.data';
 import { FormBuilder } from '@angular/forms';
+import {
+  defaultResume,
+  education,
+  personalProjects,
+  workExperiences,
+} from '@app/resume/resume.data';
+import {
+  descriptions,
+  emails,
+  links,
+  names,
+  phones,
+  skills,
+  titles,
+} from './data/resume-options.data';
+import { startWith } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -11,46 +25,43 @@ import { FormBuilder } from '@angular/forms';
 export class ResumeTailorService {
   formBuilder = inject(FormBuilder);
 
-  resumeOptions = RESUME_OPTIONS;
-  // rxResource({
-  //   loader: () => of(RESUME_OPTIONS),
-  // });
-
   resumeTailorForm = this.formBuilder.group({
-    name: [''],
-    title: [''],
-    links: [''],
-    phone: [''],
-    email: [''],
-    description: [''],
-    skills: [''],
-    workExperiences: [''],
-    personalProjects: [''],
-    educations: [''],
+    name: [names[0]],
+    title: [titles[0]],
+    links: [links],
+    phone: [phones[0]],
+    email: [emails[0]],
+    description: [descriptions[0]],
+    skills: [skills.slice(0, 10)],
+    workExperiences: [workExperiences.slice(0, 2)],
+    personalProjects: [[personalProjects[0]]],
+    educations: [[education[0]]],
   });
 
-  // resume = signal<Resume>(defaultResume);
-  formChanges = toSignal(this.resumeTailorForm.valueChanges);
+  // formChanges = toSignal(this.resumeTailorForm.valueChanges);
 
-  resume = computed(() => {
-    let changes = this.formChanges();
+  formSignal = toSignal(
+    this.resumeTailorForm.valueChanges.pipe(
+      startWith(this.resumeTailorForm.getRawValue()),
+    ),
+  );
+
+  resume = computed((): Resume => {
+    let resume = this.formSignal();
+    console.log(resume);
     return {
-      name: 'Kelly Neuroth',
-      title: 'Software Engineer',
-      links: [],
-      phone: '',
-      email: '',
-      description: this.formChanges()?.description || '',
-      skills: [],
-      workExperiences: [],
+      name: resume?.name || '',
+      title: resume?.title || '',
+      links: resume?.links || [],
+      phone: resume?.phone || '',
+      email: resume?.email || '',
+      description: resume?.description || '',
+      skills: resume?.skills || [],
+      workExperiences: resume?.workExperiences || [],
+      personalProjects: resume?.personalProjects || [],
+      education: resume?.educations || [],
     };
   });
 
-  descriptions = computed(() => this.resumeOptions.descriptions ?? []);
-
-  // changeName() {
-  //   this.resume.update((resume) => {
-  //     return { ...resume, name: '123' };
-  //   });
-  // }
+  // resume = signal<Resume>(defaultResume);
 }

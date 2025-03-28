@@ -9,13 +9,15 @@ import {
   workExperiences,
 } from '@app/resume/resume.data';
 import {
-  descriptions,
+  descriptionOptions,
   emails,
-  links,
-  names,
+  linkOptions,
+  nameOptions,
   phones,
-  skills,
-  titles,
+  skillOptions,
+  titleOptions,
+  workExperienceOptions,
+  personalProjectOptions,
 } from './data/resume-options.data';
 import { startWith } from 'rxjs';
 
@@ -26,15 +28,15 @@ export class ResumeTailorService {
   formBuilder = inject(FormBuilder);
 
   resumeTailorForm = this.formBuilder.group({
-    name: [names[0]],
-    title: [titles[0]],
-    links: [links],
+    name: [nameOptions[0]],
+    title: [titleOptions[0]],
+    links: [linkOptions],
     phone: [phones[0]],
     email: [emails[0]],
-    description: [descriptions[0]],
-    skills: [skills.slice(0, 10)],
-    workExperiences: [workExperiences.slice(0, 2)],
-    personalProjects: [[personalProjects[0]]],
+    description: [descriptionOptions[0]],
+    skills: [skillOptions.slice(0, 10)],
+    workExperiences: [workExperienceOptions.slice(0, 2)],
+    personalProjects: [[personalProjectOptions[0]]],
     educations: [[education[0]]],
   });
 
@@ -48,7 +50,6 @@ export class ResumeTailorService {
 
   resume = computed((): Resume => {
     let resume = this.formSignal();
-    console.log(resume);
     return {
       name: resume?.name || '',
       title: resume?.title || '',

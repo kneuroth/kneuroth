@@ -21,18 +21,27 @@ export const roadmapItems: RoadmapItem[] = [
     status: RoadmapItemStatus.InProgress,
   },
   {
+    name: 'Resume Tailor - Add a summary to description options',
+    description:
+      'Its ugly to see the entire description in the dropwdown in the resume tailor - add a model to represent a description option and give it a summary field to summarize the value of the description and display that so it doesnt bog down the dropdown item.',
+    type: RoadmapItemType.Enhancement,
+    status: RoadmapItemStatus.Backlog,
+  },
+  {
+    name: 'Resume Tailor - Make skill type identifier in skills dropdown',
+    description:
+      'It would be nice to be able to see skill type in the drop down for the resume tailor feature. Use ng-templating to show icons for skill types in the option.',
+    type: RoadmapItemType.Enhancement,
+    status: RoadmapItemStatus.Backlog,
+  },
+  {
     name: 'Add "Projects" page',
     description:
       'Add a page to display and link various personal projects, sorted by type',
     type: RoadmapItemType.Feature,
     status: RoadmapItemStatus.Backlog,
   },
-  {
-    name: 'Personalize header and side menu',
-    description: "They're kinda boring",
-    type: RoadmapItemType.Enhancement,
-    status: RoadmapItemStatus.Backlog,
-  },
+
   {
     name: 'Sort Roadmap',
     description:
@@ -49,6 +58,12 @@ export const roadmapItems: RoadmapItem[] = [
     type: RoadmapItemType.Enhancement,
     status: RoadmapItemStatus.Backlog,
     link: undefined,
+  },
+  {
+    name: 'Personalize header and side menu',
+    description: "They're kinda boring",
+    type: RoadmapItemType.Enhancement,
+    status: RoadmapItemStatus.Done,
   },
   {
     name: 'Resume bullets lists',

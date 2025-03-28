@@ -6,25 +6,25 @@ import {
   WorkExperience,
 } from '@app/resume/resume.model';
 
-export const names = ['Kelly Neuroth'];
-export const titles = [
+export const nameOptions = ['Kelly Neuroth'];
+export const titleOptions = [
   'Software Engineer',
   'Software developer with 3+ years of engineering experience',
   'Software engineer with 3+ years of web development experience',
 ];
 
-export const links = [
+export const linkOptions = [
   'https://github.com/kneuroth',
   'kneuroth.github.io/kneuroth',
 ];
 
 export const phones = ['518-915-8080'];
 export const emails = ['kelly.neuroth@outlook.com'];
-export const descriptions = [
+export const descriptionOptions = [
   "I'm a software engineer interested in designing creative solutions to unique problems. I currently work in the web development domain, have strong frontend skills in the latest Angular version (19), and a sturdy fountation and understanding of backend tech and infrastructure. I like to stay informed on new technology and best engineering standards. I am looking for interesting opportunities that I can feel good contributing to.",
   "I'm a little boy with little boy hands and a cute smile",
 ];
-export const skills = [
+export const skillOptions = [
   {
     name: 'Object oriented design',
     type: SkillType.Skill,
@@ -111,7 +111,7 @@ export const skills = [
   },
 ];
 
-export const workExperiences: WorkExperience[] = [
+export const workExperienceOptions: WorkExperience[] = [
   {
     employer: 'M&T Bank',
     location: 'Buffalo, NY',
@@ -146,7 +146,7 @@ export const workExperiences: WorkExperience[] = [
   },
 ];
 
-export const personalProjects: PersonalProject[] = [
+export const personalProjectOptions: PersonalProject[] = [
   {
     name: 'Telegram Messaging App Wordle Bot',
     description:
@@ -160,7 +160,7 @@ export const personalProjects: PersonalProject[] = [
   },
 ];
 
-const educations: Education[] = [
+export const educationOptions: Education[] = [
   {
     name: 'University of Western Ontario',
     degree: 'Software Engineering',

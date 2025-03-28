@@ -1,34 +1,92 @@
-<form [formGroup]="form">
-  <!-- TODO: make this a beautiful form -->
-  <!-- Names -- why are you changing your name? -->
-  <div>
-    @for (name of nameOptions; track name) {
-      <p-panel>
-        <p>{{ name }}</p>
-        <ng-template #icons>
-          <p-radioButton
-            name="name"
-            [value]="name"
-            formControlName="name"
-          ></p-radioButton>
-        </ng-template>
-      </p-panel>
-    }
-  </div>
+<form [formGroup]="form" class="grid sm:grid-cols-4 gap-3">
+  <!-- Title -->
+  <p-iftalabel>
+    <p-select formControlName="title" [options]="titles" fluid></p-select>
+    <label for="username">Title</label>
+  </p-iftalabel>
+
+  <!-- Links -->
+  <p-iftalabel>
+    <p-multiselect
+      formControlName="links"
+      [options]="links"
+      [maxSelectedLabels]="1"
+      fluid
+    ></p-multiselect>
+    <label>Links</label>
+  </p-iftalabel>
+
   <!-- Descriptions -->
-  <div>
-    @for (description of descriptionOptions; track description) {
-      <p-panel>
-        <p>{{ description }}</p>
-        <ng-template #icons>
-          <p-radioButton
-            name="description"
-            [value]="description"
-            formControlName="description"
-          ></p-radioButton>
-        </ng-template>
-      </p-panel>
-    }
-  </div>
+  <!-- TODO future: Allow descriptions to have a summary that represents it so the huge text isnt shown here -->
+  <p-iftalabel class="col-span-2">
+    <p-select
+      formControlName="description"
+      [options]="descriptions"
+      fluid
+      appendTo="body"
+    >
+      <!-- TODO: I feel like there's a better way to do this -->
+      <ng-template let-description #item>
+        {{
+          description.substring(0, 70) != description
+            ? description.substring(0, 67) + "..."
+            : description
+        }}
+      </ng-template>
+    </p-select>
+    <label>Descriptions</label>
+  </p-iftalabel>
+
+  <!-- Skills -->
+  <!-- TODO future: id these by skill type with a lil icon -->
+  <p-iftalabel>
+    <p-multiselect
+      formControlName="skills"
+      [options]="skills"
+      optionLabel="name"
+      [maxSelectedLabels]="0"
+      fluid
+      appendTo="body"
+    ></p-multiselect>
+    <label>Skills</label>
+  </p-iftalabel>
+
+  <!-- Work -->
+  <p-iftalabel>
+    <p-multiselect
+      formControlName="workExperiences"
+      [options]="workExperiences"
+      optionLabel="employer"
+      [maxSelectedLabels]="0"
+      fluid
+      appendTo="body"
+    ></p-multiselect>
+    <label>Work Experience</label>
+  </p-iftalabel>
+
+  <!-- Personal Projects -->
+  <p-iftalabel>
+    <p-multiselect
+      formControlName="personalProjects"
+      [options]="personalProjects"
+      optionLabel="name"
+      [maxSelectedLabels]="0"
+      fluid
+      appendTo="body"
+    ></p-multiselect>
+    <label>Personal Projects</label>
+  </p-iftalabel>
+
+  <!-- Personal Projects -->
+  <p-iftalabel>
+    <p-multiselect
+      formControlName="educations"
+      [options]="educations"
+      optionLabel="name"
+      [maxSelectedLabels]="0"
+      fluid
+      appendTo="body"
+    ></p-multiselect>
+    <label>Education</label>
+  </p-iftalabel>
 </form>
-<!-- <p-button (click)="onChangeName()">Change title</p-button> -->

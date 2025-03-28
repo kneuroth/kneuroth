@@ -15,7 +15,7 @@ export const titleOptions = [
 
 export const linkOptions = [
   'https://github.com/kneuroth',
-  'kneuroth.github.io/kneuroth',
+  'https://kneuroth.github.io/kneuroth',
 ];
 
 export const phones = ['518-915-8080'];

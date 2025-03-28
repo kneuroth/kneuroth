@@ -2,12 +2,7 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Resume } from '@app/resume/resume.model';
 import { FormBuilder } from '@angular/forms';
-import {
-  defaultResume,
-  education,
-  personalProjects,
-  workExperiences,
-} from '@app/resume/resume.data';
+import { education } from '@app/resume/resume.data';
 import {
   descriptionOptions,
   emails,
@@ -63,6 +58,4 @@ export class ResumeTailorService {
       education: resume?.educations || [],
     };
   });
-
-  // resume = signal<Resume>(defaultResume);
 }

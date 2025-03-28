@@ -1,4 +1,4 @@
-<form [formGroup]="form" class="grid sm:grid-cols-4 gap-3">
+<form [formGroup]="form" class="sm:grid sm:grid-cols-4 gap-3">
   <!-- Title -->
   <p-iftalabel>
     <p-select formControlName="title" [options]="titles" fluid></p-select>
@@ -18,7 +18,7 @@
 
   <!-- Descriptions -->
   <!-- TODO future: Allow descriptions to have a summary that represents it so the huge text isnt shown here -->
-  <p-iftalabel class="col-span-2">
+  <p-iftalabel class="sm:col-span-2">
     <p-select
       formControlName="description"
       [options]="descriptions"

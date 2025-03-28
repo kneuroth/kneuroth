@@ -16,7 +16,7 @@ import { filter, map, mergeMap } from 'rxjs';
   standalone: true,
 })
 export class AppComponent {
-  backgroundImg = 'kelly.jpg';
+  backgroundImg = 'buffalo-building-1.jpg';
 
   router = inject(Router);
   activatedRoute = inject(ActivatedRoute);

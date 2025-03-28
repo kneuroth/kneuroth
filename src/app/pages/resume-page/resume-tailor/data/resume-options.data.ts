@@ -22,7 +22,6 @@ export const phones = ['518-915-8080'];
 export const emails = ['kelly.neuroth@outlook.com'];
 export const descriptionOptions = [
   "I'm a software engineer interested in designing creative solutions to unique problems. I currently work in the web development domain, have strong frontend skills in the latest Angular version (19), and a sturdy fountation and understanding of backend tech and infrastructure. I like to stay informed on new technology and best engineering standards. I am looking for interesting opportunities that I can feel good contributing to.",
-  "I'm a little boy with little boy hands and a cute smile",
 ];
 export const skillOptions = [
   {

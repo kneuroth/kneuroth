@@ -34,7 +34,7 @@ export class ResumeTailorService {
     phone: [phones[0]],
     email: [emails[0]],
     description: [descriptionOptions[0]],
-    skills: [skillOptions.slice(0, 10)],
+    skills: [skillOptions.slice(0, 17)],
     workExperiences: [workExperienceOptions.slice(0, 2)],
     personalProjects: [[personalProjectOptions[0]]],
     educations: [[education[0]]],

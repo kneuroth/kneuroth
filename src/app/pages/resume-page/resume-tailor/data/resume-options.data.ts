@@ -30,10 +30,6 @@ export const skillOptions = [
     type: SkillType.Skill,
   },
   {
-    name: 'Web architecture',
-    type: SkillType.Skill,
-  },
-  {
     name: 'User-centered design',
     type: SkillType.Skill,
   },
@@ -46,10 +42,6 @@ export const skillOptions = [
     type: SkillType.Skill,
   },
   {
-    name: 'Building for scale',
-    type: SkillType.Skill,
-  },
-  {
     name: 'Prototyping and MVP-based development',
     type: SkillType.Skill,
   },
@@ -57,10 +49,7 @@ export const skillOptions = [
     name: 'GenAI as a development tool',
     type: SkillType.Skill,
   },
-  {
-    name: 'Integration with OAuth',
-    type: SkillType.Skill,
-  },
+
   {
     name: 'Containerization',
     type: SkillType.Skill,
@@ -73,10 +62,7 @@ export const skillOptions = [
     name: 'Product / feature ownership',
     type: SkillType.Skill,
   },
-  {
-    name: 'Technical and non-technical communication',
-    type: SkillType.Skill,
-  },
+
   {
     name: 'Analytical thinking / problem solving / adaptability',
     type: SkillType.Skill,
@@ -108,6 +94,14 @@ export const skillOptions = [
   {
     name: 'Gitlab Pipelines / Google Cloud Platform',
     type: SkillType.Tech,
+  },
+  {
+    name: 'Technical and non-technical communication',
+    type: SkillType.Skill,
+  },
+  {
+    name: 'Integration with OAuth',
+    type: SkillType.Skill,
   },
 ];
 

@@ -1,6 +1,5 @@
 import { Component, computed, input } from '@angular/core';
 import { MessageService } from 'primeng/api';
-import { Panel } from 'primeng/panel';
 import { Tag } from 'primeng/tag';
 import { Toast } from 'primeng/toast';
 import { WorkExperienceComponent } from './work-experience/work-experience.component';

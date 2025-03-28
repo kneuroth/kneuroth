@@ -1,7 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { Button } from 'primeng/button';
 import { ResumeTailorService } from './resume-tailor.service';
-import { RadioButton, RadioButtonModule } from 'primeng/radiobutton';
 import { Select } from 'primeng/select';
 import { IftaLabel } from 'primeng/iftalabel';
 import { MultiSelect } from 'primeng/multiselect';

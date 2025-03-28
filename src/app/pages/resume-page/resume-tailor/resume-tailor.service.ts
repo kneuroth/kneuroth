@@ -2,7 +2,6 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Resume } from '@app/resume/resume.model';
 import { FormBuilder } from '@angular/forms';
-import { education } from '@app/resume/resume.data';
 import {
   descriptionOptions,
   emails,
@@ -13,6 +12,7 @@ import {
   titleOptions,
   workExperienceOptions,
   personalProjectOptions,
+  educationOptions,
 } from './data/resume-options.data';
 import { startWith } from 'rxjs';
 
@@ -32,7 +32,7 @@ export class ResumeTailorService {
     skills: [skillOptions.slice(0, 17)],
     workExperiences: [workExperienceOptions.slice(0, 2)],
     personalProjects: [[personalProjectOptions[0]]],
-    educations: [[education[0]]],
+    educations: [[educationOptions[0]]],
   });
 
   // formChanges = toSignal(this.resumeTailorForm.valueChanges);

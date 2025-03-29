@@ -48,7 +48,6 @@ export const skillOptions = [
     name: 'GenAI as a development tool',
     type: SkillType.Skill,
   },
-
   {
     name: 'Containerization',
     type: SkillType.Skill,
@@ -67,7 +66,7 @@ export const skillOptions = [
     type: SkillType.Skill,
   },
   {
-    name: 'Javascript / HTML / CSS',
+    name: 'Javascript / Node.js / HTML / CSS',
     type: SkillType.Language,
   },
   {
@@ -101,6 +100,14 @@ export const skillOptions = [
   {
     name: 'Integration with OAuth',
     type: SkillType.Skill,
+  },
+  {
+    name: 'Design Patterns',
+    type: SkillType.Skill,
+  },
+  {
+    name: 'Postman',
+    type: SkillType.Tech,
   },
 ];
 

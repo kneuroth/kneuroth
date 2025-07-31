@@ -43,14 +43,14 @@
 
     <!-- Skills -->
     <div
-      class="col-span-1 p-3 mr-2 rounded-l-2xl border border-gray-300 border-double flex flex-col justify-between"
+      class="col-span-1 p-3 mr-2 rounded-l-2xl border border-gray-300 border-double flex flex-col justify-start"
     >
       @for (skillType of skillTypes(); track skillType) {
         <div class="p-1">
           <h1 class="text-lg">{{ skillType }}</h1>
           <ul>
             @for (skill of getFilteredSkills(skillType); track skill) {
-              <li class="flex items-center text-gray-500 text-base">
+              <li class="flex items-center text-gray-500 text-sm">
                 &nbsp;- {{ skill.name }}
               </li>
             }
@@ -66,6 +66,13 @@
         <p class="text-gray-500 text-sm">
           {{ resume().description }}
         </p>
+      </div>
+
+      <div class="flex flex-col">
+        <span class="text-lg">Education</span>
+        @for (education of resume().education; track education) {
+          <app-education [education]="education"></app-education>
+        }
       </div>
 
       <!-- Experience -->
@@ -91,12 +98,6 @@
           </div>
         </div>
       }
-      <div class="flex flex-col">
-        <span class="text-lg">Education</span>
-        @for (education of resume().education; track education) {
-          <app-education [education]="education"></app-education>
-        }
-      </div>
     </div>
   </div>
 </div>

@@ -8,7 +8,7 @@ import {
 
 export const nameOptions = ['Kelly Neuroth'];
 export const titleOptions = [
-  'Software Engineer',
+  'TN-Visa Eligible Software Engineer',
   'Software developer with 3+ years of engineering experience',
   'Software engineer with 3+ years of web development experience',
 ];
@@ -21,108 +21,90 @@ export const linkOptions = [
 export const phones = ['518-915-8080'];
 export const emails = ['kelly.neuroth@outlook.com'];
 export const descriptionOptions = [
+  "Canadian Software Engineer with 3+ years of experience building secure and scalable web applications in the banking industry. I specialize in Angular and full-stack Typescript development. My goal is to relocate to San Diego through a TN Visa opportunity. I care about building reliable, user-experience-focused systems. I'm looking to join a team where I can contribute to performance, reliablitiy, and user experience.",
   "I'm a software engineer interested in designing creative solutions to unique problems. I currently work in the web development domain, have strong frontend skills in the latest Angular version (19), and a sturdy fountation and understanding of backend tech and infrastructure. I like to stay informed on new technology and best engineering standards. I am looking for interesting opportunities that I can feel good contributing to.",
 ];
 export const skillOptions = [
   {
-    name: 'Object oriented design',
-    type: SkillType.Skill,
-  },
-  {
-    name: 'User-centered design',
-    type: SkillType.Skill,
-  },
-  {
-    name: 'REST design',
-    type: SkillType.Skill,
-  },
-  {
-    name: 'Microservice design',
-    type: SkillType.Skill,
-  },
-  {
-    name: 'Prototyping and MVP-based development',
-    type: SkillType.Skill,
-  },
-  {
-    name: 'GenAI as a development tool',
-    type: SkillType.Skill,
-  },
-  {
-    name: 'Containerization',
-    type: SkillType.Skill,
-  },
-  {
-    name: 'Agile practices / SCRUM',
-    type: SkillType.Skill,
-  },
-  {
-    name: 'Product / feature ownership',
-    type: SkillType.Skill,
-  },
-
-  {
-    name: 'Analytical thinking / problem solving / adaptability',
-    type: SkillType.Skill,
-  },
-  {
-    name: 'Javascript / Node.js / HTML / CSS',
+    name: 'Typescript',
     type: SkillType.Language,
+  },
+  {
+    name: 'Javscript',
+    type: SkillType.Language
+  },
+  {
+    name: 'CSS',
+    type: SkillType.Language
   },
   {
     name: 'Bash (shell scripting)',
     type: SkillType.Language,
   },
   {
-    name: 'Java, Python, SQL',
+    name: 'Java',
     type: SkillType.Language,
   },
   {
-    name: 'Angular / PrimeNG / Tailwindcss',
+    name: 'SQL',
+    type: SkillType.Language,
+  },
+  {
+    name: 'Angular',
     type: SkillType.Tech,
   },
   {
-    name: 'Spring / Springboot / Snowflake',
+    name: 'Node.js',
+    type: SkillType.Tech
+  },
+  {
+    name: 'Serverless Framework',
+    type: SkillType.Tech
+  },
+  {
+    name: 'Spring / Springboot',
     type: SkillType.Tech,
   },
   {
-    name: 'Linux RHEL / Docker',
+    name: 'Linux RHEL',
+    type: SkillType.Tech,
+  },
+  { name: 'Docker', type: SkillType.Tech },
+  {
+    name: 'Gitlab CI/CD',
     type: SkillType.Tech,
   },
   {
-    name: 'Gitlab Pipelines / Google Cloud Platform',
+    name: 'OAuth',
     type: SkillType.Tech,
-  },
-  {
-    name: 'Technical and non-technical communication',
-    type: SkillType.Skill,
-  },
-  {
-    name: 'Integration with OAuth',
-    type: SkillType.Skill,
-  },
-  {
-    name: 'Design Patterns',
-    type: SkillType.Skill,
   },
   {
     name: 'Postman',
     type: SkillType.Tech,
   },
+  {
+    name: 'Openshift',
+    type: SkillType.Tech
+  },
+  {
+    name: 'AWS',
+    type: SkillType.Tech
+  }
 ];
 
 export const workExperienceOptions: WorkExperience[] = [
   {
     employer: 'M&T Bank',
     location: 'Buffalo, NY',
-    title: 'Contractor / Software Engineer I',
+    title: 'Software Engineer',
     startDate: new Date(2021, 7, 1),
     endDate: 'Present',
     bullets: [
-      "Designed full-stack features in Spring/Angular for use by over 400 users in M&T's financial crimes department",
-      'Successfully migrated application from Angular v17 to Angular v19',
-      'Held design and pain point discovery sessions with business users',
+      'Deployed a full-stack Angular/Spring application for use by over 800 Financial Crimes and business users',
+      'Refactored application from Angular v17 to Angular v19 and reduced lines of code by 60%',
+      'Built custom CI/CD pipelines',
       'Deployed custom data monitoring python scripts to monitor over 15 table batch loads with <10 minute response time',
+      'Engineered and demonstrated 20+ new features with direct stakeholder engagement'
     ],
   },
   {

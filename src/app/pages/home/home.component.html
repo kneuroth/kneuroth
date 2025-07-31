@@ -6,15 +6,15 @@
       >
         Hello, I'm Kelly
       </h2>
-      <p
+      <pre
         class="mt-8 text-lg font-medium text-pretty text-gray-400 sm:text-xl/8"
       >
-        A place where you can learn about me
-      </p>
-      <p class="md:hidden font-medium text-pretty text-gray-300">
-        Are you checking if I know responsive design or just visiting on your
-        phone? ;)
-      </p>
+  {{ "{" }}
+      "nationalities": ["Canadian", "German"],
+      "occupation": "Software Engineer",
+      "based-in": "Buffalo, New York"
+  {{ "}" }}
+      </pre>
     </div>
     <div
       class="mx-auto mt-16 grid max-w-2xl grid-cols-1 gap-6 sm:mt-20 md:mx-0 md:max-w-none md:grid-cols-3 md:gap-8"
@@ -25,13 +25,8 @@
         >
           <ng-template #title>
             <!-- <i class="pi pi-home" style="color:var(--p-primary-500)"></i><span class="font-semibold text-white">  -->
-            <span class="font-semibold text-white">
-              I want to read about your qualifications</span
-            >
+            <span class="font-semibold text-white"> See qualifications</span>
           </ng-template>
-          <ng-template #subtitle
-            ><span class="text-gray-100">This is a resume</span></ng-template
-          >
         </p-card>
       </a>
 
@@ -42,7 +37,7 @@
           <ng-template #title>
             <!-- <i class="pi pi-home" style="color:var(--p-primary-500)"></i> -->
             <span class="font-semibold text-white">
-              What's next for the site?</span
+              Personal site roadmap</span
             ></ng-template
           >
         </p-card>

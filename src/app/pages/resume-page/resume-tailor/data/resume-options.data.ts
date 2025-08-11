@@ -21,7 +21,8 @@ export const linkOptions = [
 export const phones = ['518-915-8080'];
 export const emails = ['kelly.neuroth@outlook.com'];
 export const descriptionOptions = [
-  "Canadian Software Engineer with 3+ years of experience building secure and scalable web applications in the banking industry. I specialize in Angular and full-stack Typescript development. My goal is to relocate to San Diego through a TN Visa opportunity. I care about building reliable, user-experience-focused systems. I'm looking to join a team where I can contribute to performance, reliablitiy, and user experience.",
+  "Software Engineer with 3+ years of web development experience in the banking industry. I specialize in Angular and full-stack Typescript development. Highly skilled at engaging with stakeholders to understand business needs and converting them into effective solutions. I am looking for a driven team where I can contribute to performance, reliability, and user experience.",
+  "Canadian Software Engineer with 3+ years of experience building secure and scalable web applications in the banking industry. I specialize in Angular and full-stack Typescript development. My goal is to relocate to San Diego through a TN Visa opportunity . I care about building reliable, user-experience-focused systems. I'm looking to join a team where I can contribute to performance, reliablitiy, and user experience.",
   "I'm a software engineer interested in designing creative solutions to unique problems. I currently work in the web development domain, have strong frontend skills in the latest Angular version (19), and a sturdy fountation and understanding of backend tech and infrastructure. I like to stay informed on new technology and best engineering standards. I am looking for interesting opportunities that I can feel good contributing to.",
 ];
 export const skillOptions = [
@@ -100,12 +101,11 @@ export const workExperienceOptions: WorkExperience[] = [
     startDate: new Date(2021, 7, 1),
     endDate: 'Present',
     bullets: [
+      'Engineered and demonstrated 20+ new features with direct and ongoing stakeholder engagement to drive efficiencies',
       'Deployed a full-stack Angular/Spring application for use by over 800 Financial Crimes and business users',
       'Refactored application from Angular v17 to Angular v19 and reduced lines of code by 60%',
       'Built custom CI/CD pipelines',
-      'Deployed custom data monitoring python scripts to monitor over 15 table batch loads with <10 minute response time',
-      'Engineered and demonstrated 20+ new features with direct stakeholder engagement'
-    ],
+      'Deployed custom data monitoring python scripts to monitor over 15 table batch loads with <10 minute response time',],
   },
   {
     employer: 'Munvo',
@@ -134,9 +134,10 @@ export const personalProjectOptions: PersonalProject[] = [
     description:
       "A bot on the Telegram messaging app that tracks a groupchat's wordle scores via user submissions",
     bullets: [
-      'Telegram (messaging app) API Bot connected to a python flask application',
-      'REST API to transact and store scores in SQLLite database',
-      'Hosted with Google Cloud Platform',
+      'Automated score tracking for Wordle players in a group chat',
+      'Harnessed python libraries, the Telegram Bot API, and SQLLite database to create a seamless user experience',
+      'Hosted on VM in Google Cloud Platform',
+      'Serverless Framework (AWS Lambda Functions running Typescript) re-design in progress.'
     ],
     link: 'https://github.com/kneuroth/wordle-telegram-bot',
   },

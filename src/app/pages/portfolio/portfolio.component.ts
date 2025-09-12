@@ -1,12 +1,14 @@
 import { Component } from '@angular/core';
 import { HeaderComponent } from "@app/header/header.component";
+import { PortfolioEntryComponent } from "./portfolio-entry/portfolio-entry.component";
+import { SENTENCE_GENERATOR, WORDLE_BOT } from './constants';
 
 @Component({
   selector: 'app-portfolio',
-  imports: [HeaderComponent],
+  imports: [HeaderComponent, PortfolioEntryComponent],
   templateUrl: './portfolio.component.html',
-  styleUrl: './portfolio.component.css'
 })
 export class PortfolioComponent {
-
+  WORDLE_BOT = WORDLE_BOT;
+  SENTENCE_GENERATOR = SENTENCE_GENERATOR;
 }

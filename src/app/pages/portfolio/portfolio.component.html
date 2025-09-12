@@ -1,2 +1,12 @@
 <app-header class="no-print -mt-20"></app-header>
-<p>portfolio works!</p>
+<div class="m-10 sm:grid grid-cols-2 gap-4">
+  <app-portfolio-entry
+    class="col-span-2"
+    [portfolioEntry]="WORDLE_BOT"
+  ></app-portfolio-entry>
+  <app-portfolio-entry
+    class="col-span-1"
+    [portfolioEntry]="SENTENCE_GENERATOR"
+  ></app-portfolio-entry>
+</div>
+`

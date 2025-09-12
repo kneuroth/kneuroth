@@ -1,0 +1,33 @@
+<div
+  class="border border-gray-300 rounded-lg p-4 mb-4 transition-transform duration-300 group hover:scale-105 hover:-translate-y-2 hover:cursor-pointer"
+  (click)="onClickEntry()"
+>
+  <div class="flex">
+    <div>
+      <h4 class="text-lg font-bold text-gray-900 dark:text-white">
+        {{ portfolioEntry().title }}
+      </h4>
+      <p class="mt-1 text-gray-500 dark:text-gray-400">
+        {{ portfolioEntry().description }}
+      </p>
+    </div>
+    @if (portfolioEntry().image?.length) {
+      <div
+        class="ml-auto shrink-0 relative h-40 w-56 max-w-xs rounded-lg overflow-visible"
+      >
+        @for (img of portfolioEntry().image; track $index) {
+          <img
+            class="absolute w-20 h-20 object-cover rounded-lg border-2 border-white shadow-lg transition-transform duration-300"
+            [style]="{
+              right: $index * 24 + 'px',
+              top: $index * 24 + 'px',
+              zIndex: 10 + $index,
+            }"
+            [src]="img"
+            alt="Portfolio image"
+          />
+        }
+      </div>
+    }
+  </div>
+</div>

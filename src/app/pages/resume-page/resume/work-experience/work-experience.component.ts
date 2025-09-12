@@ -1,7 +1,7 @@
 import { Component, computed, input } from '@angular/core';
 import { Panel } from 'primeng/panel';
 import { WorkExperience } from '../resume.model';
-import { ConditionalDatePipe } from '../../shared/pipes/conditional-date.pipe';
+import { ConditionalDatePipe } from '../../../../shared/pipes/conditional-date.pipe';
 
 @Component({
   selector: 'app-work-experience',

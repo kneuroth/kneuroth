@@ -4,11 +4,11 @@ import {
   PersonalProject,
   SkillType,
   WorkExperience,
-} from '@app/resume/resume.model';
+} from '@app/pages/resume-page/resume/resume.model';
 
 export const nameOptions = ['Kelly Neuroth'];
 export const titleOptions = [
-  'TN-Visa Eligible Software Engineer',
+  'Software Engineer',
   'Software developer with 3+ years of engineering experience',
   'Software engineer with 3+ years of web development experience',
 ];

@@ -1,8 +1,14 @@
-<div class="relative isolate overflow-hidden">
+<app-header class="no-print -mt-20"></app-header>
+<img
+  src="/buffalo-building-1.jpg"
+  alt=""
+  class="fixed inset-0 -z-10 w-screen h-screen object-cover object-center brightness-50 transition-transform duration-500 scale-125 sm:scale-110 md:scale-100"
+/>
+<div class="relative isolate overflow-x-hidden overflow-hidden pb-2">
   <div class="mx-auto max-w-7xl px-6 lg:px-8">
     <div class="mx-auto max-w-2xl lg:mx-0">
       <h2
-        class="text-5xl font-semibold tracking-tight text-frenchgrey sm:text-7xl"
+        class="text-5xl font-semibold tracking-tight text-frenchgrey sm:text-7xl mt-3"
       >
         Hello, I'm Kelly
       </h2>
@@ -21,7 +27,7 @@
     >
       <a href="resume">
         <p-card
-          styleClass="text-gray-300! ring-1! bg-galcier/60! ring-white/10 ring-inset!"
+          styleClass="text-gray-300! ring-1! bg-galcier/60! ring-white/10 ring-inset! bg-transparent backdrop-invert-10 backdrop-blur"
         >
           <ng-template #title>
             <!-- <i class="pi pi-home" style="color:var(--p-primary-500)"></i><span class="font-semibold text-white">  -->
@@ -30,9 +36,22 @@
         </p-card>
       </a>
 
+      <a href="portfolio">
+        <p-card
+          styleClass="text-gray-300! ring-1! bg-galcier/60! ring-white/10 ring-inset! bg-transparent backdrop-invert-10 backdrop-blur"
+        >
+          <ng-template #title>
+            <!-- <i class="pi pi-home" style="color:var(--p-primary-500)"></i> -->
+            <span class="font-semibold text-white">
+              Portfolio</span
+            ></ng-template
+          >
+        </p-card>
+      </a>
+
       <a href="roadmap">
         <p-card
-          styleClass="text-gray-300! ring-1! bg-galcier/60! ring-white/10 ring-inset!"
+          styleClass="text-gray-300! ring-1! bg-galcier/60! ring-white/10 ring-inset! bg-transparent backdrop-invert-10 backdrop-blur"
         >
           <ng-template #title>
             <!-- <i class="pi pi-home" style="color:var(--p-primary-500)"></i> -->

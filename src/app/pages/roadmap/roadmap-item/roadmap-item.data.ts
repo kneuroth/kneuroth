@@ -6,24 +6,16 @@ import {
 
 export const roadmapItems: RoadmapItem[] = [
   {
-    name: 'Customizable Resume',
+    name: 'Add Portfolio page',
     description:
-      'Give user control of what data is displayed on the resume. Allow them to select from a pool of all of your skills, educations, work experiences, personal projects. Apply the results and then the user can export the PDF.',
+      'Add a page to display and link various personal projects, sorted by type',
     type: RoadmapItemType.Feature,
-    status: RoadmapItemStatus.InProgress,
-    link: undefined,
-  },
-  {
-    name: 'More personal home page',
-    description:
-      'Add your own photos and a personal statement to the home page',
-    type: RoadmapItemType.Enhancement,
     status: RoadmapItemStatus.InProgress,
   },
   {
     name: 'Resume Tailor - Add a summary to description options',
     description:
-      'Its ugly to see the entire description in the dropwdown in the resume tailor - add a model to represent a description option and give it a summary field to summarize the value of the description and display that so it doesnt bog down the dropdown item.',
+      'Its ugly to see the entire description in the dropdown in the resume tailor - add a model to represent a description option and give it a summary field to summarize the value of the description and display that so it doesnt bog down the dropdown item.',
     type: RoadmapItemType.Enhancement,
     status: RoadmapItemStatus.Backlog,
   },
@@ -34,14 +26,6 @@ export const roadmapItems: RoadmapItem[] = [
     type: RoadmapItemType.Enhancement,
     status: RoadmapItemStatus.Backlog,
   },
-  {
-    name: 'Add "Projects" page',
-    description:
-      'Add a page to display and link various personal projects, sorted by type',
-    type: RoadmapItemType.Feature,
-    status: RoadmapItemStatus.Backlog,
-  },
-
   {
     name: 'Sort Roadmap',
     description:
@@ -58,6 +42,21 @@ export const roadmapItems: RoadmapItem[] = [
     type: RoadmapItemType.Enhancement,
     status: RoadmapItemStatus.Backlog,
     link: undefined,
+  },
+  {
+    name: 'Customizable Resume',
+    description:
+      'Give user control of what data is displayed on the resume. Allow them to select from a pool of all of your skills, educations, work experiences, personal projects. Apply the results and then the user can export the PDF.',
+    type: RoadmapItemType.Feature,
+    status: RoadmapItemStatus.Done,
+    link: undefined,
+  },
+  {
+    name: 'More personal home page',
+    description:
+      'Add your own photos and a personal statement to the home page',
+    type: RoadmapItemType.Enhancement,
+    status: RoadmapItemStatus.Done,
   },
   {
     name: 'Personalize header and side menu',

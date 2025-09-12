@@ -1,6 +1,6 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Resume } from '@app/resume/resume.model';
+import { Resume } from '@app/pages/resume-page/resume/resume.model';
 import { FormBuilder } from '@angular/forms';
 import {
   descriptionOptions,

@@ -1,7 +1,4 @@
-<div
-  class="border border-gray-300 rounded-lg p-4 mb-4 transition-transform duration-300 group hover:scale-105 hover:-translate-y-2 hover:cursor-pointer"
-  (click)="onClickEntry()"
->
+<div class="border border-gray-300 rounded-lg p-4 mb-4">
   <div class="flex">
     <div>
       <h4 class="text-lg font-bold text-gray-900 dark:text-white">
@@ -17,7 +14,7 @@
       >
         @for (img of portfolioEntry().image; track $index) {
           <img
-            class="absolute w-20 h-20 object-cover rounded-lg border-2 border-white shadow-lg transition-transform duration-300"
+            class="absolute w-20 h-20 object-cover rounded-lg border-2 border-white shadow-lg hover:-translate-y-2 hover:scale-110 transition-transform duration-300"
             [style]="{
               right: $index * 24 + 'px',
               top: $index * 24 + 'px',
@@ -30,4 +27,15 @@
       </div>
     }
   </div>
+  @for (mediaEntry of portfolioEntry().media | keyvalue; track $index) {
+    <p-button
+      styleClass="hover:scale-110 transition-transform duration-300"
+      severity="secondary"
+      [text]="true"
+      [rounded]="true"
+      [icon]="`pi ${mediaEntry.key}`"
+      size="large"
+      (onClick)="onMediaClick(mediaEntry.value!)"
+    ></p-button>
+  }
 </div>

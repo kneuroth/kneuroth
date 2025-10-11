@@ -17,5 +17,5 @@ export const routes: Routes = [
   { title: 'About Kelly', path: 'about', component: AboutComponent },
   { title: 'Resume', path: 'resume', component: ResumePageComponent },
   { title: 'Roadmap', path: 'roadmap', component: RoadmapComponent },
-  { title: 'Portfolio', path: 'portfolio', component: PortfolioComponent }
+  { title: 'Portfolio', path: 'portfolio', component: PortfolioComponent },
 ];

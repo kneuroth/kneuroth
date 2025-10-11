@@ -8,11 +8,16 @@ import {
 } from '../roadmap/roadmap-item/roadmap-item.model';
 import { PageTitleComponent } from '../../shared/components/page-title/page-title.component';
 import { roadmapItems } from './roadmap-item/roadmap-item.data';
-import { HeaderComponent } from "@app/header/header.component";
+import { HeaderComponent } from '@app/header/header.component';
 
 @Component({
   selector: 'app-roadmap',
-  imports: [FormsModule, RoadmapItemComponent, PageTitleComponent, HeaderComponent],
+  imports: [
+    FormsModule,
+    RoadmapItemComponent,
+    PageTitleComponent,
+    HeaderComponent,
+  ],
   templateUrl: './roadmap.component.html',
 })
 export class RoadmapComponent {

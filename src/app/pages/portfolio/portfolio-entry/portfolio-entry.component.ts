@@ -1,19 +1,24 @@
-import { Component, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { PortfolioEntry } from '../model';
+import { Button } from "primeng/button";
+import { KeyValuePipe } from '@angular/common';
 
 @Component({
   selector: 'app-portfolio-entry',
-  imports: [],
+  imports: [Button, KeyValuePipe],
   templateUrl: './portfolio-entry.component.html',
-  template: `
-  `,
+  template: ``,
 })
 export class PortfolioEntryComponent {
   portfolioEntry = input.required<PortfolioEntry>();
 
-  onClickEntry() {
-    if (this.portfolioEntry().link) {
-      window.open(this.portfolioEntry().link, '_blank');
-    }
+  // onClickEntry() {
+  //   // if (this.portfolioEntry().link) {
+  //   //   window.open(this.portfolioEntry().link, '_blank');
+  //   // }
+  // }
+
+  onMediaClick(url: string) {
+    window.open(url, '_blank');
   }
 }

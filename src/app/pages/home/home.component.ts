@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { PanelModule } from 'primeng/panel';
 import { CardModule } from 'primeng/card';
-import { HeaderComponent } from "@app/header/header.component";
+import { HeaderComponent } from '@app/header/header.component';
 
 @Component({
   selector: 'app-home',
@@ -9,4 +9,4 @@ import { HeaderComponent } from "@app/header/header.component";
   templateUrl: './home.component.html',
   standalone: true,
 })
-export class HomeComponent { }
+export class HomeComponent {}

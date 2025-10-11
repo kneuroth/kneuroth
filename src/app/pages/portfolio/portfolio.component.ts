@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { HeaderComponent } from "@app/header/header.component";
-import { PortfolioEntryComponent } from "./portfolio-entry/portfolio-entry.component";
+import { HeaderComponent } from '@app/header/header.component';
+import { PortfolioEntryComponent } from './portfolio-entry/portfolio-entry.component';
 import { SENTENCE_GENERATOR, WORDLE_BOT } from './constants';
 
 @Component({

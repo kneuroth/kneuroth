@@ -1,0 +1,27 @@
+<app-header class="no-print -mt-20"></app-header>
+<app-page-title
+  title="Wordle League"
+  subtitle="A chat bot that turns Telegram group chats into competitive Wordle leagues"
+></app-page-title>
+<p-timeline [value]="events" class="customized-timeline" align="alternate">
+  <ng-template #marker let-event>
+    <span
+      class="flex w-8 h-8 items-center justify-center text-white rounded-full z-10 shadow-sm"
+      [style]="{ 'background-color': event.color }"
+    >
+      <i [class]="event.icon"></i>
+    </span>
+  </ng-template>
+  <ng-template #content let-event>
+    <p-card [header]="event.status" [subheader]="event.date">
+      @if (event.image) {
+        <img
+          class="rounded-lg border-2 border-white shadow-lg h-90"
+          [src]="event.image"
+          [alt]="event.name"
+        />
+      }
+      <p>{{ event.description }}</p>
+    </p-card>
+  </ng-template>
+</p-timeline>

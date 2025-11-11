@@ -9,7 +9,7 @@ export const WORDLE_BOT: PortfolioEntry = {
     'portfolio-images/wordle-bot/wordle-chat.jpg',
   ],
   media: {
-    'pi-external-link': 'localhost:4200/portfolio/wordle-league',
+    'pi-external-link': 'portfolio/wordle-league',
     'pi-github': 'https://github.com/kneuroth/wordle-telegram-bot',
   },
 };

@@ -42,9 +42,9 @@ export class WordleLeagueComponent {
       date: 'November 2025',
       icon: 'pi pi-sparkles',
       color: '#7a49f8ff',
-      image: 'portfolio-images/wordle-bot/new-scoreboard.jpg',
+      image: 'portfolio-images/wordle-bot/new-scoreboard-inchat.jpg',
       description: 'A complete rewrite of the bot was undertaken. ' +
-        'A bold new look, emoji reactions and an advanced color selecting algorithm were all added to enhance user experience.'
+        'A sleek AI assisted look, emoji reactions, and an advanced color selecting algorithm were all added to enhance user experience.'
     },
     {
       status: 'The Future',
@@ -53,7 +53,7 @@ export class WordleLeagueComponent {
       color: '#d730f5ff',
       image: 'portfolio-images/wordle-bot/themed-scoreboard.png',
       image2: 'portfolio-images/wordle-bot/future-podium.png',
-      description: 'Themed scoreboards and a podium screen to close out seasons are being introduced now. ' +
+      description: 'There is lots of room for improvement! Themed scoreboards are rolling out and a podium screen will now be sent to close out a season. ' +
         'There are also plans to introduce a rewards system and custom name styles for players to unlock! ' +
         'Stay tuned and keep \'em in the green!'
     },

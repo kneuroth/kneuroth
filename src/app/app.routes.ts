@@ -4,7 +4,7 @@ import { AboutComponent } from '@pages/about/about.component';
 import { PortfolioComponent } from '@pages/portfolio/portfolio.component';
 import { ResumePageComponent } from '@pages/resume-page/resume-page.component';
 import { RoadmapComponent } from '@pages/roadmap/roadmap.component';
-import { WordleLeagueComponent } from '@pages/portfolio/wordle-league/wordle-league.component';
+import { WordleLeagueComponent } from '@pages/wordle-league/wordle-league.component';
 
 export const routes: Routes = [
   {

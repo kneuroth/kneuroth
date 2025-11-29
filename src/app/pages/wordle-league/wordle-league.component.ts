@@ -1,13 +1,10 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { Timeline } from 'primeng/timeline';
-import { Card } from 'primeng/card';
-import { Button } from 'primeng/button';
 import { HeaderComponent } from '@app/header/header.component';
 import { PageTitleComponent } from '@shared/components/page-title/page-title.component';
 
 @Component({
   selector: 'app-wordle-league',
-  imports: [Timeline, Card, HeaderComponent, PageTitleComponent],
+  imports: [HeaderComponent, PageTitleComponent],
   templateUrl: './wordle-league.component.html',
 })
 export class WordleLeagueComponent {
@@ -17,29 +14,28 @@ export class WordleLeagueComponent {
       date: 'January 2022',
       icon: 'pi pi-exclamation-triangle',
       color: '#f2e344ff',
-      image: 'portfolio-images/wordle-bot/scoreboard-chat-2.png',
+      image: 'portfolio-images/wordle-bot/wordle-chat.jpg',
       description:
-        'Family and friends groupchats were being filled with Wordle scores but a ' +
-        'longer form of comparison was needed to discover the ultimate Wordler.'
+        'It was February of 2022 and family and friends\' groupchats were being filled with Wordle scores but ' +
+        'it was hard to tell who the ultimate Wordler was.'
     },
     {
       status: 'The Bandaid',
       date: 'February 2022',
       icon: 'pi pi-exclamation-circle',
       color: '#d30404ff',
-      image: 'portfolio-images/wordle-bot/excel-scoreboard.jpg',
-      description: 'An excel spreadsheet was being manually updated daily (by me) to keep track of ' +
-        'scores. This took precious seconds of my day away so I knew we needed a better way...'
+      image: 'portfolio-images/wordle-bot/excel-scoreboard-edited.jpg',
+      description: 'I started to manually update an Excel spreadsheet to keep track of ' +
+        'scores. This took precious seconds of my day. I knew we needed a better way...'
     },
     {
       status: 'The Solution',
       date: 'June 2023',
       icon: 'pi pi-lightbulb',
       color: '#2aa900ff',
-      image: 'portfolio-images/wordle-bot/wordle-scoreboard.jpg',
-      description: 'A Telegram bot was created to automate the collection and scoring of Wordle games. ' +
-        'Users simply send their Wordle results to the bot and it updates the scoreboard automatically. ' +
-        'The group chat prospered for long afterwards until the refactor itch struck and needed to be scratched...'
+      image: 'portfolio-images/wordle-bot/wordle-scoreboard-edited.jpg',
+      description: 'And so the Telegram Wordle Bot was born!  ' +
+        'Users simply send their Wordle results to the bot and it updates the scoreboard automatically. '
     },
     {
       status: 'The Redesign',
@@ -56,8 +52,10 @@ export class WordleLeagueComponent {
       icon: 'pi pi-angle-double-right',
       color: '#d730f5ff',
       image: 'portfolio-images/wordle-bot/themed-scoreboard.png',
-      description: 'Themed scoreboards and a podium screen to close out seasons are currently in the works. ' +
-        'There are also plans to introduce a rewards system and custom name styles for players to unlock.'
+      image2: 'portfolio-images/wordle-bot/future-podium.png',
+      description: 'Themed scoreboards and a podium screen to close out seasons are being introduced now. ' +
+        'There are also plans to introduce a rewards system and custom name styles for players to unlock! ' +
+        'Stay tuned and keep \'em in the green!'
     },
   ];
 }

@@ -12,12 +12,6 @@ import { KeyValuePipe } from '@angular/common';
 export class PortfolioEntryComponent {
   portfolioEntry = input.required<PortfolioEntry>();
 
-  // onClickEntry() {
-  //   // if (this.portfolioEntry().link) {
-  //   //   window.open(this.portfolioEntry().link, '_blank');
-  //   // }
-  // }
-
   onMediaClick(url: string) {
     window.open(url, '_blank');
   }

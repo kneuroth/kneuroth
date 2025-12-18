@@ -23,3 +23,15 @@ export const SENTENCE_GENERATOR: PortfolioEntry = {
     'pi-youtube': 'https://youtu.be/d4WSyCknZ2g',
   },
 };
+
+export const PRINTS: PortfolioEntry = {
+  title: '3D Designs',
+  description: 'A collection of 3D printed art and design pieces',
+  image: ['portfolio-images/prints/lightsaber-thumb.JPG',
+    'portfolio-images/prints/tetris-thumb.JPG',
+    'portfolio-images/prints/dogs-thumb.JPG'
+  ],
+  media: {
+    'pi-external-link': 'portfolio/prints',
+  },
+}

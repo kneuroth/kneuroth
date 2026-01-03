@@ -24,14 +24,11 @@ export const SENTENCE_GENERATOR: PortfolioEntry = {
   },
 };
 
-export const PRINTS: PortfolioEntry = {
-  title: '3D Designs',
-  description: 'A collection of 3D printed art and design pieces',
-  image: ['portfolio-images/prints/lightsaber-thumb.JPG',
-    'portfolio-images/prints/tetris-thumb.JPG',
-    'portfolio-images/prints/dogs-thumb.JPG'
-  ],
+export const SURFACE_ART: PortfolioEntry = {
+  title: 'Surface Art',
+  description: 'A collection of 3D printed art pieces',
+  image: ['surface-art/bricks-thumb.JPG', 'surface-art/tetris-thumb.jpg', 'surface-art/table-top-thumb.JPG',],
   media: {
-    'pi-external-link': 'portfolio/prints',
+    'pi-external-link': 'surface-art',
   },
 }

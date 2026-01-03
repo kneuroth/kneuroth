@@ -61,6 +61,7 @@ export class HeaderComponent {
   navItems = [
     { label: 'Home', path: '' },
     { label: 'Resume', path: 'resume' },
+    { label: 'Surface Art', path: 'surface-art' },
     { label: 'Portfolio', path: 'portfolio' },
     { label: 'Roadmap', path: 'roadmap' },
   ];

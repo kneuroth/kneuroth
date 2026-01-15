@@ -98,7 +98,7 @@ export const workExperienceOptions: WorkExperience[] = [
     employer: 'M&T Bank',
     location: 'Buffalo, NY',
     title: 'Software Engineer',
-    startDate: new Date(2021, 7, 1),
+    startDate: new Date(2022, 7, 1),
     endDate: 'Present',
     bullets: [
       'Engineered and demonstrated 20+ new features with direct and ongoing stakeholder engagement to drive efficiencies',
@@ -112,8 +112,8 @@ export const workExperienceOptions: WorkExperience[] = [
     employer: 'Munvo',
     location: 'Montreal, QC',
     title: 'Software Consultant',
-    startDate: new Date(2020, 9, 1),
-    endDate: new Date(2021, 6, 1),
+    startDate: new Date(2021, 9, 1),
+    endDate: new Date(2022, 6, 1),
     bullets: [],
   },
   {

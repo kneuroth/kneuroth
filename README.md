@@ -2,14 +2,14 @@
 
 [GO](https://kneuroth.github.io/kneuroth/)
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.1.8.
+This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.2.0.
 
 ## What's the tech?
 
 - NVM
 - Node 22.\*
-- Angular 19
-- PrimeNG 19
+- Angular 20
+- PrimeNG 20
 - Tailwindcss 4
 
 ## Development server

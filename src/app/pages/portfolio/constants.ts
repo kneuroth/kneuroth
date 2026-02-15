@@ -32,3 +32,17 @@ export const SURFACE_ART: PortfolioEntry = {
     'pi-external-link': 'surface-art',
   },
 }
+
+export const ARCADE: PortfolioEntry = {
+  title: 'Arcade',
+  description: 'A retro-style arcade game collection featuring Gravity Rotator and Pong, built with Phaser 3 and React',
+  image: [
+    'portfolio-images/arcade/image1.png',
+    'portfolio-images/arcade/image2.png',
+    'portfolio-images/arcade/image3.png',
+  ],
+  media: {
+    'pi-external-link': 'https://kneuroth.github.io/arcade/',
+    'pi-github': 'https://github.com/kneuroth/arcade',
+  },
+};

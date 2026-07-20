@@ -101,11 +101,11 @@ export const workExperienceOptions: WorkExperience[] = [
     startDate: new Date(2022, 7, 1),
     endDate: 'Present',
     bullets: [
-      'Engineered and demonstrated 20+ new features with direct and ongoing stakeholder engagement to drive efficiencies',
       'Deployed a full-stack Angular/Spring application for use by over 800 Financial Crimes and business users',
-      'Refactored application from Angular v17 to Angular v19 and reduced lines of code by 60%',
-      'Built custom CI/CD pipelines',
-      'Deployed custom data monitoring python scripts to monitor over 15 table batch loads with <10 minute response time',
+      'Built a unified data aggregation platform that centralized data access for investigators',
+      'Engineered 20+ quality-of-life features with direct stakeholder engagement',
+      'Built CI/CD pipelines for 4 full-stack applications with 20+ automated jobs which significantly reduced developer friction',
+      'Created internal tooling to assist in user acceptance testing',
     ],
   },
   {
@@ -114,17 +114,21 @@ export const workExperienceOptions: WorkExperience[] = [
     title: 'Software Consultant',
     startDate: new Date(2021, 9, 1),
     endDate: new Date(2022, 6, 1),
-    bullets: [],
+    bullets: [
+      'Migrated 100s of marketing campaign files across dev, cert, and production environments for casino client',
+      'Led weekly stakeholder calls over 3-month engagement to coordinate Adobe Marketing Cloud platform upgrade',
+      'Executed server-side deployments via SSH, ensuring zero data loss during migration',
+    ],
   },
   {
     employer: 'IBM Canada',
     location: 'Markham, ON',
-    title: 'Intern',
+    title: 'Software Engineering Intern',
     startDate: new Date(2019, 10, 1),
     endDate: new Date(2020, 10, 1),
     bullets: [
-      'Built Vue.js app for asset visualizations for business',
-      'Communicated with app users to create efficiencies in parts ordering process',
+      'Developed frontend features using Vue.js framework',
+      'Conducted direct user interviews to understand pain points and workflow challenges',
     ],
   },
 ];

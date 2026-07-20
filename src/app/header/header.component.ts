@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { LogoComponent } from "@shared/components/logo/logo.component";
 
@@ -12,8 +12,12 @@ import { LogoComponent } from "@shared/components/logo/logo.component";
     class="no-print flex items-center justify-between p-6 lg:px-8"
     aria-label="Global"
   >
-    <a href="" class="inline-flex items-center justify-center" (mouseenter)="hovering = true" (mouseleave)="hovering = false">
-      <app-logo [class.animate-color-burst]="hovering"></app-logo>
+    <a
+      href=""
+      class="logo-link inline-flex items-center justify-center"
+      [class.animate-intro]="animateOnLoad()"
+    >
+      <app-logo></app-logo>
     </a>
 
     <!-- Desktop Nav Links -->
@@ -30,39 +34,139 @@ import { LogoComponent } from "@shared/components/logo/logo.component";
 </header>
 `,
   styles: `
-    @keyframes colorBurst {
-      0% {
-        filter: drop-shadow(0 0 0px rgba(255, 255, 255, 0.73)) drop-shadow(0 0 0px rgba(255, 255, 255, 0.73));
-      }
-      25% {
-        filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.8)) drop-shadow(0 0 4px rgba(255, 0, 0, 0.8));
-      }
-      50% {
-        filter: drop-shadow(0 0 10px rgba(44, 139, 254, 0.8)) drop-shadow(0 0 6px rgba(44, 139, 254, 0.8));
-      }
-      75% {
-        filter: drop-shadow(0 0 8px rgba(255, 173, 59, 0.8)) drop-shadow(0 0 4px rgba(255, 173, 59, 0.8));
-      }
-      100% {
-        filter: drop-shadow(0 0 0px rgba(255, 255, 255, 0.73)) drop-shadow(0 0 0px rgba(255, 255, 255, 0.73));
-      }
-    }
-    
-    .animate-color-burst {
-      animation: colorBurst 1.8s  infinite;
+    .logo-link app-logo {
+      display: inline-block;
+      transform-origin: center;
+      will-change: transform, filter;
     }
 
+    /* One-shot vertical-biased squash — plays when the home page loads */
+    @keyframes houseIntro {
+      0% {
+        transform: scale(1, 1);
+      }
+      25% {
+        transform: scaleX(1.03) scaleY(1.18);
+      }
+      55% {
+        transform: scaleX(0.98) scaleY(0.88);
+      }
+      80% {
+        transform: scaleX(1.01) scaleY(1.06);
+      }
+      100% {
+        transform: scale(1, 1);
+      }
+    }
+
+    .logo-link.animate-intro app-logo {
+      animation: houseIntro 0.85s ease-in-out;
+    }
+
+    .logo-link {
+      position: relative;
+      z-index: 0;
+    }
+
+    /* Multi-colored neon glow that sits behind the house and revolves on hover */
+    .logo-link::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 42px;
+      height: 42px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: conic-gradient(
+        from 0deg,
+        #39ff14,
+        #00b3ff,
+        #b026ff,
+        #ff7a00,
+        #ff1744,
+        #ffe600,
+        #39ff14
+      );
+      filter: blur(9px);
+      opacity: 0;
+      z-index: -1;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+
+    .logo-link:hover::before {
+      opacity: 0.5;
+      animation: glowSpin 4s linear infinite;
+    }
+
+    @keyframes glowSpin {
+      from {
+        transform: translate(-50%, -50%) rotate(0deg);
+      }
+      to {
+        transform: translate(-50%, -50%) rotate(360deg);
+      }
+    }
+
+    /* Fun one-shot color bloom behind the house when the home page loads */
+    .logo-link::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 42px;
+      height: 42px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: conic-gradient(
+        from 0deg,
+        #39ff14,
+        #00b3ff,
+        #b026ff,
+        #ff7a00,
+        #ff1744,
+        #ffe600,
+        #39ff14
+      );
+      filter: blur(9px);
+      opacity: 0;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .logo-link.animate-intro::after {
+      animation: houseLoadGlow 1.2s ease-out;
+    }
+
+    @keyframes houseLoadGlow {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) rotate(0deg) scale(0.3);
+      }
+      20% {
+        opacity: 0.9;
+        transform: translate(-50%, -50%) rotate(200deg) scale(1.35);
+      }
+      60% {
+        opacity: 0.6;
+        transform: translate(-50%, -50%) rotate(520deg) scale(1.1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) rotate(720deg) scale(1);
+      }
+    }
   `
 })
 export class HeaderComponent {
 
-  hovering = false;
+  /** Set by the home page so the logo plays its intro squash on load. */
+  animateOnLoad = input(false);
 
   navItems = [
     { label: 'Home', path: '' },
     { label: 'Resume', path: 'resume' },
-    { label: 'Surface Art', path: 'surface-art' },
     { label: 'Portfolio', path: 'portfolio' },
-    { label: 'Roadmap', path: 'roadmap' },
   ];
 }

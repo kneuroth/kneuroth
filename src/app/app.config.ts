@@ -9,7 +9,7 @@ import { MessageService } from 'primeng/api';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes),
+    provideRouter(routes, withComponentInputBinding()),
     provideAnimationsAsync(),
     providePrimeNG({
       theme: {
@@ -17,6 +17,5 @@ export const appConfig: ApplicationConfig = {
       },
     }),
     MessageService,
-    provideRouter(routes, withComponentInputBinding()),
   ],
 };

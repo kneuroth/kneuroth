@@ -33,6 +33,21 @@ export const SURFACE_ART: PortfolioEntry = {
   },
 }
 
+export const RTCC: PortfolioEntry = {
+  title: "Kelly's Ride to Conquer Cancer",
+  description:
+    'A browser-based endless-runner game built to support a Ride to Conquer Cancer fundraiser — dodge obstacles, collect donations, murder cancer. Vanilla HTML/CSS/JS on a canvas, no build step.',
+  image: [
+    'portfolio-images/rtcc/logo.png',
+    'portfolio-images/rtcc/biker.png',
+    'portfolio-images/rtcc/cancer-cell.png',
+  ],
+  media: {
+    'pi-external-link': 'https://kneuroth.github.io/kellys-rtcc/',
+    'pi-github': 'https://github.com/kneuroth/kellys-rtcc',
+  },
+};
+
 export const ARCADE: PortfolioEntry = {
   title: 'Arcade',
   description: 'A retro-style arcade game collection featuring Gravity Rotator and Pong, built with Phaser 3 and React',

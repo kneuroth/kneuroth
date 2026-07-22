@@ -1,7 +1,13 @@
 import { Component } from '@angular/core';
 import { HeaderComponent } from '@app/header/header.component';
 import { PortfolioEntryComponent } from './portfolio-entry/portfolio-entry.component';
-import { ARCADE, SENTENCE_GENERATOR, SURFACE_ART, WORDLE_BOT } from './constants';
+import {
+  ARCADE,
+  RTCC,
+  SENTENCE_GENERATOR,
+  SURFACE_ART,
+  WORDLE_BOT,
+} from './constants';
 
 @Component({
   selector: 'app-portfolio',
@@ -10,6 +16,7 @@ import { ARCADE, SENTENCE_GENERATOR, SURFACE_ART, WORDLE_BOT } from './constants
 })
 export class PortfolioComponent {
   WORDLE_BOT = WORDLE_BOT;
+  RTCC = RTCC;
   ARCADE = ARCADE;
   SENTENCE_GENERATOR = SENTENCE_GENERATOR;
   SURFACE_ART = SURFACE_ART;

@@ -43,7 +43,7 @@ export const RTCC: PortfolioEntry = {
     'portfolio-images/rtcc/cancer-cell.png',
   ],
   media: {
-    'pi-external-link': 'https://kneuroth.github.io/kellys-rtcc/',
+    'pi-external-link': 'https://kelly-conquers-cancer.netlify.app/',
     'pi-github': 'https://github.com/kneuroth/kellys-rtcc',
   },
 };

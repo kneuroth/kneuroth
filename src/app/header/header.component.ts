@@ -9,7 +9,7 @@ import { LogoComponent } from "@shared/components/logo/logo.component";
   class="bg-transparent backdrop-invert-10 backdrop-blur border-b border-frenchgrey/10 mb-5"
 >
   <nav
-    class="no-print flex items-center justify-between p-6 lg:px-8"
+    class="no-print flex flex-col items-center gap-5 p-6 sm:flex-row sm:justify-between sm:gap-4 lg:px-8"
     aria-label="Global"
   >
     <a
@@ -20,12 +20,12 @@ import { LogoComponent } from "@shared/components/logo/logo.component";
       <app-logo></app-logo>
     </a>
 
-    <!-- Desktop Nav Links -->
-    <div class="flex gap-x-12">
+    <!-- Nav Links -->
+    <div class="flex flex-wrap items-center justify-center gap-3 sm:gap-4 lg:gap-6">
       @for (navItem of navItems; track navItem) {
         <a
           [href]="navItem.path"
-          class="text-sm/6 font-semibold px-3 py-1 rounded-md bg-white/30 backdrop-blur-sm shadow-sm hover:bg-white/40 transition"
+          class="glow-link text-lg font-bold px-5 py-2.5 rounded-2xl"
           >{{ navItem.label }}</a
         >
       }

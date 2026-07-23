@@ -24,12 +24,12 @@ export const SENTENCE_GENERATOR: PortfolioEntry = {
   },
 };
 
-export const SURFACE_ART: PortfolioEntry = {
-  title: 'Surface Art',
+export const ART_3D: PortfolioEntry = {
+  title: '3D Art',
   description: 'A collection of 3D printed art pieces',
-  image: ['surface-art/bricks-thumb.JPG', 'surface-art/tetris-thumb.jpg', 'surface-art/table-top-thumb.JPG',],
+  image: ['3d-art/bricks-thumb.JPG', '3d-art/tetris-thumb.jpg', '3d-art/table-top-thumb.JPG',],
   media: {
-    'pi-external-link': 'surface-art',
+    'pi-external-link': '3d-art',
   },
 }
 

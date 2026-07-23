@@ -1,19 +1,27 @@
-<div class="p-3 rounded-r-2xl border border-gray-300 border-double">
+<div
+  class="p-3 rounded-2xl sm:rounded-l-none border border-gray-300 border-double"
+>
   <div class="w-full">
-    <span class="text-base mr-2">{{ name() }}</span>
+    <span class="text-base mr-2 text-white/90 print:text-gray-900">{{
+      name()
+    }}</span>
     @if (link()) {
       <p-button
         size="small"
         class="float-right no-print"
         label="See project"
-        severity="secondary"
+        icon="pi pi-external-link"
+        [text]="true"
+        styleClass="glow-link glow-link-azure"
         (click)="onClickLink(link()!)"
       ></p-button>
     }
   </div>
   <ul>
     @for (bullet of bullets(); track bullet) {
-      <li class="text-xs text-gray-500">&nbsp;-{{ bullet }}</li>
+      <li class="text-xs text-white/60 print:text-gray-500">
+        &nbsp;-{{ bullet }}
+      </li>
     }
   </ul>
 </div>

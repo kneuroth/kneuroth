@@ -55,8 +55,8 @@ Prettier is configured (`.prettierrc`: single quotes, 80-col, `proseWrap: always
   `--color-brownsugar`, `--color-wordle-green`). Many components use inline
   templates/styles (configured as the schematic default in `angular.json`).
 - **Images and static assets** live in `public/` (served from root); portfolio
-  and surface-art galleries reference files under `public/portfolio-images/` and
-  `public/surface-art/`.
+  and 3D-art galleries reference files under `public/portfolio-images/` and
+  `public/3d-art/`.
 
 ## Conventions
 

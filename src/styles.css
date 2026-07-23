@@ -16,3 +16,211 @@
   --color-wordle-gold: #b59f3b;
   --color-wordle-bg: #0f172a;
 }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   .glow-link — reusable word/link treatment (first used in the nav header).
+   Warm embossed letters with no chrome of their own; a muted conic wash
+   revolves slowly behind them, and a vivid neon halo blooms on hover
+   (echoing the house logo). Add it to any text link; set your own
+   font-size / padding / rounding via Tailwind on the element.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Independent angles so the two glow layers can revolve at different speeds */
+@property --glow-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+@property --glow-angle-ambient {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.glow-link {
+  /* Tunable per surface — see .glow-link-dark for the dark-background override */
+  --glow-link-color: rgb(163 151 141 / 1);
+  --glow-link-color-hover: rgb(170 154 141 / 1);
+  --glow-link-emboss: 0 1px 0 rgb(255 255 255 / 0.3);
+
+  position: relative;
+  z-index: 0;
+  white-space: nowrap;
+  letter-spacing: 0.045em;
+  color: var(--glow-link-color);
+  /* Raised letters: a light highlight along the lower edge */
+  text-shadow: var(--glow-link-emboss);
+  transition:
+    transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+    color 0.28s ease;
+}
+
+/* Dark-surface variant — add alongside .glow-link on dark backgrounds.
+   Lighter warm letters; the emboss flips to a dark shadow below (with a faint
+   top light) so they still read as raised. Both glow layers are unchanged. */
+.glow-link-dark {
+  --glow-link-color: rgb(202 190 178 / 1);
+  --glow-link-color-hover: rgb(228 216 203 / 1);
+  --glow-link-emboss:
+    0 -1px 0 rgb(255 255 255 / 0.12),
+    0 1px 2px rgb(0 0 0 / 0.5);
+}
+
+/* Azure variant — an azure-blue accent with blue-tinted glows instead of the
+   rainbow ones. Reads on both light glass and a darkened photo. */
+.glow-link-azure {
+  --glow-link-color: rgb(41 129 210 / 1);
+  --glow-link-color-hover: rgb(78 168 240 / 1);
+  --glow-link-emboss: 0 1px 0 rgb(255 255 255 / 0.4);
+}
+.glow-link-azure::after {
+  background: conic-gradient(
+    from var(--glow-angle-ambient),
+    #8fb6e0,
+    #6f9bc4,
+    #a0c8ec,
+    #6f9bc4,
+    #8fb6e0
+  );
+}
+.glow-link-azure::before {
+  background: conic-gradient(
+    from var(--glow-angle),
+    #00b3ff,
+    #2e90e0,
+    #00e0ff,
+    #3a7bd5,
+    #00b3ff
+  );
+}
+
+/* Vivid neon halo — hidden until hover/focus */
+.glow-link::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--glow-angle),
+    #39ff14,
+    #00b3ff,
+    #b026ff,
+    #ff7a00,
+    #ff1744,
+    #ffe600,
+    #39ff14
+  );
+  filter: blur(10px);
+  opacity: 0;
+  z-index: -1;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+/* Ambient wash — muted, slow, always spinning behind the word */
+.glow-link::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from var(--glow-angle-ambient),
+    #8fb98a,
+    #7f9fc0,
+    #a78bc0,
+    #c9a06f,
+    #c48592,
+    #c9bd82,
+    #8fb98a
+  );
+  filter: blur(11px);
+  opacity: 0.22;
+  z-index: -2;
+  pointer-events: none;
+  animation: glowSpinAmbient 16s linear infinite;
+}
+
+.glow-link:hover,
+.glow-link:focus-visible {
+  transform: scale(1.05);
+  color: var(--glow-link-color-hover);
+  outline: none;
+}
+
+.glow-link:hover::before,
+.glow-link:focus-visible::before {
+  opacity: 0.6;
+  animation: glowSpin 4s linear infinite;
+}
+
+.glow-link:active {
+  transform: scale(0.97);
+}
+
+@keyframes glowSpin {
+  to {
+    --glow-angle: 360deg;
+  }
+}
+
+@keyframes glowSpinAmbient {
+  to {
+    --glow-angle-ambient: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glow-link {
+    transition: color 0.28s ease;
+  }
+  .glow-link:hover,
+  .glow-link:focus-visible {
+    transform: none;
+  }
+  .glow-link::after,
+  .glow-link:hover::before,
+  .glow-link:focus-visible::before {
+    animation: none;
+  }
+}
+
+/* PrimeNG bridge — let a text p-button opt into the glow-link treatment via
+   styleClass="glow-link". Strips the button's own chrome and lets its label
+   and icon inherit the embossed color + glow. */
+.p-button.glow-link {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  overflow: visible;
+  /* Buttons can hold long text (e.g. a full URL) — let it wrap. The nav's
+     plain <a>.glow-link keeps the base nowrap. */
+  white-space: normal;
+  max-width: 100%;
+}
+.p-button.glow-link .p-button-label {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.p-button.glow-link:hover,
+.p-button.glow-link:focus-visible,
+.p-button.glow-link:enabled:hover {
+  background: transparent;
+  border-color: transparent;
+}
+.p-button.glow-link .p-button-label,
+.p-button.glow-link .p-button-icon {
+  color: inherit;
+}
+
+/* Keep glow-link legible on paper: drop the glows and force dark text */
+@media print {
+  .glow-link {
+    color: #1f2937 !important;
+    text-shadow: none !important;
+    transform: none !important;
+  }
+  .glow-link::before,
+  .glow-link::after {
+    display: none !important;
+  }
+}

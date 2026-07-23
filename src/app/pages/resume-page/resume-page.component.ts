@@ -4,41 +4,56 @@ import { ResumeTailorComponent } from '@app/pages/resume-page/resume/resume-tail
 import { ResumeTailorService } from '@app/pages/resume-page/resume/resume-tailor/resume-tailor.service';
 import { ResumeComponent } from '@app/pages/resume-page/resume/resume.component';
 import { Button } from 'primeng/button';
-import { Divider } from 'primeng/divider';
+import { Tooltip } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-resume-page',
   imports: [
     ResumeComponent,
     Button,
-    Divider,
+    Tooltip,
     ResumeTailorComponent,
     HeaderComponent,
   ],
+  host: {
+    '[style.background-image]': 'backgroundImage',
+  },
   template: ` <app-header class="no-print -mt-20"></app-header>
-    <div class="flex flex-col m-10 gap-4">
-      <div class="flex no-print ml-auto gap-2">
-        <!-- Controls -->
-        <p-button
-          label="Download as PDF"
-          icon="pi pi-download"
-          severity="success"
-          (click)="onClickPrint()"
-        />
-        <p-button
-          [label]="hideTailor ? 'Customize' : 'Stop Customizing'"
-          class="no-print ml-auto"
-          severity="info"
-          (click)="onClickCustomize()"
-        />
-      </div>
-
+    <div class="flex flex-col m-4 sm:m-10 gap-4">
       <app-resume-tailor class="no-print" [hidden]="hideTailor" />
-      <p-divider class="no-print" />
-      <app-resume [resume]="resume()" />
+      <div class="resume-glass relative mx-auto w-full max-w-5xl p-6 sm:p-10 my-4">
+        <!-- Controls — screen only, excluded from the downloaded PDF -->
+        <div class="no-print absolute top-3 right-3 z-10 flex gap-1">
+          <p-button
+            icon="pi pi-download"
+            ariaLabel="Download as PDF"
+            pTooltip="Download as PDF"
+            [text]="true"
+            [rounded]="true"
+            styleClass="glow-link glow-link-azure"
+            (click)="onClickPrint()"
+          />
+          <p-button
+            [icon]="hideTailor ? 'pi pi-sliders-h' : 'pi pi-times'"
+            [ariaLabel]="hideTailor ? 'Customize' : 'Stop customizing'"
+            [pTooltip]="hideTailor ? 'Customize' : 'Stop customizing'"
+            [text]="true"
+            [rounded]="true"
+            styleClass="glow-link glow-link-azure"
+            (click)="onClickCustomize()"
+          />
+        </div>
+        <app-resume [resume]="resume()" />
+      </div>
     </div>`,
+  styleUrl: './resume-page.component.css',
 })
 export class ResumePageComponent {
+  /** Buffalo backdrop, dimmed with a blue-black overlay so content reads.
+      Relative URL resolves against the app base-href. */
+  backgroundImage =
+    'linear-gradient(rgb(10 22 40 / 0.5), rgb(10 22 40 / 0.5)), url(buffalo-building-1.jpg)';
+
   tailorService = inject(ResumeTailorService);
 
   resume = this.tailorService.resume;

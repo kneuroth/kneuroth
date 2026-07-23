@@ -4,7 +4,7 @@ import { AboutComponent } from '@pages/about/about.component';
 import { PortfolioComponent } from '@pages/portfolio/portfolio.component';
 import { ResumePageComponent } from '@pages/resume-page/resume-page.component';
 import { WordleLeagueComponent } from '@pages/wordle-league/wordle-league.component';
-import { SurfaceArtComponent } from '@pages/surface-art/surface-art.component';
+import { ThreeDArtComponent } from '@pages/3d-art/3d-art.component';
 
 export const routes: Routes = [
   {
@@ -15,6 +15,6 @@ export const routes: Routes = [
   { title: 'About Kelly', path: 'about', component: AboutComponent },
   { title: 'Resume', path: 'resume', component: ResumePageComponent },
   { title: 'Portfolio', path: 'portfolio', component: PortfolioComponent },
-  { title: 'Surface Art', path: 'surface-art', component: SurfaceArtComponent },
+  { title: '3D Art', path: '3d-art', component: ThreeDArtComponent },
   { title: 'Wordle League', path: 'portfolio/wordle-league', component: WordleLeagueComponent },
 ];

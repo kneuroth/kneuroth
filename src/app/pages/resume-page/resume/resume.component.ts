@@ -1,6 +1,6 @@
 import { Component, computed, input } from '@angular/core';
 import { MessageService } from 'primeng/api';
-import { Tag } from 'primeng/tag';
+import { Button } from 'primeng/button';
 import { Toast } from 'primeng/toast';
 import { WorkExperienceComponent } from './work-experience/work-experience.component';
 import { Resume, SkillType } from './resume.model';
@@ -10,7 +10,7 @@ import { EducationComponent } from './education/education.component';
 @Component({
   selector: 'app-resume',
   imports: [
-    Tag,
+    Button,
     Toast,
     WorkExperienceComponent,
     PersonalProjectComponent,

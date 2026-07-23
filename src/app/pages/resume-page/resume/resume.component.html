@@ -8,49 +8,59 @@
       <div>
         <img class="sm:w-32 sm:h-32 rounded-full" src="kelly-edited.JPG" />
         <div>
-          <p class="text-4xl">{{ resume().name }}</p>
-          <p class="text-xl text-gray-500">{{ resume().title }}</p>
+          <p class="text-4xl text-white print:text-gray-900">
+            {{ resume().name }}
+          </p>
+          <p class="text-xl text-white/70 print:text-gray-500">
+            {{ resume().title }}
+          </p>
         </div>
       </div>
 
       <!-- Links -->
-      <div class="sm:flex sm:flex-col ml-auto gap-2">
+      <div
+        class="flex flex-col items-start sm:items-end ml-auto gap-1 min-w-0 max-w-full"
+      >
         @for (link of resume().links; track $index) {
-          <p-tag
-            class="cursor-pointer!"
+          <p-button
             icon="pi pi-link"
-            severity="warn"
-            [value]="link"
+            [label]="link"
+            [text]="true"
+            styleClass="glow-link glow-link-azure"
             (click)="onClickLink(link)"
-          ></p-tag>
+          ></p-button>
         }
-        <p-tag
-          class="cursor-pointer!"
+        <p-button
           icon="pi pi-envelope"
-          severity="info"
-          [value]="resume().email"
+          [label]="resume().email"
+          [text]="true"
+          styleClass="glow-link glow-link-azure"
           (click)="onClickEmail(resume().email)"
-        ></p-tag>
-        <p-tag
-          class="cursor-pointer!"
+        ></p-button>
+        <p-button
           icon="pi pi-phone"
-          severity="info"
-          [value]="resume().phone"
+          [label]="resume().phone"
+          [text]="true"
+          styleClass="glow-link glow-link-azure"
           (click)="onClickPhone(resume().phone)"
-        ></p-tag>
+        ></p-button>
       </div>
     </div>
 
     <!-- Skills -->
     <div
-      class="col-span-1 p-3 mr-2 rounded-l-2xl border border-gray-300 border-double flex flex-col justify-start"
+      class="col-span-1 p-3 mb-4 sm:mb-0 sm:mr-2 rounded-2xl sm:rounded-r-none border border-gray-300 border-double flex flex-col justify-start"
     >
       @for (skillType of skillTypes(); track skillType) {
         <div class="p-1">
-          <h1 class="text-lg">{{ skillType }}</h1>
+          <h1 class="text-lg text-white/90 print:text-gray-900">
+            {{ skillType }}
+          </h1>
           <ul>
             @for (skill of getFilteredSkills(skillType); track skill) {
-              <li class="flex items-center text-gray-500 text-sm">
+              <li
+                class="flex items-center text-white/70 text-sm print:text-gray-500"
+              >
                 &nbsp;- {{ skill.name }}
               </li>
             }
@@ -62,14 +72,14 @@
     <div class="col-span-2 flex flex-col gap-2">
       <!-- About me -->
       <div class="flex flex-col">
-        <span class="text-lg">About me</span>
-        <p class="text-gray-500 text-sm">
+        <span class="text-lg text-white/90 print:text-gray-900">About me</span>
+        <p class="text-white/70 text-sm print:text-gray-500">
           {{ resume().description }}
         </p>
       </div>
 
       <div class="flex flex-col">
-        <span class="text-lg">Education</span>
+        <span class="text-lg text-white/90 print:text-gray-900">Education</span>
         @for (education of resume().education; track education) {
           <app-education [education]="education"></app-education>
         }
@@ -77,7 +87,9 @@
 
       <!-- Experience -->
       <div class="flex flex-col">
-        <span class="text-lg">Professional Experience</span>
+        <span class="text-lg text-white/90 print:text-gray-900"
+          >Professional Experience</span
+        >
         <div class="flex flex-col gap-2">
           @for (item of resume().workExperiences; track item) {
             <app-work-experience [workExperience]="item"></app-work-experience>
@@ -88,7 +100,9 @@
       @if (resume().personalProjects) {
         <!-- Personal Projects -->
         <div class="flex flex-col">
-          <span class="text-lg">Personal Projects</span>
+          <span class="text-lg text-white/90 print:text-gray-900"
+            >Personal Projects</span
+          >
           <div class="flex flex-col gap-2">
             @for (item of resume().personalProjects; track item) {
               <app-personal-project

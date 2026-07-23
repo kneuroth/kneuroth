@@ -4,12 +4,12 @@ import { PageTitleComponent } from "@shared/components/page-title/page-title.com
 import { Carousel } from "primeng/carousel";
 
 @Component({
-  selector: 'app-surface-art',
+  selector: 'app-3d-art',
   imports: [HeaderComponent, PageTitleComponent, Carousel],
   template: `
     <app-header class="no-print -mt-20"></app-header>
     <app-page-title
-      title="Surface Art"
+      title="3D Art"
       subtitle="A collection of 3D printed art pieces"
     ></app-page-title>
     <div class="card">
@@ -17,7 +17,7 @@ import { Carousel } from "primeng/carousel";
           <ng-template let-print #item>
                 <div class="mb-4 ml-1 mr-1 justify-self-center ">
                     <div class="relative mx-auto">
-                        <img src="surface-art/{{ print.image }}" [alt]="print.name" class="max-h-96 aspect-auto rounded-lg " />
+                        <img src="3d-art/{{ print.image }}" [alt]="print.name" class="max-h-96 aspect-auto rounded-lg " />
                     </div>
                 </div>
           </ng-template>
@@ -26,9 +26,21 @@ import { Carousel } from "primeng/carousel";
   `,
   styles: ``
 })
-export class SurfaceArtComponent {
+export class ThreeDArtComponent {
 
   prints = [
+    {
+      image: 'flower-1.jpg',
+      name: 'Flower 1',
+    },
+    {
+      image: 'flower-2.jpg',
+      name: 'Flower 2',
+    },
+    {
+      image: 'flower-3.jpg',
+      name: 'Flower 3',
+    },
     {
       image: 'tetris.JPG',
       name: 'Tetris',

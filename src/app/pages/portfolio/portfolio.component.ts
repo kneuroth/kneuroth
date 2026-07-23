@@ -3,9 +3,9 @@ import { HeaderComponent } from '@app/header/header.component';
 import { PortfolioEntryComponent } from './portfolio-entry/portfolio-entry.component';
 import {
   ARCADE,
+  ART_3D,
   RTCC,
   SENTENCE_GENERATOR,
-  SURFACE_ART,
   WORDLE_BOT,
 } from './constants';
 
@@ -19,5 +19,5 @@ export class PortfolioComponent {
   RTCC = RTCC;
   ARCADE = ARCADE;
   SENTENCE_GENERATOR = SENTENCE_GENERATOR;
-  SURFACE_ART = SURFACE_ART;
+  ART_3D = ART_3D;
 }

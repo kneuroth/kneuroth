@@ -22,28 +22,28 @@
         class="flex flex-col items-start sm:items-end ml-auto gap-1 min-w-0 max-w-full"
       >
         @for (link of resume().links; track $index) {
-          <p-button
+          <app-glow-button
+            glowSweep
             icon="pi pi-link"
             [label]="link"
-            [text]="true"
-            styleClass="glow-link glow-link-azure"
-            (click)="onClickLink(link)"
-          ></p-button>
+            [sweep]="true"
+            (onClick)="onClickLink(link)"
+          ></app-glow-button>
         }
-        <p-button
+        <app-glow-button
+          glowSweep
           icon="pi pi-envelope"
           [label]="resume().email"
-          [text]="true"
-          styleClass="glow-link glow-link-azure"
-          (click)="onClickEmail(resume().email)"
-        ></p-button>
-        <p-button
+          [sweep]="true"
+          (onClick)="onClickEmail(resume().email)"
+        ></app-glow-button>
+        <app-glow-button
+          glowSweep
           icon="pi pi-phone"
           [label]="resume().phone"
-          [text]="true"
-          styleClass="glow-link glow-link-azure"
-          (click)="onClickPhone(resume().phone)"
-        ></p-button>
+          [sweep]="true"
+          (onClick)="onClickPhone(resume().phone)"
+        ></app-glow-button>
       </div>
     </div>
 
@@ -72,14 +72,14 @@
     <div class="col-span-2 flex flex-col gap-2">
       <!-- About me -->
       <div class="flex flex-col">
-        <span class="text-lg text-white/90 print:text-gray-900">About me</span>
+        <app-section-heading>About me</app-section-heading>
         <p class="text-white/70 text-sm print:text-gray-500">
           {{ resume().description }}
         </p>
       </div>
 
       <div class="flex flex-col">
-        <span class="text-lg text-white/90 print:text-gray-900">Education</span>
+        <app-section-heading>Education</app-section-heading>
         @for (education of resume().education; track education) {
           <app-education [education]="education"></app-education>
         }
@@ -87,9 +87,7 @@
 
       <!-- Experience -->
       <div class="flex flex-col">
-        <span class="text-lg text-white/90 print:text-gray-900"
-          >Professional Experience</span
-        >
+        <app-section-heading>Professional Experience</app-section-heading>
         <div class="flex flex-col gap-2">
           @for (item of resume().workExperiences; track item) {
             <app-work-experience [workExperience]="item"></app-work-experience>
@@ -100,9 +98,7 @@
       @if (resume().personalProjects) {
         <!-- Personal Projects -->
         <div class="flex flex-col">
-          <span class="text-lg text-white/90 print:text-gray-900"
-            >Personal Projects</span
-          >
+          <app-section-heading>Personal Projects</app-section-heading>
           <div class="flex flex-col gap-2">
             @for (item of resume().personalProjects; track item) {
               <app-personal-project

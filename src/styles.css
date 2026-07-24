@@ -25,17 +25,35 @@
    font-size / padding / rounding via Tailwind on the element.
    ───────────────────────────────────────────────────────────────────────── */
 
-/* Independent angles so the two glow layers can revolve at different speeds */
+/* Angle + the two cube colours all inherit, so a single animation on the
+   .glow-link / .logo-link host drives the glow ring (the ::before layer). */
 @property --glow-angle {
   syntax: '<angle>';
   initial-value: 0deg;
-  inherits: false;
+  inherits: true;
 }
-@property --glow-angle-ambient {
-  syntax: '<angle>';
-  initial-value: 0deg;
-  inherits: false;
+
+/* The glow's two rotating cube colors. White is always the third, so the halo
+   shows a 3-colour Rubik's triad at all times; glowCube walks these two around
+   the cube's top-face corners (see the keyframes). Colours inherit so the cycle
+   can be driven from the .glow-link / .logo-link host and cascade down to the
+   ::before / ::after glow layers. */
+@property --glow-a {
+  syntax: '<color>';
+  initial-value: #ff5800;
+  inherits: true;
 }
+@property --glow-b {
+  syntax: '<color>';
+  initial-value: #0051ba;
+  inherits: true;
+}
+
+/* The glow ring is a conic gradient of white + the two cube colours, written
+   INLINE wherever it's painted (below). It must reference --glow-angle / --glow-a
+   / --glow-b directly: routing them through an intermediate custom property
+   stops the browser repainting the gradient as they animate, so the ring would
+   sit frozen. Keep the two copies (glow-link + logo) in sync by hand. */
 
 .glow-link {
   /* Tunable per surface — see .glow-link-dark for the dark-background override */
@@ -53,6 +71,14 @@
   transition:
     transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
     color 0.28s ease;
+  /* Always revolve the ring and cycle the 4 colour groups; both cascade to the
+     ::before glow through the inheriting --glow-angle / --glow-a / --glow-b. */
+  animation:
+    glowSpin 10s linear infinite,
+    glowCube 16s linear infinite;
+  /* Each glow-link starts at its own random phase (set per-instance by
+     GlowButtonComponent) so the buttons don't rotate/cycle in lockstep. */
+  animation-delay: var(--glow-delay, 0s), var(--glow-delay, 0s);
 }
 
 /* Dark-surface variant — add alongside .glow-link on dark backgrounds.
@@ -62,39 +88,19 @@
   --glow-link-color: rgb(202 190 178 / 1);
   --glow-link-color-hover: rgb(228 216 203 / 1);
   --glow-link-emboss:
-    0 -1px 0 rgb(255 255 255 / 0.12),
-    0 1px 2px rgb(0 0 0 / 0.5);
+    0 -1px 0 rgb(255 255 255 / 0.12), 0 1px 2px rgb(0 0 0 / 0.5);
 }
 
 /* Azure variant — an azure-blue accent with blue-tinted glows instead of the
    rainbow ones. Reads on both light glass and a darkened photo. */
 .glow-link-azure {
-  --glow-link-color: rgb(41 129 210 / 1);
-  --glow-link-color-hover: rgb(78 168 240 / 1);
+  --glow-link-color: rgb(125 185 240 / 1);
+  --glow-link-color-hover: rgb(170 210 250 / 1);
   --glow-link-emboss: 0 1px 0 rgb(255 255 255 / 0.4);
 }
-.glow-link-azure::after {
-  background: conic-gradient(
-    from var(--glow-angle-ambient),
-    #8fb6e0,
-    #6f9bc4,
-    #a0c8ec,
-    #6f9bc4,
-    #8fb6e0
-  );
-}
-.glow-link-azure::before {
-  background: conic-gradient(
-    from var(--glow-angle),
-    #00b3ff,
-    #2e90e0,
-    #00e0ff,
-    #3a7bd5,
-    #00b3ff
-  );
-}
+/* Azure only tints the letters now — the glow itself is the shared cube. */
 
-/* Vivid neon halo — hidden until hover/focus */
+/* The cube glow ring — one layer, always visible, brighter on hover/focus. */
 .glow-link::before {
   content: '';
   position: absolute;
@@ -102,42 +108,16 @@
   border-radius: inherit;
   background: conic-gradient(
     from var(--glow-angle),
-    #39ff14,
-    #00b3ff,
-    #b026ff,
-    #ff7a00,
-    #ff1744,
-    #ffe600,
-    #39ff14
+    #ffffff,
+    var(--glow-a),
+    var(--glow-b),
+    #ffffff
   );
   filter: blur(10px);
-  opacity: 0;
+  opacity: 0.32;
   z-index: -1;
   pointer-events: none;
   transition: opacity 0.35s ease;
-}
-
-/* Ambient wash — muted, slow, always spinning behind the word */
-.glow-link::after {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  border-radius: inherit;
-  background: conic-gradient(
-    from var(--glow-angle-ambient),
-    #8fb98a,
-    #7f9fc0,
-    #a78bc0,
-    #c9a06f,
-    #c48592,
-    #c9bd82,
-    #8fb98a
-  );
-  filter: blur(11px);
-  opacity: 0.22;
-  z-index: -2;
-  pointer-events: none;
-  animation: glowSpinAmbient 16s linear infinite;
 }
 
 .glow-link:hover,
@@ -149,8 +129,7 @@
 
 .glow-link:hover::before,
 .glow-link:focus-visible::before {
-  opacity: 0.6;
-  animation: glowSpin 4s linear infinite;
+  opacity: 0.7;
 }
 
 .glow-link:active {
@@ -163,24 +142,304 @@
   }
 }
 
-@keyframes glowSpinAmbient {
-  to {
-    --glow-angle-ambient: 360deg;
+/* Rubik's top-face corners — white is always the third colour, so each stop is
+   a 3-colour triad; the two cube colours swap one at a time around the ring
+   orange → green → red → blue → orange for a smooth alternation. */
+@keyframes glowCube {
+  0% {
+    --glow-a: #ff5800; /* white, orange, blue  */
+    --glow-b: #0051ba;
+  }
+  25% {
+    --glow-a: #ff5800; /* white, orange, green */
+    --glow-b: #009b48;
+  }
+  50% {
+    --glow-a: #c41e3a; /* white, green, red   */
+    --glow-b: #009b48;
+  }
+  75% {
+    --glow-a: #c41e3a; /* white, red, blue    */
+    --glow-b: #0051ba;
+  }
+  100% {
+    --glow-a: #ff5800; /* back to white, orange, blue */
+    --glow-b: #0051ba;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .glow-link {
     transition: color 0.28s ease;
+    animation: none;
   }
   .glow-link:hover,
   .glow-link:focus-visible {
     transform: none;
   }
-  .glow-link::after,
-  .glow-link:hover::before,
-  .glow-link:focus-visible::before {
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   .logo-link — the house logo in the nav. Reuses the same --glow-angle / cube-
+   colour machinery as .glow-link: an always-on cube ring revolves behind the
+   house (brighter on hover); a one-shot colour bloom + a vertical squash play
+   together on home-page load (toggled by .animate-intro from the header).
+   ───────────────────────────────────────────────────────────────────────── */
+.logo-link {
+  position: relative;
+  z-index: 0;
+  /* Always revolve + cycle the cube colours; the glow disc inherits them. */
+  animation:
+    glowSpin 10s linear infinite,
+    glowCube 16s linear infinite;
+}
+
+.logo-link app-logo {
+  display: inline-block;
+  transform-origin: center;
+  will-change: transform, filter;
+}
+
+/* Round cube-colour disc behind the house. ::before is the always-on glow
+   (brighter on hover); ::after is the one-shot load bloom. The centering
+   translate stays static — the ring revolves via --glow-angle, not transform. */
+.logo-link::before,
+.logo-link::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 42px;
+  height: 42px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: conic-gradient(
+    from var(--glow-angle),
+    #ffffff,
+    var(--glow-a),
+    var(--glow-b),
+    #ffffff
+  );
+  filter: blur(9px);
+  opacity: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.logo-link::before {
+  transition: opacity 0.35s ease;
+  opacity: 0.45;
+}
+
+.logo-link:hover::before {
+  opacity: 0.65;
+}
+
+/* One-shot color bloom + squash when the home page loads */
+.logo-link.animate-intro::after {
+  animation: houseLoadGlow 1.2s ease-out;
+}
+
+.logo-link.animate-intro app-logo {
+  animation: houseIntro 0.85s ease-in-out;
+}
+
+/* One-shot vertical-biased squash — plays when the home page loads */
+@keyframes houseIntro {
+  0% {
+    transform: scale(1, 1);
+  }
+  25% {
+    transform: scaleX(1.03) scaleY(1.18);
+  }
+  55% {
+    transform: scaleX(0.98) scaleY(0.88);
+  }
+  80% {
+    transform: scaleX(1.01) scaleY(1.06);
+  }
+  100% {
+    transform: scale(1, 1);
+  }
+}
+
+@keyframes houseLoadGlow {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(0deg) scale(0.3);
+  }
+  20% {
+    opacity: 0.9;
+    transform: translate(-50%, -50%) rotate(200deg) scale(1.35);
+  }
+  60% {
+    opacity: 0.6;
+    transform: translate(-50%, -50%) rotate(520deg) scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(720deg) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-link,
+  .logo-link:hover::before,
+  .logo-link.animate-intro::after,
+  .logo-link.animate-intro app-logo {
     animation: none;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   .glow-sweep — the "alive" treatment for text link-buttons (nav words + resume
+   links). The letter equivalent of the glow ring: instead of a rotating halo, a
+   cube-colour band sweeps across the glyphs. --sweep-base is the readable
+   resting colour (per surface); the band carries the same cube palette.
+   ───────────────────────────────────────────────────────────────────────── */
+/* Where blue takes over in the resting gradient; animated by `breathe` so the
+   white↔blue balance slowly drifts. Registered so the percentage interpolates. */
+@property --breathe {
+  syntax: '<percentage>';
+  initial-value: 80%;
+  inherits: true;
+}
+
+.glow-sweep {
+  /* Light washed-out blue — the far end of the resting white→blue gradient.
+     Shared by every link (nav + resume + project). */
+  --sweep-base: rgb(165 197 222 / 1);
+  letter-spacing: 0.02em;
+}
+
+/* Clip the sweep gradient to the letters — a plain link's own text, or a
+   button's label. A single dampened cube-triad band sits in the middle of an
+   otherwise all-white gradient; --sweep-c1/--sweep-c2 are the two colours of the
+   chosen grouping (white is the surrounding base). They default to base, so the
+   text is plain white until GlowSweepDirective sets a group and triggers one
+   pass. The icon stays solid --sweep-base. */
+.glow-sweep:not(.p-button),
+.p-button.glow-sweep .p-button-label {
+  /* Two layers, both clipped to the letters:
+     - TOP: the moving cube band. Transparent at rest; GlowSweepDirective sets
+       --sweep-c1/--sweep-c2 for one pass, so it only shows while sweeping. Its
+       band sits at ~29–33%, i.e. the right edge of the window at rest, so on
+       hover colour lands on the first frame (snappy) then sweeps off.
+     - BOTTOM: the resting look — a static left→right white→base gradient. */
+  background-image:
+    linear-gradient(
+      100deg,
+      transparent 0%,
+      transparent 25%,
+      var(--sweep-c1, transparent) 29%,
+      var(--sweep-c2, transparent) 33%,
+      transparent 37%,
+      transparent 100%
+    ),
+    linear-gradient(90deg, #ffffff, var(--sweep-base) var(--breathe, 80%));
+  background-size: 300% 100%, 100% 100%;
+  background-position: 0% center, 0% center;
+  background-repeat: no-repeat, no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  /* Slow, gentle drift of the white↔blue balance. */
+  animation: breathe 6s ease-in-out infinite;
+}
+
+/* Lighter (white-dominant) ↔ bluer, and back. */
+@keyframes breathe {
+  0%,
+  100% {
+    --breathe: 95%;
+  }
+  50% {
+    --breathe: 45%;
+  }
+}
+
+.p-button.glow-sweep .p-button-icon {
+  color: var(--sweep-base);
+}
+
+/* One pass, triggered by GlowSweepDirective toggling .is-sweeping (on the link
+   itself, or on the glow-button host above the label). The band scans in from
+   one side, across the letters, and out the other. */
+.glow-sweep.is-sweeping,
+.p-button.glow-sweep .p-button-label.is-sweeping {
+  animation:
+    breathe 6s ease-in-out infinite,
+    sweepOnce 0.9s linear,
+    sweepGlow 0.9s ease-out;
+}
+
+@keyframes sweepOnce {
+  from {
+    background-position: 0% center, 0% center;
+  }
+  to {
+    /* Only the top (band) layer moves; the resting gradient stays put. */
+    background-position: 55% center, 0% center;
+  }
+}
+
+/* A soft coloured halo blooms behind the glyphs, on from the first frame (so
+   hover feels instant), tracking the grouping's two colours then fading out.
+   drop-shadow tints the clipped text's alpha. */
+@keyframes sweepGlow {
+  0% {
+    filter: drop-shadow(0 0 7px var(--sweep-c1, transparent));
+  }
+  50% {
+    filter: drop-shadow(0 0 8px var(--sweep-c2, transparent));
+  }
+  100% {
+    filter: drop-shadow(0 0 2px transparent);
+  }
+}
+
+/* No hover changes — the sweep just runs. Keyboard focus gets a plain outline
+   (the text itself is transparent, so an outline is the reliable indicator). */
+.glow-sweep:focus-visible {
+  outline: 2px solid var(--sweep-base);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Strip the PrimeNG button chrome so only the swept text shows. */
+.p-button.glow-sweep {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  overflow: visible;
+  white-space: normal;
+  max-width: 100%;
+}
+.p-button.glow-sweep:hover,
+.p-button.glow-sweep:enabled:hover,
+.p-button.glow-sweep:focus-visible {
+  background: transparent;
+  border-color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glow-sweep:not(.p-button),
+  .p-button.glow-sweep .p-button-label {
+    animation: none;
+  }
+}
+
+/* Print (resume PDF): background-clip:text drops out, so force solid dark ink —
+   otherwise the swept links would print invisible. */
+@media print {
+  .glow-sweep:not(.p-button),
+  .p-button.glow-sweep .p-button-label,
+  .p-button.glow-sweep .p-button-icon {
+    background: none !important;
+    -webkit-text-fill-color: #1f2937 !important;
+    color: #1f2937 !important;
+    animation: none !important;
   }
 }
 

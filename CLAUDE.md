@@ -64,3 +64,16 @@ Prettier is configured (`.prettierrc`: single quotes, 80-col, `proseWrap: always
   inputs (`input()` / `input.required()`) rather than `@Input()`.
 - Strict mode is on (`strict`, `strictTemplates`, `noPropertyAccessFromIndexSignature`,
   etc.) — expect the compiler to enforce these.
+
+## Design system
+
+The site's visual language is documented in `DESIGN.md` — read it before adding
+or restyling UI. The load-bearing rule: **every clickable element uses the
+`.glow-link` treatment** (defined in `src/styles.css`). Pick the variant by
+surface — base warm on dark/photographic surfaces, `glow-link-azure` on
+light/frosted-glass ones. Don't add bare buttons or one-off hover styles.
+
+The design-system patterns are encapsulated as a small in-repo component library
+under `@shared/ui` — `<app-glow-button>` (every button), `<app-section-heading>`,
+`<app-glass-panel>`. Prefer these over raw markup or bare PrimeNG controls; plain
+non-button links stay as `<a class="glow-link …">`.

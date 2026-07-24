@@ -6,15 +6,15 @@
       name()
     }}</span>
     @if (link()) {
-      <p-button
+      <app-glow-button
+        glowSweep
         size="small"
         class="float-right no-print"
         label="See project"
         icon="pi pi-external-link"
-        [text]="true"
-        styleClass="glow-link glow-link-azure"
-        (click)="onClickLink(link()!)"
-      ></p-button>
+        [sweep]="true"
+        (onClick)="onClickLink(link()!)"
+      ></app-glow-button>
     }
   </div>
   <ul>

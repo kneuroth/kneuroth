@@ -4,7 +4,7 @@ import { Component, input } from '@angular/core';
   selector: 'app-logo',
   imports: [],
   template: `<i
-    class="pi pi-home text-charcoal"
+    class="pi pi-home text-frenchgrey"
     [style.font-size.px]="size()"
     aria-label="Home"
   ></i>`,

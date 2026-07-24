@@ -28,14 +28,13 @@
     }
   </div>
   @for (mediaEntry of portfolioEntry().media | keyvalue; track $index) {
-    <p-button
-      styleClass="hover:scale-110 transition-transform duration-300"
-      severity="secondary"
-      [text]="true"
+    <app-glow-button
+      variant="azure"
       [rounded]="true"
       [icon]="`pi ${mediaEntry.key}`"
       size="large"
+      [ariaLabel]="mediaLabel(mediaEntry.key)"
       (onClick)="onMediaClick(mediaEntry.value!)"
-    ></p-button>
+    ></app-glow-button>
   }
 </div>

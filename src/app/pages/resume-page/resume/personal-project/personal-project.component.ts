@@ -1,11 +1,11 @@
 import { Component, computed, input } from '@angular/core';
 import { PersonalProject } from '../resume.model';
-import { Panel } from 'primeng/panel';
-import { Button } from 'primeng/button';
+import { GlowButtonComponent } from '@shared/ui/glow-button/glow-button.component';
+import { GlowSweepDirective } from '@shared/ui/glow-sweep.directive';
 
 @Component({
   selector: 'app-personal-project',
-  imports: [Button],
+  imports: [GlowButtonComponent, GlowSweepDirective],
   templateUrl: './personal-project.component.html',
 })
 export class PersonalProjectComponent {

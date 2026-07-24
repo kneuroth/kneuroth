@@ -1,20 +1,24 @@
 import { Component, computed, input } from '@angular/core';
 import { MessageService } from 'primeng/api';
-import { Button } from 'primeng/button';
 import { Toast } from 'primeng/toast';
 import { WorkExperienceComponent } from './work-experience/work-experience.component';
 import { Resume, SkillType } from './resume.model';
 import { PersonalProjectComponent } from './personal-project/personal-project.component';
 import { EducationComponent } from './education/education.component';
+import { GlowButtonComponent } from '@shared/ui/glow-button/glow-button.component';
+import { SectionHeadingComponent } from '@shared/ui/section-heading/section-heading.component';
+import { GlowSweepDirective } from '@shared/ui/glow-sweep.directive';
 
 @Component({
   selector: 'app-resume',
   imports: [
-    Button,
     Toast,
     WorkExperienceComponent,
     PersonalProjectComponent,
     EducationComponent,
+    GlowButtonComponent,
+    SectionHeadingComponent,
+    GlowSweepDirective,
   ],
   templateUrl: './resume.component.html',
   styleUrl: './resume.component.css',

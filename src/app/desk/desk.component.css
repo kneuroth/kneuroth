@@ -15,9 +15,9 @@
    ───────────────────────────────────────────────────────────────────────── */
 
 :host {
-  /* The JSON on the laptop screen and the word over the cube are the desk's two
-     pieces of "typed" text and read as one voice, so they share one stack
-     rather than each inheriting whatever the UA gives <pre>. */
+  /* One typewriter stack for everything on the desk that is meant to read as
+     typed — the words over the cube and the notebook, and the links on the
+     screen — so they speak with one voice. */
   --desk-mono:
     ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
     'Courier New', monospace;
@@ -66,7 +66,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 18px;
+  gap: 26px;
   padding: 24px;
 }
 
@@ -74,38 +74,46 @@
    being marked. A screen is a reasonable place to be introduced. */
 .laptop-hello {
   margin: 0;
-  font-size: 34px;
+  font-size: 42px;
   line-height: 1.1;
   font-weight: 600;
   letter-spacing: -0.02em;
   color: var(--color-frenchgrey);
 }
 
-/* Sized to fit 490 design px minus the padding: the surface clips, so a block
-   that overflows is silently cut off rather than scrolled. The widest line is
-   the "nationalities" one — re-measure it if this text changes. */
-.laptop-json {
-  margin: 0;
-  font-family: var(--desk-mono);
-  font-size: 16px;
-  line-height: 1.5;
-  color: rgb(229 231 235);
+/* Inherits the heading's tracking so the line still reads as one sentence with a
+   link in it, rather than a heading with a control dropped into it —
+   .glow-sweep carries its own letter-spacing, which fights the heading's. */
+.laptop-name {
+  letter-spacing: inherit;
 }
 
-.laptop-github {
+.laptop-links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.laptop-link-row {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
+/* Colour and halo are the site's icon treatment (see .glow-link-icon in
+   styles.css) — these two aren't buttons, so they take it as plain glyphs, but
+   they take the same numbers. Size only is theirs. */
 .laptop-icon {
   font-size: 30px;
-  color: rgb(165 197 222 / 0.9);
-  filter: drop-shadow(0 0 10px rgb(130 175 225 / 0.45));
+  color: var(--sweep-base);
+  filter: drop-shadow(0 0 8px rgb(130 175 225 / 0.45));
 }
 
 .laptop-link {
-  font-size: 26px;
+  /* Sized so the longer of the two — the address — clears 490 design px minus
+     the padding. The surface clips, so an overflow is cut, not scrolled. */
+  font-size: 24px;
   font-weight: 600;
 }
 
@@ -146,26 +154,25 @@
   gap: 0.7em;
   padding: 0.9em 1em;
   border-radius: 0.9em;
-  border: 1px solid rgb(255 255 255 / 0.14);
+  /* Stroke and bloom come from .glass-edge, bound in the template — the same
+     edge the nav bar and the project slabs draw. Only the dark fill is local:
+     these sit on the bright half of the photograph, not on a page. */
   background: rgb(8 4 5 / 0.72);
   -webkit-backdrop-filter: blur(6px) saturate(1.1);
   backdrop-filter: blur(6px) saturate(1.1);
-}
-
-/* A 16vh box can hold a name and a link or it can hold five lines of JSON, and
-   between the two the name wins — especially here, where the notebook that would
-   otherwise carry it is dropped at this size. */
-.surface-laptop.is-floating .laptop-json {
-  display: none;
 }
 
 .surface-laptop.is-floating .laptop-hello {
   font-size: 2.2em;
 }
 
-.surface-laptop.is-floating .laptop-github {
+.surface-laptop.is-floating .laptop-links {
+  gap: 0.35em;
+}
+
+.surface-laptop.is-floating .laptop-link-row {
   gap: 0.5em;
-  font-size: 1.35em;
+  font-size: 1.2em;
 }
 
 .surface-laptop.is-floating .laptop-icon {
@@ -182,9 +189,11 @@
    on the photo is what lets any one of them light the whole group — including
    the label, which is a surface of its own now.
 
-   `--face` is the colour of the light, set per surface in the template;
-   `--lit-opacity` tunes how far it goes, because white on a pale notebook page
-   needs far less than teal on a cube. */
+   Three knobs, all per-object and all settable inline in the template:
+   `--face` is the colour of the light, `--lit-opacity` how far it goes at full
+   strength (white on a pale notebook page needs far less than teal on a cube),
+   and `--lit-idle` the resting level on touch, which defaults to a quarter of
+   full so an object tuned down stays proportionate without a second number. */
 .cube-face,
 .notebook-face {
   position: relative;
@@ -194,6 +203,8 @@
 }
 
 .surface-lit {
+  --lit-idle: calc(var(--lit-opacity, 0.9) * 0.25);
+
   position: absolute;
   inset: 0;
   opacity: 0;
@@ -217,16 +228,80 @@
     0 0 60px 22px color-mix(in srgb, var(--face), transparent 72%);
 }
 
-/* `:active` is in here for the phone, where these are tap targets and neither
-   hover nor focus-visible ever fires. */
-.photo:has([data-group='cube']:hover) [data-group='cube'] .surface-lit,
-.photo:has([data-group='cube']:focus-visible) [data-group='cube'] .surface-lit,
-.photo:has([data-group='cube']:active) [data-group='cube'] .surface-lit,
-.photo:has([data-group='notebook']:hover) [data-group='notebook'] .surface-lit,
-.photo:has([data-group='notebook']:active)
+/* One line per object rather than one per state: `:has()` can't be given the
+   group as a parameter, so the group name has to be repeated — but `:is()`
+   keeps that to a single selector each, and a third object costs one line.
+   `:active` is here for touch, where neither hover nor focus-visible fires. */
+.photo:has([data-group='cube']:is(:hover, :focus-visible, :active))
+  [data-group='cube']
+  .surface-lit,
+.photo:has([data-group='notebook']:is(:hover, :focus-visible, :active))
   [data-group='notebook']
   .surface-lit {
   opacity: var(--lit-opacity, 0.9);
+}
+
+/* ── Touch: the glow has to offer itself ──────────────────────────────────
+   Gated on `hover: none` rather than a width, because that is the actual
+   condition — these objects say "I am interactive" by lighting under the
+   pointer, and a device with no pointer never gets told. A touch laptop has the
+   same problem at any width.
+
+   So on those devices the light never fully goes out: it rests faint, and every
+   few seconds swells to full for a beat and settles back. Long dim stretch,
+   short bright one — a breath rather than a blink.
+
+   It lives on `.surface-lit`, which is the one element every lit object already
+   uses, so the cube and the notebook get it now and anything given a
+   `.surface-lit` later gets it for nothing. No timers, no JS, nothing to leak.
+   The stagger comes off the same `data-group` that already relates an object's
+   pieces: both cube faces share a delay so the cube pulses as one thing, and
+   the notebook is offset so the desk never blinks in unison. */
+@media (hover: none) {
+  .surface-lit {
+    animation: litBreath 7s ease-in-out var(--lit-delay, 0s) infinite;
+  }
+
+  [data-group='notebook'] .surface-lit {
+    --lit-delay: 2.8s;
+  }
+
+  /* A tap still wins outright: an animation beats a plain declaration on the
+     same property, so the interaction rule above only lands once this is out of
+     the way. Dropping it also hands the swell back to the 0.28s transition. */
+  .photo:has([data-group='cube']:is(:hover, :focus-visible, :active))
+    [data-group='cube']
+    .surface-lit,
+  .photo:has([data-group='notebook']:is(:hover, :focus-visible, :active))
+    [data-group='notebook']
+    .surface-lit {
+    animation: none;
+  }
+}
+
+@keyframes litBreath {
+  0%,
+  72% {
+    opacity: var(--lit-idle);
+  }
+  81%,
+  87% {
+    opacity: var(--lit-opacity, 0.9);
+  }
+  100% {
+    opacity: var(--lit-idle);
+  }
+}
+
+/* Reduced motion keeps the *affordance* and drops the *motion*: the objects
+   still sit lit on touch, they just stop breathing. Removing the glow entirely
+   would take the hint away from the people who asked for less movement, not
+   less information. */
+@media (hover: none) and (prefers-reduced-motion: reduce) {
+  .surface-lit {
+    animation: none;
+    opacity: var(--lit-idle);
+  }
 }
 
 /* ── The words floating over them ─────────────────────────────────────────
@@ -308,12 +383,16 @@
    small screen, and a bobbing panel reads as a glitch where a bobbing word over
    an object reads as life. */
 .surface-label.is-floating {
-  animation: none;
+  /* The card holds still — but `animation` is one property, and this element
+     also carries .glass-edge, whose stroke breathes. So the drift is *replaced*
+     by that breathe rather than switched off; setting `none` here would take the
+     edge's rhythm with it. */
+  animation: breathe 4s ease-in-out infinite;
   box-sizing: border-box;
   gap: 0.5em;
   padding: 0.6em 1.1em;
   border-radius: 0.9em;
-  border: 1px solid rgb(255 255 255 / 0.16);
+  /* Stroke and bloom from .glass-edge, as on the laptop's card. */
   background: rgb(8 4 5 / 0.72);
   -webkit-backdrop-filter: blur(6px) saturate(1.1);
   backdrop-filter: blur(6px) saturate(1.1);
@@ -344,7 +423,8 @@
     transition: none;
   }
 
-  .surface-label {
+  .surface-label,
+  .surface-label.is-floating {
     animation: none;
   }
 }

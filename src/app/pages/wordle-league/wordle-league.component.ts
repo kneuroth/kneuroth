@@ -12,7 +12,7 @@ import { PageTitleComponent } from '@shared/components/page-title/page-title.com
     :host {
       display: block;
       min-height: 100vh;
-      background: linear-gradient(160deg, #0f172a, #0a0f1e);
+      background: linear-gradient(160deg, var(--color-wordle-bg), #0a0f1e);
       background-attachment: fixed;
     }
   `,
@@ -26,7 +26,7 @@ export class WordleLeagueComponent {
       color: '#f2e344ff',
       image: 'portfolio-images/wordle-bot/wordle-chat.jpg',
       description:
-        'It\'s post-COVID times and a family begins to Wordle. They share their scores in the family chat, but disputes break out, arguing for the credit of the top Wordler. No platform exists to compare scores across days or weeks of playing.'
+        "It's post-COVID times and a family begins to Wordle. They share their scores in the family chat, but disputes break out, arguing for the credit of the top Wordler. No platform exists to compare scores across days or weeks of playing.",
     },
     {
       status: 'The Bandaid',
@@ -34,8 +34,9 @@ export class WordleLeagueComponent {
       icon: 'pi pi-exclamation-circle',
       color: '#d30404ff',
       image: 'portfolio-images/wordle-bot/excel-scoreboard-edited.jpg',
-      description: 'One could, and one did, manually update an Excel spreadsheet to keep track of ' +
-        'scores. Updating and sending daily screenshots took a tremendous amount of time and resources from my day so I knew we needed a better way...'
+      description:
+        'One could, and one did, manually update an Excel spreadsheet to keep track of ' +
+        'scores. Updating and sending daily screenshots took a tremendous amount of time and resources from my day so I knew we needed a better way...',
     },
     {
       status: 'The Solution',
@@ -43,8 +44,9 @@ export class WordleLeagueComponent {
       icon: 'pi pi-lightbulb',
       color: '#2aa900ff',
       image: 'portfolio-images/wordle-bot/wordle-scoreboard-edited.jpg',
-      description: 'And so the Telegram Wordle Bot was born!  ' +
-        'Users simply send their Wordle results to the bot and it updates the scoreboard automatically. '
+      description:
+        'And so the Telegram Wordle Bot was born!  ' +
+        'Users simply send their Wordle results to the bot and it updates the scoreboard automatically. ',
     },
     {
       status: 'The Redesign',
@@ -52,8 +54,9 @@ export class WordleLeagueComponent {
       icon: 'pi pi-sparkles',
       color: '#7a49f8ff',
       image: 'portfolio-images/wordle-bot/new-scoreboard-inchat.jpg',
-      description: 'A complete rewrite of the bot was undertaken. ' +
-        'A rebranding to Wordle League. A sleeker design, emoji reactions, and an advanced per-player color selecting algorithm were all added to enhance user experience.'
+      description:
+        'A complete rewrite of the bot was undertaken. ' +
+        'A rebranding to Wordle League. A sleeker design, emoji reactions, and an advanced per-player color selecting algorithm were all added to enhance user experience.',
     },
     {
       status: 'The Future',
@@ -62,8 +65,9 @@ export class WordleLeagueComponent {
       color: '#d730f5ff',
       image: 'portfolio-images/wordle-bot/themed-scoreboard.png',
       image2: 'portfolio-images/wordle-bot/future-podium.png',
-      description: 'We are now looking to the future to improve Wordle League. Themed scoreboards are rolling out to keep things interesting and align with the seasons. A podium screen will now be sent to close out a season and enhance the visibility of the Wordle athelete who won the Season Championchip. ' +
-        'We have plans to introduce a rewards system that allows players to customize their names on the scoreboard. We will continue to maintain the project code for as long as Wordle is being played and local champions are being praised.'
+      description:
+        'We are now looking to the future to improve Wordle League. Themed scoreboards are rolling out to keep things interesting and align with the seasons. A podium screen will now be sent to close out a season and enhance the visibility of the Wordle athelete who won the Season Championchip. ' +
+        'We have plans to introduce a rewards system that allows players to customize their names on the scoreboard. We will continue to maintain the project code for as long as Wordle is being played and local champions are being praised.',
     },
   ];
 }

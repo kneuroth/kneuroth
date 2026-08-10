@@ -2,13 +2,13 @@ import { Component } from '@angular/core';
 import { HeaderComponent } from '@app/header/header.component';
 
 /**
- * Blank on purpose. The home page's "Kelly" links here; what it should say is
- * gathered in `docs/about-me-source.md`, not written yet.
+ * Blank on purpose — the nav needs somewhere to point, and nothing is written
+ * yet. The notebook on the desk carries the same word.
  */
 @Component({
-  selector: 'app-about',
+  selector: 'app-blog',
   imports: [HeaderComponent],
-  templateUrl: './about.component.html',
+  templateUrl: './blog.component.html',
   standalone: true,
   styles: `
     /* Hold full height so the page reads as a page rather than a header
@@ -19,4 +19,4 @@ import { HeaderComponent } from '@app/header/header.component';
     }
   `,
 })
-export class AboutComponent {}
+export class BlogComponent {}

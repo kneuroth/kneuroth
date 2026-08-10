@@ -1,4 +1,10 @@
-import { Directive, ElementRef, OnDestroy, OnInit, inject } from '@angular/core';
+import {
+  Directive,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  inject,
+} from '@angular/core';
 
 /**
  * Drives the `.glow-sweep` letter shimmer on hover/focus: it picks one of the

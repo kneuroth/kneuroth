@@ -17,29 +17,45 @@
     <div
       class="surface-laptop"
       [class.is-floating]="floating().has('laptop')"
+      [class.glass-edge]="floating().has('laptop')"
       slot="laptop"
     >
-      <h2 class="laptop-hello">Hello, I'm Kelly</h2>
-      <pre class="laptop-json"
-        >{{ '{' }}
-    "nationalities": ["Canadian", "German"],
-    "occupation": "Software Engineer",
-    "based-in": "Buffalo, New York"
-{{ '}' }}</pre
-      >
-      <!-- The icon sits outside the link: .glow-sweep clips its background to the
-           glyphs and blanks the text fill, which would swallow an icon inside
-           it. Solid icon, swept words — the same split as the glow buttons. -->
-      <div class="laptop-github">
-        <i class="pi pi-github laptop-icon" aria-hidden="true"></i>
-        <a
-          glowSweep
-          class="glow-sweep laptop-link"
-          href="https://github.com/kneuroth"
-          target="_blank"
-          rel="noopener noreferrer"
-          >github.com/kneuroth</a
+      <!-- The name itself is the way in: "Kelly" is the link, the greeting
+           around it is not. Same swept treatment as the links below it. -->
+      <h2 class="laptop-hello">
+        Hello, I'm
+        <a glowSweep class="glow-sweep laptop-name" routerLink="/about"
+          >Kelly</a
         >
+      </h2>
+      <!-- Each icon sits outside its link: .glow-sweep clips its background to
+           the glyphs and blanks the text fill, which would swallow an icon
+           inside it. Solid icon, swept words — the same split as the glow
+           buttons. The rows are left-aligned inside a centred column so the two
+           icons line up with each other. -->
+      <div class="laptop-links">
+        <div class="laptop-link-row">
+          <i class="pi pi-github laptop-icon" aria-hidden="true"></i>
+          <a
+            glowSweep
+            class="glow-sweep laptop-link"
+            href="https://github.com/kneuroth"
+            target="_blank"
+            rel="noopener noreferrer"
+            >github.com/kneuroth</a
+          >
+        </div>
+        <div class="laptop-link-row">
+          <i class="pi pi-envelope laptop-icon" aria-hidden="true"></i>
+          <!-- No target=_blank: a mailto handing off to a mail client should not
+               also leave an empty tab behind. -->
+          <a
+            glowSweep
+            class="glow-sweep laptop-link"
+            href="mailto:kelly.neuroth@outlook.com"
+            >kelly.neuroth&#64;outlook.com</a
+          >
+        </div>
       </div>
     </div>
 
@@ -72,6 +88,7 @@
       slot="cube-label"
       routerLink="/portfolio"
       [class.is-floating]="floating().has('cube-label')"
+      [class.glass-edge]="floating().has('cube-label')"
       ><span glowSweep class="glow-sweep label-text">portfolio</span></a
     >
 
@@ -94,6 +111,7 @@
       data-group="notebook"
       slot="notebook-label"
       [class.is-floating]="floating().has('notebook-label')"
+      [class.glass-edge]="floating().has('notebook-label')"
       ><span glowSweep class="glow-sweep label-text">blog</span></span
     >
   }

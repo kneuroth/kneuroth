@@ -1,8 +1,9 @@
 import { Component, computed, input, output } from '@angular/core';
 import { Button } from 'primeng/button';
 
-/** Glow palette — pick by the surface the button sits on (see DESIGN.md). */
-export type GlowVariant = 'warm' | 'dark' | 'azure';
+/** Glow palette — pick by the surface the button sits on, except `icon`, which
+    is picked by the button being icon-only (see DESIGN.md). */
+export type GlowVariant = 'warm' | 'dark' | 'azure' | 'icon';
 
 /**
  * The site's one button. Wraps PrimeNG's text button and applies the
@@ -54,6 +55,8 @@ export class GlowButtonComponent {
       return 'glow-sweep';
     }
     switch (this.variant()) {
+      case 'icon':
+        return 'glow-link glow-link-icon';
       case 'azure':
         return 'glow-link glow-link-azure';
       case 'dark':

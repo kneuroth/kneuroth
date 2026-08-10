@@ -10,7 +10,6 @@ import { provideImageAware } from '@image-aware/angular';
 import { routes } from './app.routes';
 import Aura from '@primeng/themes/aura';
 import { definePreset } from '@primeng/themes';
-import { MessageService } from 'primeng/api';
 
 // Aura ships with an emerald (green) primary, which fought the multicolour glow.
 // Swap the primary ramp for a near-white, faintly cool neutral so every PrimeNG
@@ -56,6 +55,5 @@ export const appConfig: ApplicationConfig = {
         preset: KnLight,
       },
     }),
-    MessageService,
   ],
 };

@@ -7,14 +7,18 @@
 }
 
 @theme {
-  --color-brownsugar: #b75f3d;
-  --color-glacier: #6886b2;
-  --color-charcoal: #3b404d;
   --color-frenchgrey: #bbb9be;
-  --color-smokey: #0c0607;
   --color-wordle-green: #538d4e;
   --color-wordle-gold: #b59f3b;
   --color-wordle-bg: #0f172a;
+}
+
+:root {
+  /* Light washed-out blue: the far end of the links' resting white→blue
+     gradient, and the solid colour every icon is painted. Lives here rather
+     than on .glow-sweep because icons need it without being sweep links —
+     see .glow-link-icon and the desk's laptop glyphs. */
+  --sweep-base: rgb(165 197 222 / 1);
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -26,7 +30,8 @@
    ───────────────────────────────────────────────────────────────────────── */
 
 /* Angle + the two cube colours all inherit, so a single animation on the
-   .glow-link / .logo-link host drives the glow ring (the ::before layer). */
+   .glow-link host drives the glow ring (the ::before layer) — and, on the
+   house, the .logo-link load bloom layered over it. */
 @property --glow-angle {
   syntax: '<angle>';
   initial-value: 0deg;
@@ -36,8 +41,8 @@
 /* The glow's two rotating cube colors. White is always the third, so the halo
    shows a 3-colour Rubik's triad at all times; glowCube walks these two around
    the cube's top-face corners (see the keyframes). Colours inherit so the cycle
-   can be driven from the .glow-link / .logo-link host and cascade down to the
-   ::before / ::after glow layers. */
+   can be driven from the .glow-link host and cascade down to the ::before /
+   ::after glow layers. */
 @property --glow-a {
   syntax: '<color>';
   initial-value: #ff5800;
@@ -97,6 +102,33 @@
   --glow-link-color: rgb(125 185 240 / 1);
   --glow-link-color-hover: rgb(170 210 250 / 1);
   --glow-link-emboss: 0 1px 0 rgb(255 255 255 / 0.4);
+}
+
+/* Icon variant — every icon button on the site, whatever surface it's on.
+   A glyph can't wear .glow-sweep (the clip-to-letters trick blanks the text
+   fill, which swallows an icon), so this is its equivalent: the same pale
+   --sweep-base the sweep links rest at and the same ambient blue halo, painted
+   solid, going white on hover the way the letters do. That keeps an icon button
+   sitting the same weight as the words beside it — the nav's house next to
+   Portfolio/Blog/About, the desk's glyphs next to their links. */
+.glow-link-icon {
+  --glow-link-color: var(--sweep-base);
+  --glow-link-color-hover: #ffffff;
+}
+
+/* The halo goes on the glyph, not the button: the button also carries the
+   ::before ring, and a filter on the host would take the whole composite —
+   ring included — as its silhouette and smear a second glow around it. */
+.glow-link-icon .pi {
+  filter: drop-shadow(0 0 8px rgb(130 175 225 / 0.45));
+  transition: filter 0.25s ease;
+}
+
+/* The same lift the sweep links take on hover, so the two match in motion as
+   well as at rest. */
+.glow-link-icon:hover .pi,
+.glow-link-icon:focus-visible .pi {
+  filter: drop-shadow(0 0 13px rgb(150 190 235 / 0.8));
 }
 /* Azure only tints the letters now — the glow itself is the shared cube. */
 
@@ -180,30 +212,21 @@
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
-   .logo-link — the house logo in the nav. Reuses the same --glow-angle / cube-
-   colour machinery as .glow-link: an always-on cube ring revolves behind the
-   house (brighter on hover); a one-shot colour bloom + a vertical squash play
-   together on home-page load (toggled by .animate-intro from the header).
+   .logo-link — the house logo in the nav. The house is an icon button like the
+   rest, so its colour and its always-on cube ring come from .glow-link (worn
+   alongside this class in the header), at the same strengths as every other
+   button. This class adds only what is the house's own: a one-shot colour bloom
+   + a vertical squash on home-page load, toggled by .animate-intro.
    ───────────────────────────────────────────────────────────────────────── */
-.logo-link {
-  position: relative;
-  z-index: 0;
-  /* Always revolve + cycle the cube colours; the glow disc inherits them. */
-  animation:
-    glowSpin 10s linear infinite,
-    glowCube 16s linear infinite;
-}
-
 .logo-link app-logo {
   display: inline-block;
   transform-origin: center;
   will-change: transform, filter;
 }
 
-/* Round cube-colour disc behind the house. ::before is the always-on glow
-   (brighter on hover); ::after is the one-shot load bloom. The centering
-   translate stays static — the ring revolves via --glow-angle, not transform. */
-.logo-link::before,
+/* The one-shot load bloom — a round cube-colour disc, larger and brighter than
+   the resting ring it blooms out of. The centering translate stays static; the
+   ring revolves via --glow-angle, not transform. */
 .logo-link::after {
   content: '';
   position: absolute;
@@ -224,15 +247,6 @@
   opacity: 0;
   z-index: -1;
   pointer-events: none;
-}
-
-.logo-link::before {
-  transition: opacity 0.35s ease;
-  opacity: 0.45;
-}
-
-.logo-link:hover::before {
-  opacity: 0.65;
 }
 
 /* One-shot color bloom + squash when the home page loads */
@@ -283,8 +297,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .logo-link,
-  .logo-link:hover::before,
+  /* The revolving ring is stilled by .glow-link's own reduced-motion rule;
+     only the load flourish is this class's to switch off. */
   .logo-link.animate-intro::after,
   .logo-link.animate-intro app-logo {
     animation: none;
@@ -306,9 +320,6 @@
 }
 
 .glow-sweep {
-  /* Light washed-out blue — the far end of the resting white→blue gradient.
-     Shared by every link (nav + resume + project). */
-  --sweep-base: rgb(165 197 222 / 1);
   letter-spacing: 0.02em;
 }
 
@@ -359,6 +370,46 @@
   transition: filter 0.25s ease;
   /* Slow, gentle drift of the white↔blue balance in the letters. */
   animation: breathe 4s ease-in-out infinite;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   .glass-edge — the site's frosted edge: a 2px stroke that breathes white→blue
+   on the shared `breathe` rhythm, a soft drop shadow, and a blue bloom that
+   fades in as the stroke goes blue.
+
+   It lives here, globally, because three different things need the identical
+   edge and only one of them is <app-glass-panel>: the desk's floated panels on
+   a small screen can't use that component (they sit inside clipping surfaces
+   and want their own dark fill), and they should not carry a second, drifting
+   copy of these numbers.
+
+   The color-mix expressions are written out rather than routed through a custom
+   property on purpose — an intermediate property freezes the animation, the
+   same trap as the glow ring's conic gradient. Fill is deliberately NOT here:
+   the panel is white frosted, the desk's floated cards are dark. Edge only.
+   ───────────────────────────────────────────────────────────────────────── */
+.glass-edge {
+  border: 2px solid
+    color-mix(
+      in srgb,
+      rgb(255 255 255 / 0.6),
+      rgb(165 197 222 / 0.6) calc(100% - var(--breathe, 80%))
+    );
+  box-shadow:
+    0 10px 40px rgb(0 0 0 / 0.18),
+    0 0 12px
+      color-mix(
+        in srgb,
+        transparent,
+        rgb(120 165 215 / 0.7) calc(100% - var(--breathe, 80%))
+      );
+  animation: breathe 4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glass-edge {
+    animation: none;
+  }
 }
 
 /* Lighter (white-dominant) ↔ bluer, and back. */

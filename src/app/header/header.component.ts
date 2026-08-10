@@ -18,9 +18,14 @@ import { GlowSweepDirective } from '@shared/ui/glow-sweep.directive';
         class="no-print flex flex-col items-center gap-5 p-6 sm:flex-row sm:justify-between sm:gap-4 lg:px-8"
         aria-label="Global"
       >
+        <!-- The house is an icon button like any other: the shared pale icon
+             colour and cube ring, from .glow-link + .glow-link-icon, so it
+             carries the same weight as the words beside it. .logo-link adds
+             only what is the house's own — the load bloom and squash. -->
         <a
           routerLink="/"
-          class="logo-link inline-flex items-center justify-center"
+          aria-label="Home"
+          class="logo-link glow-link glow-link-icon inline-flex items-center justify-center rounded-full p-2"
           [class.animate-intro]="animateOnLoad()"
         >
           <app-logo></app-logo>
@@ -49,11 +54,11 @@ export class HeaderComponent {
       photograph — so the logo plays its intro squash on load. */
   animateOnLoad = input(false);
 
-  /** No "Projects" here on purpose: the cube on the desk is the way to the
-      portfolio, and the home page — which carries no header at all — is one
-      click away. Duplicating it in the bar spends the cube's whole point. */
+  /** The three places to go. No "Home" — the logo beside these already goes
+      there, and the home page is the one page that never shows this bar. */
   navItems: { label: string; path: string; fragment?: string }[] = [
-    { label: 'Home', path: '/' },
-    { label: 'Resume', path: '/resume' },
+    { label: 'Portfolio', path: '/portfolio' },
+    { label: 'Blog', path: '/blog' },
+    { label: 'About', path: '/about' },
   ];
 }

@@ -21,11 +21,21 @@ buttons, no one-off `hover:scale-*` classes, no ad-hoc link colors. The class
 lives in `src/styles.css` and works on a plain `<a>` or, via the PrimeNG bridge,
 on a `<p-button styleClass="glow-link …">`.
 
-The house logo (`.logo-link`) is the same language at a larger, circular scale —
-it is the glow rule applied to the brand mark, not an exception to it.
+**Every icon is the same pale blue — `--sweep-base`.** A glyph can't wear
+`.glow-sweep` (the clip-to-letters trick blanks the text fill and swallows it),
+so icons take `.glow-link glow-link-icon` instead: `--sweep-base` solid, white
+on hover, and the same ambient blue halo the sweep links carry, over the shared
+cube ring. That's the whole point — an icon sits at the same weight as the words
+next to it. This is the one variant chosen by _what the element is_ rather than
+the surface it's on, and it applies everywhere: the nav's house
+(`<app-glow-button variant="icon">` or the classes directly), the project cards'
+media buttons, the desk's github/envelope glyphs. **Icons are never azure and
+never a colour of their own** — no ad-hoc greys, no disc of their own, no
+per-icon glow opacities. `.logo-link` adds only the house's one-shot load bloom
+and squash on top.
 
 **Text links use `.glow-sweep` — this is the canonical link style.** Every text
-link (nav words, resume + project links) rests as a **gentle breathing
+link (nav words, project links, the desk's labels) rests as a **gentle breathing
 white→blue gradient** clipped to the letters (bottom background layer + the
 `breathe` animation drifting `--breathe`). On **hover/focus** the `glowSweep`
 directive picks one of the four cube groupings at random and fires a single
@@ -39,14 +49,17 @@ sweep.
 
 ### Variant selection is by surface, not by mood
 
-| Surface                                                 | Variant                     | Why                                                                 |
-| ------------------------------------------------------- | --------------------------- | ------------------------------------------------------------------- |
-| Dark / photographic (home hero)                         | `glow-link` (base warm)     | Warm taupe letters + the cube-triad glow read as the home identity  |
-| Very dark, needs more lift                              | `glow-link glow-link-dark`  | Lighter warm letters, inverted emboss                               |
-| Light / neutral / frosted-glass (resume, project cards) | `glow-link glow-link-azure` | A light azure that reads on the resume glass; the resume's identity |
+| Surface                                                    | Variant                     | Why                                                                |
+| ---------------------------------------------------------- | --------------------------- | ------------------------------------------------------------------ |
+| Dark / photographic (home hero)                            | `glow-link` (base warm)     | Warm taupe letters + the cube-triad glow read as the home identity |
+| Very dark, needs more lift                                 | `glow-link glow-link-dark`  | Lighter warm letters, inverted emboss                              |
+| Light / neutral / frosted-glass (project cards, galleries) | `glow-link glow-link-azure` | A light azure that reads on frosted glass                          |
+| Any surface, if the control is an icon                     | `glow-link glow-link-icon`  | Pale `--sweep-base` + the links' halo; icons match the words       |
 
 Pick the variant from the background the element sits on — never mix warm and
-azure on the same surface. If you add a new surface, add a row here.
+azure on the same surface. The icon row is the exception: it wins over the
+surface, so every icon on the site is the same. If you add a new surface, add a
+row here.
 
 ## Color
 
@@ -54,21 +67,27 @@ Tokens live in the `@theme` block of `src/styles.css`. Use the token, never a
 raw hex, in components.
 
 - **Warm identity (default):** letters `rgb(163 151 141)`, cube-triad glow halo.
-  Palette accents: `--color-brownsugar #b75f3d`, `--color-glacier #6886b2`,
-  `--color-charcoal #3b404d`, `--color-frenchgrey #bbb9be`,
-  `--color-smokey #0c0607`.
+  The one palette accent is `--color-frenchgrey #bbb9be` (page titles, the home
+  heading, the 3D-art carousel's quiet chrome).
 - **The glow itself (Rubik's cube):** the halo shows three colours at all times
   — white plus two cube colours — and smoothly cycles the four top-face corner
   triads: white+orange+blue → white+orange+green → white+green+red →
   white+red+blue. Driven by the `glowCube` keyframes over `--glow-a`/`--glow-b`;
   cube colours are orange `#ff5800`, green `#009b48`, red `#c41e3a`, blue
-  `#0051ba`. This is the base/logo glow only — azure keeps its own blue glows.
-- **Azure identity (resume + light surfaces):** a light azure — letters
-  `rgb(125 185 240)`, hover `rgb(170 210 250)`, blue-tinted halo. Set via the
+  `#0051ba`. Every variant shares this one ring — that's what makes the glow
+  read as one effect across the site.
+- **Azure identity (light / frosted surfaces):** a light azure — letters
+  `rgb(125 185 240)`, hover `rgb(170 210 250)`. The variant tints the glyphs
+  only; the halo behind them stays the shared cube ring. Set via the
   `glow-link-azure` variant, not by hand.
-- **Nav / header:** near-white nav words (`.nav-link`) on a smokey-frosted
-  header bar (`--color-smokey` at ~0.45 over blur). The logo is `frenchgrey` so
-  it reads on the dark bar.
+- **Icon identity (every icon, every surface):** `--sweep-base`
+  `rgb(165 197 222)` solid, hover white, ambient halo
+  `drop-shadow(0 0 8px rgb(130 175 225 / 0.45))` →
+  `0 0 13px rgb(150 190 235 / 0.8)` on hover. Defined once on `:root` +
+  `.glow-link-icon`; the links' resting gradient ends on the same colour, which
+  is why the two sit together.
+- **Nav / header:** nav words on a frosted-glass bar, resting white→
+  `--sweep-base`; the house beside them is that same pale blue, solid.
 - **Wordle sub-brand (scoped to the Wordle League page only):**
   `--color-wordle-green #538d4e`, `--color-wordle-gold #b59f3b`,
   `--color-wordle-bg #0f172a`. Do not use these outside that page.
@@ -93,6 +112,12 @@ muted secondary text at `/70`–`/60` opacity.
 - **Frosted glass** is the recurring surface, delivered by `<app-glass-panel>`:
   translucent, `backdrop-blur`, soft shadow, generous rounding on the `floating`
   variant; a full-bleed adaptive-frost bar on the `header`/`footer` variants.
+  Its edge is layered and the layers are the point — reading inward: blue bloom,
+  breathing white→blue stroke, a **clear untinted strip** where the fill drops
+  away and the background shows straight through, then the frosted interior. The
+  nav bar and the portfolio's project slabs are the same material, shaped
+  differently. The tint belongs on the panel itself, never on the layer that
+  spans the strip, or the strip stops being one.
 - **Hairline borders** (`border-gray-300`, often `border-double`) separate
   regions; avoid heavy chrome.
 - **The portfolio page's project list zig-zags** — the panels are **joined to
@@ -239,6 +264,26 @@ Rules for working on it:
 The Wordle League page keeps its own dark navy ground — it's a scoped sub-brand,
 and the one page that deliberately covers the desk.
 
+### The frosted edge is one definition
+
+`.glass-edge` in `styles.css` owns the site's edge: a 2px stroke that breathes
+white→blue on the shared `breathe` rhythm, a soft drop shadow, and a blue bloom
+that fades in as the stroke goes blue. It lives globally because three things
+need the identical edge and only one of them is `<app-glass-panel>` — the desk's
+floated panels on a small screen sit inside clipping surfaces and want their own
+dark fill, so they wear the class directly. **Fill is deliberately not part of
+it**: the panel is white frosted, the desk's cards are dark. Edge only.
+
+Two sharp edges when using it:
+
+- The color-mix expressions are written out, not routed through a custom
+  property — an intermediate property freezes the animation, the same trap as
+  the glow ring's conic gradient.
+- It animates, and `animation` is one property. An element that also wants its
+  own animation can't have both: the desk's floated label _replaces_ its drift
+  with `breathe` rather than setting `animation: none`, which would take the
+  edge's rhythm with it.
+
 ## Component library (`@shared/ui`)
 
 The design-system patterns are encapsulated as thin standalone components so the
@@ -247,14 +292,11 @@ writing raw markup or a bare PrimeNG control.** They wrap primitives + tokens;
 they are not a general widget kit — add one only when a pattern actually
 repeats.
 
-| Component                   | Selector                  | Use for                                                                                                                                                                                                                                                                                                                                                                                       |
-| --------------------------- | ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `GlowButtonComponent`       | `<app-glow-button>`       | Every button. Sets the `.glow-link` treatment; pass `variant` (`warm`/`dark`/`azure`), `label`/`icon`, `size`, `rounded`, `ariaLabel`; listen to `(onClick)`.                                                                                                                                                                                                                                 |
-| `SectionHeadingComponent`   | `<app-section-heading>`   | A labelled section on a dark/glass surface (the resume headings). Content-projected.                                                                                                                                                                                                                                                                                                          |
-| `GlassPanelComponent`       | `<app-glass-panel>`       | The frosted-glass surface. `variant`: `floating` (default rounded white panel, e.g. the resume), `header`/`footer` (full-bleed adaptive-frost bar with a hairline edge). `edge`: `left`/`right` joins a floating panel to that screen edge — outer corners square, that side's stroke dropped (the home page's project slabs). Handles its own print reset. Set layout utilities on the host. |
-| `ParallaxBackdropComponent` | `<app-parallax-backdrop>` | A scrolling photographic scene — images stacked into a column that travels slower than the page. **Currently unused:** the desk replaced every page backdrop. Kept for a page that wants a scene of its own.                                                                                                                                                                                  |
-| `RevealDirective`           | `appReveal="left\         | Flies an element in from the side of the screen the first time it scrolls into view (the home page's alternating project entries). Goes on a **wrapper** — the wrapper is observed and stays put, its child travels. An ancestor must set `overflow-x: clip`.                                                                                                                                 | Slides an element in from one side the first time it scrolls into view (the home page's alternating project entries). The parent must set `overflow-x: clip`. |
-| `InnerGlassPanelComponent`  | `<app-inner-glass-panel>` | A nested card _inside_ an `<app-glass-panel>` (resume skills/education/experience/project cards). A lighter secondary surface (faint fill + hairline border, no blur/shadow). Owns padding, fill, border; leave border-radius + layout (incl. `sm:rounded-*-none`) to Tailwind on the host. Handles its own print reset.                                                                      |
+| Component             | Selector            | Use for                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| --------------------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GlowButtonComponent` | `<app-glow-button>` | Every button. Sets the `.glow-link` treatment; pass `variant` (`warm`/`dark`/`azure`, or `icon` for any icon-only button), `label`/`icon`, `size`, `rounded`, `ariaLabel`; listen to `(onClick)`.                                                                                                                                                                                                                                                         |
+| `GlassPanelComponent` | `<app-glass-panel>` | The frosted-glass surface. `variant`: `floating` (default rounded white panel, e.g. the 3D-art gallery), `header`/`footer` (full-bleed adaptive-frost bar with a hairline edge). `edge`: `left`/`right` joins a floating panel to that screen edge — outer corners square and that side's stroke drops, so nothing draws a boundary where the panel leaves the screen (the project slabs). Handles its own print reset. Set layout utilities on the host. |
+| `RevealDirective`     | `appReveal="left\   | Flies an element in from the side of the screen the first time it scrolls into view (the home page's alternating project entries). Goes on a **wrapper** — the wrapper is observed and stays put, its child travels. An ancestor must set `overflow-x: clip`.                                                                                                                                                                                             | Slides an element in from one side the first time it scrolls into view (the home page's alternating project entries). The parent must set `overflow-x: clip`. |
 
 Conventions for this layer:
 

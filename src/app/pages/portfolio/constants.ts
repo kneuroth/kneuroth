@@ -9,7 +9,7 @@ export const WORDLE_BOT: PortfolioEntry = {
     'portfolio-images/wordle-bot/wordle-chat.jpg',
   ],
   media: {
-    'pi-external-link': 'portfolio/wordle-league',
+    'pi-external-link': 'wordle-league',
     'pi-github': 'https://github.com/kneuroth/wordle-telegram-bot',
   },
 };
@@ -27,11 +27,15 @@ export const SENTENCE_GENERATOR: PortfolioEntry = {
 export const ART_3D: PortfolioEntry = {
   title: '3D Art',
   description: 'A collection of 3D printed art pieces',
-  image: ['3d-art/bricks-thumb.JPG', '3d-art/tetris-thumb.jpg', '3d-art/table-top-thumb.JPG',],
+  image: [
+    '3d-art/bricks-thumb.JPG',
+    '3d-art/tetris-thumb.jpg',
+    '3d-art/table-top-thumb.JPG',
+  ],
   media: {
     'pi-external-link': '3d-art',
   },
-}
+};
 
 export const RTCC: PortfolioEntry = {
   title: "Kelly's Ride to Conquer Cancer",
@@ -50,7 +54,8 @@ export const RTCC: PortfolioEntry = {
 
 export const ARCADE: PortfolioEntry = {
   title: 'Arcade',
-  description: 'A retro-style arcade game collection featuring Gravity Rotator and Pong, built with Phaser 3 and React',
+  description:
+    'A retro-style arcade game collection featuring Gravity Rotator and Pong, built with Phaser 3 and React',
   image: [
     'portfolio-images/arcade/image1.png',
     'portfolio-images/arcade/image2.png',

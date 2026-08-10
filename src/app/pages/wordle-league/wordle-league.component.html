@@ -1,4 +1,4 @@
-<app-header class="no-print -mt-20"></app-header>
+<app-header class="no-print"></app-header>
 <app-page-title
   title="Wordle League"
   subtitle="A chat bot that turns Telegram group chats into competitive Wordle leagues. Add @WordleLeagueProdBot to your groupchat on Telegram to try it out now!"
@@ -9,17 +9,20 @@
     <div class="mt-10 grid gap-4 sm:mt-16 lg:grid-cols-3 lg:grid-rows-2">
       <div class="relative lg:row-span-2">
         <div
+          class="absolute inset-px rounded-lg bg-white/8 backdrop-blur-md lg:rounded-l-4xl"
+        ></div>
+        <div
           class="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-lg)+1px)] lg:rounded-l-[calc(2rem+1px)]"
         >
           <div class="px-8 pt-8 pb-3 sm:px-10 sm:pt-10 sm:pb-0">
             @let problem = events[0];
             <p
-              class="mt-2 text-lg font-medium tracking-tight text-gray-950 max-lg:text-center dark:text-white"
+              class="mt-2 text-lg font-medium tracking-tight text-white max-lg:text-center"
             >
               {{ problem.status }}
             </p>
             <p
-              class="mt-2 max-w-lg text-sm/6 text-gray-600 max-lg:text-center dark:text-gray-400"
+              class="mt-2 max-w-lg text-sm/6 text-white/70 max-lg:text-center"
             >
               {{ problem.description }}
             </p>
@@ -39,25 +42,25 @@
           </div>
         </div>
         <div
-          class="pointer-events-none absolute inset-px rounded-lg shadow-sm outline outline-black/5 lg:rounded-l-4xl dark:outline-white/15"
+          class="pointer-events-none absolute inset-px rounded-lg shadow-sm outline outline-white/15 lg:rounded-l-4xl dark:outline-white/15"
         ></div>
       </div>
       <div class="relative max-lg:row-start-1">
         <div
-          class="absolute inset-px rounded-lg bg-white max-lg:rounded-t-4xl dark:bg-gray-800"
+          class="absolute inset-px rounded-lg bg-white/8 backdrop-blur-md max-lg:rounded-t-4xl"
         ></div>
         <div
           class="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-lg)+1px)] max-lg:rounded-t-[calc(2rem+1px)]"
         >
           <div class="px-8 pt-8 sm:px-10 sm:pt-10">
             <p
-              class="mt-2 text-lg font-medium tracking-tight text-gray-950 max-lg:text-center dark:text-white"
+              class="mt-2 text-lg font-medium tracking-tight text-white max-lg:text-center"
             >
               @let bandaid = events[1];
               {{ bandaid.status }}
             </p>
             <p
-              class="mt-2 max-w-lg text-sm/6 text-gray-600 max-lg:text-center dark:text-gray-400"
+              class="mt-2 max-w-lg text-sm/6 text-white/70 max-lg:text-center"
             >
               {{ bandaid.description }}
             </p>
@@ -68,30 +71,30 @@
             <img
               src="{{ bandaid.image }}"
               alt=""
-              class="w-full max-lg:max-w-xs dark:hidden shadow-2xl shadow-wordle-gold"
+              class="w-full max-lg:max-w-xs shadow-2xl shadow-wordle-gold"
             />
           </div>
         </div>
         <div
-          class="pointer-events-none absolute inset-px rounded-lg shadow-sm outline outline-black/5 max-lg:rounded-t-4xl dark:outline-white/15"
+          class="pointer-events-none absolute inset-px rounded-lg shadow-sm outline outline-white/15 max-lg:rounded-t-4xl dark:outline-white/15"
         ></div>
       </div>
       <div class="relative max-lg:row-start-3 lg:col-start-2 lg:row-start-2">
         <div
-          class="absolute inset-px rounded-lg bg-white dark:bg-gray-800"
+          class="absolute inset-px rounded-lg bg-white/8 backdrop-blur-md"
         ></div>
         <div
           class="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-lg)+1px)]"
         >
           <div class="px-8 pt-8 sm:px-10 sm:pt-10">
             <p
-              class="mt-2 text-lg font-medium tracking-tight text-gray-950 max-lg:text-center dark:text-white"
+              class="mt-2 text-lg font-medium tracking-tight text-white max-lg:text-center"
             >
               @let solution = events[2];
               {{ solution.status }}
             </p>
             <p
-              class="mt-2 max-w-lg text-sm/6 text-gray-600 max-lg:text-center dark:text-gray-400"
+              class="mt-2 max-w-lg text-sm/6 text-white/70 max-lg:text-center"
             >
               {{ solution.description }}
             </p>
@@ -102,30 +105,30 @@
             <img
               src="{{ solution.image }}"
               alt=""
-              class="w-full max-lg:max-w-xs dark:hidden shadow-2xl shadow-wordle-gold"
+              class="w-full max-lg:max-w-xs shadow-2xl shadow-wordle-gold"
             />
           </div>
         </div>
         <div
-          class="pointer-events-none absolute inset-px rounded-lg shadow-sm outline outline-black/5 dark:outline-white/15"
+          class="pointer-events-none absolute inset-px rounded-lg shadow-sm outline outline-white/15 dark:outline-white/15"
         ></div>
       </div>
       <div class="relative lg:row-span-2">
         <div
-          class="absolute inset-px rounded-lg bg-white dark:bg-gray-800"
+          class="absolute inset-px rounded-lg bg-white/8 backdrop-blur-md"
         ></div>
         <div
           class="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-lg)+1px)]"
         >
           <div class="px-8 pt-8 pb-3 sm:px-10 sm:pt-10 sm:pb-0">
             <p
-              class="mt-2 text-lg font-medium tracking-tight text-gray-950 max-lg:text-center dark:text-white"
+              class="mt-2 text-lg font-medium tracking-tight text-white max-lg:text-center"
             >
               @let redesign = events[3];
               {{ redesign.status }}
             </p>
             <p
-              class="mt-2 max-w-lg text-sm/6 text-gray-600 max-lg:text-center dark:text-gray-400"
+              class="mt-2 max-w-lg text-sm/6 text-white/70 max-lg:text-center"
             >
               {{ redesign.description }}
             </p>
@@ -145,25 +148,25 @@
           </div>
         </div>
         <div
-          class="pointer-events-none absolute inset-px rounded-lg shadow-sm outline outline-black/5 lg:rounded-r-4xl dark:outline-white/15"
+          class="pointer-events-none absolute inset-px rounded-lg shadow-sm outline outline-white/15 lg:rounded-r-4xl dark:outline-white/15"
         ></div>
       </div>
       <div class="relative lg:row-span-2 lg:col-span-3">
         <div
-          class="absolute inset-px rounded-lg bg-white max-lg:rounded-b-4xl dark:bg-gray-800"
+          class="absolute inset-px rounded-lg bg-white/8 backdrop-blur-md max-lg:rounded-b-4xl"
         ></div>
         <div
           class="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-lg)+1px)]"
         >
           <div class="px-8 pt-8 pb-3 sm:px-10 sm:pt-10 sm:pb-0">
             <p
-              class="mt-2 text-lg font-medium tracking-tight text-gray-950 max-lg:text-center dark:text-white"
+              class="mt-2 text-lg font-medium tracking-tight text-white max-lg:text-center"
             >
               @let future = events[4];
               {{ future.status }}
             </p>
             <p
-              class="mt-2 max-w-lg text-sm/6 text-gray-600 max-lg:text-center dark:text-gray-400"
+              class="mt-2 max-w-lg text-sm/6 text-white/70 max-lg:text-center"
             >
               {{ future.description }}
             </p>
@@ -175,7 +178,7 @@
               <img
                 src="{{ future.image }}"
                 alt=""
-                class="w-full h-full object-cover dark:hidden"
+                class="w-full h-full object-cover"
               />
             </div>
 
@@ -185,13 +188,13 @@
               <img
                 src="{{ future.image2 }}"
                 alt=""
-                class="w-full h-full object-cover dark:hidden"
+                class="w-full h-full object-cover"
               />
             </div>
           </div>
         </div>
         <div
-          class="pointer-events-none absolute inset-px rounded-lg shadow-sm outline outline-black/5 max-lg:rounded-b-4xl lg:rounded-r-4xl dark:outline-white/15"
+          class="pointer-events-none absolute inset-px rounded-lg shadow-sm outline outline-white/15 max-lg:rounded-b-4xl lg:rounded-r-4xl dark:outline-white/15"
         ></div>
       </div>
     </div>

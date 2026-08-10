@@ -1,26 +1,48 @@
-<app-header class="no-print -mt-20" [animateOnLoad]="true"></app-header>
-<img
-  src="opportunities.jpg"
-  alt=""
-  class="fixed inset-0 -z-10 w-screen h-screen object-cover object-center brightness-50 transition-transform duration-500 scale-125 sm:scale-110 md:scale-100"
-/>
-<div class="relative isolate overflow-x-hidden overflow-hidden pb-2">
-  <div class="mx-auto max-w-7xl px-6 lg:px-8">
-    <div class="mx-auto max-w-2xl lg:mx-0">
-      <h2
-        class="text-5xl font-semibold tracking-tight text-frenchgrey sm:text-7xl mt-3"
-      >
+<!-- Nothing, on a screen the desk fits: the photograph in the app shell IS this
+     page, and anything rendered here would sit on top of it.
+
+     When the desk can't be projected — a portrait phone, where the laptop screen
+     lands too small to read and half the sill is cropped away — the room stays as
+     the backdrop and the introduction becomes an ordinary panel on it, with the
+     links the surfaces would have carried. The words are duplicated from
+     desk.component.html on purpose: this is the same page said a second way, and
+     the two are short enough to keep in step by hand. -->
+@if (!projecting()) {
+  <div class="flex min-h-screen items-center justify-center p-6">
+    <app-glass-panel class="w-full max-w-md p-6 sm:p-8">
+      <h2 class="text-4xl font-semibold tracking-tight text-frenchgrey">
         Hello, I'm Kelly
       </h2>
-      <pre
-        class="mt-8 text-lg font-medium text-pretty text-gray-200 sm:text-xl/8"
+      <pre class="mt-5 text-sm/6 font-medium text-gray-200"
+        >{{ '{' }}
+  "nationalities": ["Canadian", "German"],
+  "occupation": "Software Engineer",
+  "based-in": "Buffalo, New York"
+{{ '}' }}</pre
       >
-  {{ '{' }}
-      "nationalities": ["Canadian", "German"],
-      "occupation": "Software Engineer",
-      "based-in": "Buffalo, New York"
-  {{ '}' }}
-      </pre>
-    </div>
+
+      <div class="mt-7 flex flex-col items-start gap-4">
+        <a
+          glowSweep
+          class="glow-sweep text-lg font-semibold"
+          routerLink="/portfolio"
+          >My projects</a
+        >
+        <a
+          glowSweep
+          class="glow-sweep text-lg font-semibold"
+          routerLink="/resume"
+          >Resume</a
+        >
+        <a
+          glowSweep
+          class="glow-sweep text-lg font-semibold"
+          href="https://github.com/kneuroth"
+          target="_blank"
+          rel="noopener noreferrer"
+          >github.com/kneuroth</a
+        >
+      </div>
+    </app-glass-panel>
   </div>
-</div>
+}

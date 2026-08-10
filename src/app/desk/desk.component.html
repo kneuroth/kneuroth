@@ -1,0 +1,104 @@
+<!-- The photograph is the site's ground: fixed, full-bleed, behind every page.
+     `fit` is an attribute because it's this page's decision, not the photo's;
+     the framing that keeps every marked surface inside the frame — the crop, the
+     object-position, and which surfaces are projected, floated or dropped — is
+     art direction, so it lives in the manifest's `variants` (author it in the
+     library editor's Screens mode, which round-trips them). -->
+<image-surface
+  class="photo"
+  manifest="opportunities.surfaces.json"
+  fit="cover"
+  (image-surface-layout)="onLayout($event)"
+  (image-surface-error)="onError($event)"
+>
+  @if (live()) {
+    <!-- The laptop screen: the biggest surface, and a screen, so it takes the
+         introduction, the code, and the link off to the rest. -->
+    <div
+      class="surface-laptop"
+      [class.is-floating]="floating().has('laptop')"
+      slot="laptop"
+    >
+      <h2 class="laptop-hello">Hello, I'm Kelly</h2>
+      <pre class="laptop-json"
+        >{{ '{' }}
+    "nationalities": ["Canadian", "German"],
+    "occupation": "Software Engineer",
+    "based-in": "Buffalo, New York"
+{{ '}' }}</pre
+      >
+      <!-- The icon sits outside the link: .glow-sweep clips its background to the
+           glyphs and blanks the text fill, which would swallow an icon inside
+           it. Solid icon, swept words — the same split as the glow buttons. -->
+      <div class="laptop-github">
+        <i class="pi pi-github laptop-icon" aria-hidden="true"></i>
+        <a
+          glowSweep
+          class="glow-sweep laptop-link"
+          href="https://github.com/kneuroth"
+          target="_blank"
+          rel="noopener noreferrer"
+          >github.com/kneuroth</a
+        >
+      </div>
+    </div>
+
+    <!-- The cube: two faces and a word, one object. `data-group` is what relates
+         them — they're separate surfaces, so the only thing they share is the
+         photo, and `:has()` on it lights the whole group from any one of them.
+         The faces are decorative duplicates so a click anywhere on the cube
+         works; the label is the real link, and its text is its accessible name. -->
+    <a
+      class="cube-face"
+      data-group="cube"
+      slot="cube-teal"
+      routerLink="/portfolio"
+      aria-hidden="true"
+      tabindex="-1"
+      ><span class="surface-lit" style="--face: #0d8a8a"></span
+    ></a>
+    <a
+      class="cube-face"
+      data-group="cube"
+      slot="cube-red"
+      routerLink="/portfolio"
+      aria-hidden="true"
+      tabindex="-1"
+      ><span class="surface-lit" style="--face: #c41e3a"></span
+    ></a>
+    <a
+      class="surface-label"
+      data-group="cube"
+      slot="cube-label"
+      routerLink="/portfolio"
+      [class.is-floating]="floating().has('cube-label')"
+      ><span class="label-text">portfolio</span></a
+    >
+
+    <!-- The notebook: the same object-and-a-word pattern as the cube, glowing
+         white off the page instead of the cube's own colours.
+
+         There is nowhere to go yet, so this is deliberately NOT a link — no
+         href, no tab stop, no pointer cursor. It reads as a real part of the
+         desk without promising a destination it hasn't got. When the blog
+         exists, the wrapper becomes an <a routerLink="/blog"> and the label
+         moves inside it, exactly as the cube's does. -->
+    <div class="notebook-face" data-group="notebook" slot="notebook">
+      <span
+        class="surface-lit"
+        style="--face: #ffffff; --lit-opacity: 0.5"
+      ></span>
+    </div>
+    <span
+      class="surface-label"
+      data-group="notebook"
+      slot="notebook-label"
+      [class.is-floating]="floating().has('notebook-label')"
+      ><span class="label-text">blog</span></span
+    >
+  }
+</image-surface>
+
+<!-- Off the desk, the photo is scenery again: a veil drops so the frosted panels
+     of every other page read against it. -->
+<div class="veil" [class.is-lifted]="lifted()" aria-hidden="true"></div>

@@ -1,22 +1,15 @@
-/* Full-bleed Buffalo backdrop for the whole page (screen only). The image URL
-   itself is set via a host style-binding so it resolves against the app's
-   base-href; here we just position it. */
+/* No backdrop of its own — the page is laid over the desk in the app shell, which
+   veils itself for every page but the home one. This only has to stand full
+   height so short resumes still fill the screen. */
 :host {
   display: block;
   min-height: 100vh;
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
 }
 
-/* The frosted-glass surface the resume floats on is now <app-glass-panel>. */
+/* The frosted-glass surface the resume floats on is <app-glass-panel>. */
 
-/* Printing: drop the full-bleed backdrop — the panel handles its own print
-   reset (see GlassPanelComponent). */
 @media print {
   :host {
     min-height: 0;
-    background: none !important;
   }
 }

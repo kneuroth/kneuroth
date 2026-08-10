@@ -8,6 +8,7 @@ import { EducationComponent } from './education/education.component';
 import { GlowButtonComponent } from '@shared/ui/glow-button/glow-button.component';
 import { SectionHeadingComponent } from '@shared/ui/section-heading/section-heading.component';
 import { GlowSweepDirective } from '@shared/ui/glow-sweep.directive';
+import { InnerGlassPanelComponent } from '@shared/ui/inner-glass-panel/inner-glass-panel.component';
 
 @Component({
   selector: 'app-resume',
@@ -19,6 +20,7 @@ import { GlowSweepDirective } from '@shared/ui/glow-sweep.directive';
     GlowButtonComponent,
     SectionHeadingComponent,
     GlowSweepDirective,
+    InnerGlassPanelComponent,
   ],
   templateUrl: './resume.component.html',
   styleUrl: './resume.component.css',

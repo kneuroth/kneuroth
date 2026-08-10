@@ -1,0 +1,334 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   The desk — the photograph the whole site sits on.
+
+   It is mounted once, in the app shell, and never re-created: navigating moves
+   panels over the room, it doesn't rebuild the room. So it's fixed to the
+   viewport behind everything, and only the veil changes between pages.
+
+   The content projected into it is written in each surface's DESIGN SPACE — the
+   `resolution` its manifest entry declares (laptop 490x363, notebook page
+   392x56, cube faces 87x107 and 59x105). Those are CSS pixels in a coordinate
+   system the homography then projects onto the photo, so the sizes below are
+   deliberately raw `px`: rem would couple them to the root font size, which has
+   nothing to do with how big the laptop screen is in the shot. Re-marking the
+   photo changes these numbers — check them against the manifest after.
+   ───────────────────────────────────────────────────────────────────────── */
+
+:host {
+  /* The JSON on the laptop screen and the word over the cube are the desk's two
+     pieces of "typed" text and read as one voice, so they share one stack
+     rather than each inheriting whatever the UA gives <pre>. */
+  --desk-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    'Courier New', monospace;
+
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  /* Scenery by default; the desk only takes clicks on the page that is the
+     desk (see :host(.is-live)). */
+  pointer-events: none;
+}
+
+.photo,
+.veil {
+  position: absolute;
+  inset: 0;
+}
+
+:host(.is-live) .photo {
+  pointer-events: auto;
+}
+
+/* Off the desk the photo is a backdrop, and every page's frosted panels have to
+   read against it. On the desk it lifts entirely — there the photograph isn't
+   scenery, it's the interface. */
+.veil {
+  background: linear-gradient(
+    to bottom,
+    rgb(10 22 40 / 0.46),
+    rgb(10 22 40 / 0.62)
+  );
+  transition: opacity 0.45s ease;
+}
+
+.veil.is-lifted {
+  opacity: 0;
+}
+
+/* ── The laptop screen: the code and the one off-site link ────────────────
+   Near-black in the photo, so this is the site's dark surface: the canonical
+   swept text link, no scrim needed. */
+.surface-laptop {
+  box-sizing: border-box;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 24px;
+}
+
+/* The greeting moved here when the notebook strip it used to live on stopped
+   being marked. A screen is a reasonable place to be introduced. */
+.laptop-hello {
+  margin: 0;
+  font-size: 34px;
+  line-height: 1.1;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--color-frenchgrey);
+}
+
+/* Sized to fit 490 design px minus the padding: the surface clips, so a block
+   that overflows is silently cut off rather than scrolled. The widest line is
+   the "nationalities" one — re-measure it if this text changes. */
+.laptop-json {
+  margin: 0;
+  font-family: var(--desk-mono);
+  font-size: 16px;
+  line-height: 1.5;
+  color: rgb(229 231 235);
+}
+
+.laptop-github {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.laptop-icon {
+  font-size: 30px;
+  color: rgb(165 197 222 / 0.9);
+  filter: drop-shadow(0 0 10px rgb(130 175 225 / 0.45));
+}
+
+.laptop-link {
+  font-size: 26px;
+  font-weight: 600;
+}
+
+/* ── The notebook ─────────────────────────────────────────────────────────
+   Same shape of thing as a cube face: a box whose only content is the light it
+   throws when you point at it. */
+.notebook-face {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Floating placements ───────────────────────────────────────────────────
+   On a phone the manifest crops in on the sill, keeps the cube projected — it's
+   the link, it has to stay on the object — and floats these two out of the
+   photograph into boxes of their own (80vw x 16vh, top and bottom).
+
+   A floated surface keeps its box but loses the transform, so design-space px
+   are suddenly real page px and the surface still clips. Everything below is
+   therefore sized against the box itself: one `min()` of a width-relative and a
+   height-relative unit sets the base, and the rest is `em` off it, so the type
+   fits both constraints of a box that is a share of the viewport — no
+   breakpoints to keep in step with the manifest's own. */
+.surface-laptop.is-floating {
+  height: 100%;
+  white-space: nowrap;
+}
+
+/* Off the laptop screen, this text has the whole photograph behind it instead of
+   a black panel — so it brings its own. Frosted like every other surface on the
+   site, just darker, because it sits on the bright half of the shot. */
+.surface-laptop.is-floating {
+  /* Width binds on a phone (the JSON's longest line is ~26em of monospace),
+     height binds on a tablet. Deliberately no minimum: a floor large enough to
+     read would overflow the narrowest box, and this surface clips. */
+  font-size: min(2.85vw, 1.5vh);
+  gap: 0.7em;
+  padding: 0.9em 1em;
+  border-radius: 0.9em;
+  border: 1px solid rgb(255 255 255 / 0.14);
+  background: rgb(8 4 5 / 0.72);
+  -webkit-backdrop-filter: blur(6px) saturate(1.1);
+  backdrop-filter: blur(6px) saturate(1.1);
+}
+
+/* A 16vh box can hold a name and a link or it can hold five lines of JSON, and
+   between the two the name wins — especially here, where the notebook that would
+   otherwise carry it is dropped at this size. */
+.surface-laptop.is-floating .laptop-json {
+  display: none;
+}
+
+.surface-laptop.is-floating .laptop-hello {
+  font-size: 2.2em;
+}
+
+.surface-laptop.is-floating .laptop-github {
+  gap: 0.5em;
+  font-size: 1.35em;
+}
+
+.surface-laptop.is-floating .laptop-icon {
+  font-size: 1.3em;
+}
+
+.surface-laptop.is-floating .laptop-link {
+  font-size: 1.2em;
+}
+
+/* ── Lit objects: the cube's faces and the notebook ───────────────────────
+   Each is its own surface, so the pieces of one object are siblings that share
+   nothing but the photograph. `data-group` is what relates them, and `:has()`
+   on the photo is what lets any one of them light the whole group — including
+   the label, which is a surface of its own now.
+
+   `--face` is the colour of the light, set per surface in the template;
+   `--lit-opacity` tunes how far it goes, because white on a pale notebook page
+   needs far less than teal on a cube. */
+.cube-face,
+.notebook-face {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.surface-lit {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.28s ease;
+  /* Light added to the object rather than paint over it: a soft bloom in the
+     middle and its own colour burning in from the edges, so what's underneath
+     still reads. */
+  background: radial-gradient(
+    120% 120% at 50% 45%,
+    color-mix(in srgb, var(--face), white 55%) 0%,
+    color-mix(in srgb, var(--face), transparent 65%) 60%,
+    transparent 100%
+  );
+  /* Inner bloom, then the same light thrown well past the object's own edges —
+     which only shows because these surfaces set `clip: false` in the manifest.
+     The spill rides the homography with everything else, so it spreads along
+     the object's plane instead of sitting on the photo as a flat disc. */
+  box-shadow:
+    inset 0 0 18px 4px color-mix(in srgb, var(--face), transparent 35%),
+    0 0 26px 6px color-mix(in srgb, var(--face), transparent 45%),
+    0 0 60px 22px color-mix(in srgb, var(--face), transparent 72%);
+}
+
+/* `:active` is in here for the phone, where these are tap targets and neither
+   hover nor focus-visible ever fires. */
+.photo:has([data-group='cube']:hover) [data-group='cube'] .surface-lit,
+.photo:has([data-group='cube']:focus-visible) [data-group='cube'] .surface-lit,
+.photo:has([data-group='cube']:active) [data-group='cube'] .surface-lit,
+.photo:has([data-group='notebook']:hover) [data-group='notebook'] .surface-lit,
+.photo:has([data-group='notebook']:active)
+  [data-group='notebook']
+  .surface-lit {
+  opacity: var(--lit-opacity, 0.9);
+}
+
+/* ── The words floating over them ─────────────────────────────────────────
+   `portfolio` over the cube, `blog` over the notebook. Each is its own marked
+   surface, so it gets the object's perspective and scale for free, in
+   design-space px — a word floating *with* the thing rather than a caption
+   pasted over the photograph.
+
+   They breathe on a slow loop. These surfaces DO clip, so the drift has to stay
+   inside the box: the type is sized well under the surface height to leave it
+   room. The cube's label is also the link's only text, so those letters are its
+   accessible name. */
+.surface-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  /* Matches the JSON on the laptop screen, exactly — same declaration. */
+  font-family: var(--desk-mono);
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  text-transform: lowercase;
+  white-space: nowrap;
+  color: var(--color-frenchgrey);
+  text-shadow: 0 2px 12px rgb(8 4 5 / 0.9);
+}
+
+/* The drift lives on the word, not on the label root — so the floated card below
+   holds still while its word breathes. */
+.label-text {
+  display: block;
+  animation: labelFloat 3.6s ease-in-out infinite;
+}
+
+@keyframes labelFloat {
+  0%,
+  100% {
+    transform: translateY(3px);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+/* A target that never stops moving is a hostile one — it settles as soon as the
+   pointer or focus arrives. */
+.photo:has([data-group='cube']:hover) [data-group='cube'] .label-text,
+.photo:has([data-group='notebook']:hover) [data-group='notebook'] .label-text,
+.surface-label:focus-visible .label-text {
+  animation-play-state: paused;
+}
+
+/* Floated out of the photograph on a small screen, a bare word on open picture
+   is thin — it reads as a stray caption rather than a place to go. Give it the
+   same frosted card the laptop's content gets, sized to the box it was floated
+   into. */
+.surface-label.is-floating {
+  box-sizing: border-box;
+  gap: 0.5em;
+  padding: 0.6em 1.1em;
+  border-radius: 0.9em;
+  border: 1px solid rgb(255 255 255 / 0.16);
+  background: rgb(8 4 5 / 0.72);
+  -webkit-backdrop-filter: blur(6px) saturate(1.1);
+  backdrop-filter: blur(6px) saturate(1.1);
+  font-size: min(6vw, 3.4vh);
+  text-shadow: none;
+}
+
+/* A quiet mark that this is a place, not a stray word — the same dot the label
+   would wear in a nav. */
+.surface-label.is-floating::before {
+  content: '';
+  width: 0.42em;
+  height: 0.42em;
+  border-radius: 50%;
+  background: rgb(165 197 222 / 0.9);
+  box-shadow: 0 0 0.6em rgb(130 175 225 / 0.85);
+}
+
+/* Nothing to click yet, so nothing claims otherwise. */
+.notebook-face,
+[data-group='notebook'].surface-label {
+  cursor: default;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .surface-lit,
+  .veil {
+    transition: none;
+  }
+
+  .label-text {
+    animation: none;
+  }
+}
+
+/* The room doesn't print. */
+@media print {
+  :host {
+    display: none;
+  }
+}

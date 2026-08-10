@@ -337,30 +337,52 @@
       transparent 100%
     ),
     linear-gradient(90deg, #ffffff, var(--sweep-base) var(--breathe, 80%));
-  background-size: 300% 100%, 100% 100%;
-  background-position: 0% center, 0% center;
+  background-size:
+    300% 100%,
+    100% 100%;
+  background-position:
+    0% center,
+    0% center;
   background-repeat: no-repeat, no-repeat;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
-  /* Slow, gentle drift of the white↔blue balance. */
-  animation: breathe 6s ease-in-out infinite;
+  /* Ambient glow that breathes with the colour: a soft blue halo that fades in
+     as the text goes blue (color-mix on --breathe, inlined so it repaints).
+     Same effect as the glass-panel border. Always on — the hover sweep no longer
+     touches `filter`, so this blue glow persists through the pass too. */
+  /* Ambient glow — a steady soft blue halo, independent of the breathe (breathe
+     only drives the letter gradient below). */
+  filter: drop-shadow(0 0 8px rgb(130 175 225 / 0.45));
+  /* Ease the hover glow-boost in/out. */
+  transition: filter 0.25s ease;
+  /* Slow, gentle drift of the white↔blue balance in the letters. */
+  animation: breathe 4s ease-in-out infinite;
 }
 
 /* Lighter (white-dominant) ↔ bluer, and back. */
 @keyframes breathe {
   0%,
   100% {
-    --breathe: 95%;
+    --breathe: 100%;
   }
   50% {
-    --breathe: 45%;
+    --breathe: 25%;
   }
 }
 
 .p-button.glow-sweep .p-button-icon {
   color: var(--sweep-base);
+}
+
+/* Hover / focus lifts the blue glow further: a wider, brighter steady halo.
+   Also independent of breathe; eased by the `transition: filter` above. */
+.glow-sweep:not(.p-button):hover,
+.glow-sweep:not(.p-button):focus-visible,
+.p-button.glow-sweep:hover .p-button-label,
+.p-button.glow-sweep:focus-visible .p-button-label {
+  filter: drop-shadow(0 0 13px rgb(150 190 235 / 0.8));
 }
 
 /* One pass, triggered by GlowSweepDirective toggling .is-sweeping (on the link
@@ -369,33 +391,21 @@
 .glow-sweep.is-sweeping,
 .p-button.glow-sweep .p-button-label.is-sweeping {
   animation:
-    breathe 6s ease-in-out infinite,
-    sweepOnce 0.9s linear,
-    sweepGlow 0.9s ease-out;
+    breathe 4s ease-in-out infinite,
+    sweepOnce 0.9s linear;
 }
 
 @keyframes sweepOnce {
   from {
-    background-position: 0% center, 0% center;
+    background-position:
+      0% center,
+      0% center;
   }
   to {
     /* Only the top (band) layer moves; the resting gradient stays put. */
-    background-position: 55% center, 0% center;
-  }
-}
-
-/* A soft coloured halo blooms behind the glyphs, on from the first frame (so
-   hover feels instant), tracking the grouping's two colours then fading out.
-   drop-shadow tints the clipped text's alpha. */
-@keyframes sweepGlow {
-  0% {
-    filter: drop-shadow(0 0 7px var(--sweep-c1, transparent));
-  }
-  50% {
-    filter: drop-shadow(0 0 8px var(--sweep-c2, transparent));
-  }
-  100% {
-    filter: drop-shadow(0 0 2px transparent);
+    background-position:
+      55% center,
+      0% center;
   }
 }
 
@@ -439,7 +449,60 @@
     background: none !important;
     -webkit-text-fill-color: #1f2937 !important;
     color: #1f2937 !important;
+    filter: none !important;
     animation: none !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   .reveal — entrance for content that flies in from the sides of the screen as
+   you scroll (the home page's project list). Driven by RevealDirective, which
+   adds .is-revealed the first time the track enters the viewport.
+
+   .reveal is the TRACK and never moves; its child is what travels. The split
+   matters: IntersectionObserver measures the transformed box, so a card parked a
+   whole viewport off to the side would never report as visible and would never
+   reveal. The track stays put, so it observes honestly.
+
+   Travel is 100vw, i.e. always clear of the screen edge whatever the element's
+   own width — so an ancestor must clip horizontally (`overflow-x: clip`) or the
+   start position widens the page.
+   ───────────────────────────────────────────────────────────────────────── */
+.reveal > * {
+  opacity: 0;
+  transform: translate3d(-100vw, 0, 0);
+  /* Opacity lands well before the travel does, so the panel is visible for most
+     of its flight rather than materializing on arrival. */
+  transition:
+    opacity 0.4s ease-out,
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.reveal-right > * {
+  transform: translate3d(100vw, 0, 0);
+}
+
+.reveal.is-revealed > * {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal > *,
+  .reveal-right > * {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Paper gets the content, not the entrance. */
+@media print {
+  .reveal > *,
+  .reveal-right > * {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
 

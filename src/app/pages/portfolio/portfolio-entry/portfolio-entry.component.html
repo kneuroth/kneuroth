@@ -1,32 +1,83 @@
-<div class="border border-gray-300 rounded-lg p-4 mb-4">
-  <div class="flex">
+<!-- Deeper padding on the bleed side keeps content off the edge of the display.
+     The pl-/pr- utility beats the base p- one whatever the attribute order. -->
+<app-glass-panel
+  [edge]="side()"
+  class="p-4 sm:p-6"
+  [ngClass]="bleedsRight() ? 'pr-8 sm:pr-12' : 'pl-8 sm:pl-12'"
+>
+  <!-- The thumbnails always sit on the *inner* side — right of the text on a
+       left-edge card, left of it on a right-edge one — so the words stay against
+       the screen edge the panel is joined to and the pictures face the middle of
+       the page. On a phone there's no room for two columns at all, so the cluster
+       drops below the text instead of squeezing it. -->
+  <div
+    class="flex flex-col gap-4 sm:flex-row"
+    [ngClass]="bleedsRight() ? 'sm:flex-row-reverse' : ''"
+  >
     <div>
-      <h4 class="text-lg font-bold text-gray-900 dark:text-white">
+      <h4 class="text-lg font-bold text-white">
         {{ portfolioEntry().title }}
       </h4>
-      <p class="mt-1 text-gray-500 dark:text-gray-400">
+      <p class="mt-1 text-white/70">
         {{ portfolioEntry().description }}
       </p>
     </div>
-    @if (portfolioEntry().image?.length) {
+
+    <!-- One lead thumbnail with the rest stacked beside it, rather than a fan of
+         overlapping squares: every tile lands near 4:3, which is the shape
+         almost all of this content actually is, and nothing is hidden behind
+         anything else. On a phone only the lead survives — three tiles across a
+         343px card is nobody's idea of a thumbnail. -->
+    @if (thumbnails().length) {
+      <!-- A lone thumbnail gets a narrower cluster: stretched across the full
+           width it would be a 2:1 letterbox, which is the same "weird size"
+           problem in the other direction. -->
       <div
-        class="ml-auto shrink-0 relative h-40 w-56 max-w-xs rounded-lg overflow-visible"
+        class="flex h-24 w-32 shrink-0 gap-2 sm:ml-auto sm:h-32 lg:h-36"
+        [ngClass]="[
+          thumbnails().length === 1
+            ? 'sm:w-44 lg:w-48'
+            : 'sm:w-64 lg:w-[19rem]',
+          bleedsRight() ? 'self-start' : 'self-end',
+        ]"
+        [class.flex-row-reverse]="bleedsRight()"
       >
-        @for (img of portfolioEntry().image; track $index) {
+        <figure
+          class="thumb"
+          [ngClass]="thumbnails().length >= 3 ? 'flex-[1.9]' : 'flex-1'"
+        >
           <img
-            class="absolute w-20 h-20 object-cover rounded-lg border-2 border-white shadow-lg hover:-translate-y-2 hover:scale-110 transition-transform duration-300"
-            [style]="{
-              right: $index * 24 + 'px',
-              top: $index * 24 + 'px',
-              zIndex: 10 + $index,
-            }"
-            [src]="img"
-            alt="Portfolio image"
+            class="h-full w-full"
+            [ngClass]="fitClass(thumbnails()[0]!)"
+            [src]="thumbnails()[0]"
+            (load)="onThumbnailLoad($event, thumbnails()[0]!)"
+            alt=""
+            loading="lazy"
+            decoding="async"
           />
+        </figure>
+
+        @if (thumbnails().length > 1) {
+          <div class="hidden flex-1 flex-col gap-2 sm:flex">
+            @for (image of thumbnails().slice(1); track image) {
+              <figure class="thumb flex-1">
+                <img
+                  class="h-full w-full"
+                  [ngClass]="fitClass(image)"
+                  [src]="image"
+                  (load)="onThumbnailLoad($event, image)"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                />
+              </figure>
+            }
+          </div>
         }
       </div>
     }
   </div>
+
   @for (mediaEntry of portfolioEntry().media | keyvalue; track $index) {
     <app-glow-button
       variant="azure"
@@ -37,4 +88,4 @@
       (onClick)="onMediaClick(mediaEntry.value!)"
     ></app-glow-button>
   }
-</div>
+</app-glass-panel>

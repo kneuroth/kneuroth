@@ -32,6 +32,9 @@ importers:
       '@angular/router':
         specifier: ^20.2.1
         version: 20.3.24(@angular/common@20.3.24(@angular/core@20.3.24(@angular/compiler@20.3.24)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.3.24(@angular/compiler@20.3.24)(rxjs@7.8.2)(zone.js@0.15.1))(@angular/platform-browser@20.3.24(@angular/animations@20.3.24(@angular/core@20.3.24(@angular/compiler@20.3.24)(rxjs@7.8.2)(zone.js@0.15.1)))(@angular/common@20.3.24(@angular/core@20.3.24(@angular/compiler@20.3.24)(rxjs@7.8.2)(zone.js@0.15.1))(rxjs@7.8.2))(@angular/core@20.3.24(@angular/compiler@20.3.24)(rxjs@7.8.2)(zone.js@0.15.1)))(rxjs@7.8.2)
+      '@image-aware/angular':
+        specifier: ^0.1.0
+        version: 0.1.0(@angular/core@20.3.24(@angular/compiler@20.3.24)(rxjs@7.8.2)(zone.js@0.15.1))
       '@primeng/themes':
         specifier: ^19.0.8
         version: 19.1.4
@@ -218,6 +221,7 @@ packages:
   '@angular/animations@20.3.24':
     resolution: {integrity: sha512-lc6OjwBTEITVqFYTwqEuq/UyCutwJ6NQid4U5gOmwSl1GYbnUUV2X/DRN1sz/JRHnXkC4QCGTWqebnm2SLVRiA==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
+    deprecated: '@angular/animations is deprecated. Use `animate.enter` and `animate.leave` instead. For more information see: https://v22.angular.dev/guide/animations.'
     peerDependencies:
       '@angular/core': 20.3.24
 
@@ -326,6 +330,7 @@ packages:
   '@angular/platform-browser-dynamic@20.3.24':
     resolution: {integrity: sha512-Vl4j7G0aKyRTcZ5KvKQU6B5NBmqs+0uaGkWukpk5ooLCJ7z1vCBCb6fDTF9hoxY3RUk+YA4vGrmkTGGoABnnZA==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=24.0.0}
+    deprecated: '@angular/platform-browser-dynamic is deprecated. Use `@angular/platform-browser` instead.'
     peerDependencies:
       '@angular/common': 20.3.24
       '@angular/compiler': 20.3.24
@@ -756,6 +761,17 @@ packages:
     engines: {node: '>=18.14.1'}
     peerDependencies:
       hono: ^4
+
+  '@image-aware/angular@0.1.0':
+    resolution: {integrity: sha512-AFZjXpVmjo1g1Ic7ipXacvDpC8GaniwvcNuyl41hGo7RktmNFKudmK043vP7Dtt7ycVQ6c0XtvEEaPG37yDnbw==}
+    peerDependencies:
+      '@angular/core': '>=17'
+
+  '@image-aware/core@0.1.0':
+    resolution: {integrity: sha512-Faz//RSHt3+v4UFOhzCTiU/pINbOPXjbVwLB0RPvbnSMCjf01+4y2g+jM1ZBu7PVYy/HcgI30CHW1uGRvaZbtw==}
+
+  '@image-aware/element@0.1.0':
+    resolution: {integrity: sha512-9CHbldnIxeDtb9phx5v9wpIwdUIEjSaFHDeLIhLGZ/GlV092NX8e4NV2FTpEMt6hr6lq8/JVSkBfj3qaynPTAA==}
 
   '@inquirer/ansi@1.0.2':
     resolution: {integrity: sha512-S8qNSZiYzFd0wAcyG5AXCvUHC5Sr7xpZ9wZ2py9XR88jUz8wooStVx5M6dRzczbBWjic9NP7+rY0Xi7qqK/aMQ==}
@@ -4073,6 +4089,18 @@ snapshots:
   '@hono/node-server@1.19.14(hono@4.12.25)':
     dependencies:
       hono: 4.12.25
+
+  '@image-aware/angular@0.1.0(@angular/core@20.3.24(@angular/compiler@20.3.24)(rxjs@7.8.2)(zone.js@0.15.1))':
+    dependencies:
+      '@angular/core': 20.3.24(@angular/compiler@20.3.24)(rxjs@7.8.2)(zone.js@0.15.1)
+      '@image-aware/core': 0.1.0
+      '@image-aware/element': 0.1.0
+
+  '@image-aware/core@0.1.0': {}
+
+  '@image-aware/element@0.1.0':
+    dependencies:
+      '@image-aware/core': 0.1.0
 
   '@inquirer/ansi@1.0.2': {}
 

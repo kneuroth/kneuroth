@@ -1,11 +1,11 @@
 import { Component, computed, input } from '@angular/core';
 import { Education } from '../resume.model';
 import { ConditionalDatePipe } from '../../../../shared/pipes/conditional-date.pipe';
-import { Panel } from 'primeng/panel';
+import { InnerGlassPanelComponent } from '@shared/ui/inner-glass-panel/inner-glass-panel.component';
 
 @Component({
   selector: 'app-education',
-  imports: [ConditionalDatePipe],
+  imports: [ConditionalDatePipe, InnerGlassPanelComponent],
   templateUrl: './education.component.html',
 })
 export class EducationComponent {

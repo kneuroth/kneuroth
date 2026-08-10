@@ -17,13 +17,12 @@ import { GlassPanelComponent } from '@shared/ui/glass-panel/glass-panel.componen
     GlowButtonComponent,
     GlassPanelComponent,
   ],
-  host: {
-    '[style.background-image]': 'backgroundImage',
-  },
-  template: ` <app-header class="no-print -mt-20"></app-header>
+  template: ` <app-header class="no-print"></app-header>
     <div class="flex flex-col m-4 sm:m-10 gap-4">
       <app-resume-tailor class="no-print" [hidden]="hideTailor" />
-      <app-glass-panel class="relative mx-auto w-full max-w-5xl p-6 sm:p-10 my-4">
+      <app-glass-panel
+        class="relative mx-auto w-full max-w-5xl p-6 sm:p-10 my-4"
+      >
         <!-- Controls — screen only, excluded from the downloaded PDF -->
         <div class="no-print absolute top-3 right-3 z-10 flex gap-1">
           <app-glow-button
@@ -49,11 +48,6 @@ import { GlassPanelComponent } from '@shared/ui/glass-panel/glass-panel.componen
   styleUrl: './resume-page.component.css',
 })
 export class ResumePageComponent {
-  /** Buffalo backdrop, dimmed with a blue-black overlay so content reads.
-      Relative URL resolves against the app base-href. */
-  backgroundImage =
-    'linear-gradient(rgb(10 22 40 / 0.5), rgb(10 22 40 / 0.5)), url(buffalo-building-1.jpg)';
-
   tailorService = inject(ResumeTailorService);
 
   resume = this.tailorService.resume;

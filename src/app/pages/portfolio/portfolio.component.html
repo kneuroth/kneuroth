@@ -1,24 +1,26 @@
-<app-header class="no-print -mt-20"></app-header>
-<div class="m-10 sm:grid grid-cols-2 gap-4">
-  <app-portfolio-entry
-    class="col-span-2"
-    [portfolioEntry]="WORDLE_BOT"
-  ></app-portfolio-entry>
-  <app-portfolio-entry
-    class="col-span-2"
-    [portfolioEntry]="ARCADE"
-  ></app-portfolio-entry>
-  <app-portfolio-entry
-    class="col-span-2"
-    [portfolioEntry]="RTCC"
-  ></app-portfolio-entry>
-  <app-portfolio-entry
-    class="col-span-1"
-    [portfolioEntry]="SENTENCE_GENERATOR"
-  ></app-portfolio-entry>
-  <app-portfolio-entry
-    class="col-span-1"
-    [portfolioEntry]="ART_3D"
-  ></app-portfolio-entry>
+<app-header class="no-print" [animateOnLoad]="true"></app-header>
+
+<!-- No backdrop of its own: the page is laid over the desk in the app shell. -->
+
+<!-- overflow-x-clip contains the reveal entrances, which start off-centre. -->
+<div class="relative isolate overflow-x-clip pt-16 pb-24">
+  <!-- Projects: full-bleed slabs joined alternately to the left and right edge of
+       the screen, each flying in from the edge it's attached to — no centered
+       container, that's what makes them read as part of the edge. One `side`
+       drives the reveal direction, which edge it sits on, and the card's own
+       mirroring. appReveal goes on the track, which stays put; the card inside is
+       what travels (see .reveal in styles.css). -->
+  <section id="projects" class="flex flex-col gap-20 sm:gap-28">
+    @for (project of projects; track project.title; let even = $even) {
+      @let side = even ? 'left' : 'right';
+      <div [appReveal]="side">
+        <app-portfolio-entry
+          [ngClass]="side === 'left' ? 'mr-auto' : 'ml-auto'"
+          class="block w-[88%] max-w-5xl sm:w-[78%] lg:w-[62%]"
+          [portfolioEntry]="project"
+          [side]="side"
+        ></app-portfolio-entry>
+      </div>
+    }
+  </section>
 </div>
-`

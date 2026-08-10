@@ -6,6 +6,16 @@ import { PageTitleComponent } from '@shared/components/page-title/page-title.com
   selector: 'app-wordle-league',
   imports: [HeaderComponent, PageTitleComponent],
   templateUrl: './wordle-league.component.html',
+  styles: `
+    /* Dark navy backing (the wordle sub-brand bg) so the frosted-glass cards
+       read — glass needs a darker surface behind it. */
+    :host {
+      display: block;
+      min-height: 100vh;
+      background: linear-gradient(160deg, #0f172a, #0a0f1e);
+      background-attachment: fixed;
+    }
+  `,
 })
 export class WordleLeagueComponent {
   events = [

@@ -252,15 +252,15 @@
   line-height: 1;
   text-transform: lowercase;
   white-space: nowrap;
-  color: var(--color-frenchgrey);
-  text-shadow: 0 2px 12px rgb(8 4 5 / 0.9);
+  /* The drift is on the root and the sweep is on the word inside it, because
+     .glow-sweep drives its own `animation` and the two would overwrite each
+     other on one element. Colour, glow and hover behaviour all come from
+     .glow-sweep — the site's link treatment, not a private one. */
+  animation: labelFloat 3.6s ease-in-out infinite;
 }
 
-/* The drift lives on the word, not on the label root — so the floated card below
-   holds still while its word breathes. */
 .label-text {
   display: block;
-  animation: labelFloat 3.6s ease-in-out infinite;
 }
 
 @keyframes labelFloat {
@@ -275,17 +275,20 @@
 
 /* A target that never stops moving is a hostile one — it settles as soon as the
    pointer or focus arrives. */
-.photo:has([data-group='cube']:hover) [data-group='cube'] .label-text,
-.photo:has([data-group='notebook']:hover) [data-group='notebook'] .label-text,
-.surface-label:focus-visible .label-text {
+.photo:has([data-group='cube']:hover) [data-group='cube'].surface-label,
+.photo:has([data-group='notebook']:hover) [data-group='notebook'].surface-label,
+.surface-label:focus-visible {
   animation-play-state: paused;
 }
 
 /* Floated out of the photograph on a small screen, a bare word on open picture
    is thin — it reads as a stray caption rather than a place to go. Give it the
    same frosted card the laptop's content gets, sized to the box it was floated
-   into. */
+   into. It also stops drifting: the card is a fixed piece of furniture on a
+   small screen, and a bobbing panel reads as a glitch where a bobbing word over
+   an object reads as life. */
 .surface-label.is-floating {
+  animation: none;
   box-sizing: border-box;
   gap: 0.5em;
   padding: 0.6em 1.1em;
@@ -321,7 +324,7 @@
     transition: none;
   }
 
-  .label-text {
+  .surface-label {
     animation: none;
   }
 }

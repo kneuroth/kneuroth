@@ -26,8 +26,7 @@ export class WordleLeagueComponent {
       color: '#f2e344ff',
       image: 'portfolio-images/wordle-bot/wordle-chat.jpg',
       description:
-        'It was February of 2022 and family and friends\' groupchats were being filled with Wordle scores but ' +
-        'it was hard to tell who the ultimate Wordler was.'
+        'It\'s post-COVID times and a family begins to Wordle. They share their scores in the family chat, but disputes break out, arguing for the credit of the top Wordler. No platform exists to compare scores across days or weeks of playing.'
     },
     {
       status: 'The Bandaid',
@@ -35,8 +34,8 @@ export class WordleLeagueComponent {
       icon: 'pi pi-exclamation-circle',
       color: '#d30404ff',
       image: 'portfolio-images/wordle-bot/excel-scoreboard-edited.jpg',
-      description: 'I started to manually update an Excel spreadsheet to keep track of ' +
-        'scores. This took precious seconds of my day. I knew we needed a better way...'
+      description: 'One could, and one did, manually update an Excel spreadsheet to keep track of ' +
+        'scores. Updating and sending daily screenshots took a tremendous amount of time and resources from my day so I knew we needed a better way...'
     },
     {
       status: 'The Solution',
@@ -54,7 +53,7 @@ export class WordleLeagueComponent {
       color: '#7a49f8ff',
       image: 'portfolio-images/wordle-bot/new-scoreboard-inchat.jpg',
       description: 'A complete rewrite of the bot was undertaken. ' +
-        'A sleek AI assisted look, emoji reactions, and an advanced color selecting algorithm were all added to enhance user experience.'
+        'A rebranding to Wordle League. A sleeker design, emoji reactions, and an advanced per-player color selecting algorithm were all added to enhance user experience.'
     },
     {
       status: 'The Future',
@@ -63,9 +62,8 @@ export class WordleLeagueComponent {
       color: '#d730f5ff',
       image: 'portfolio-images/wordle-bot/themed-scoreboard.png',
       image2: 'portfolio-images/wordle-bot/future-podium.png',
-      description: 'There is lots of room for improvement! Themed scoreboards are rolling out and a podium screen will now be sent to close out a season. ' +
-        'There are also plans to introduce a rewards system and custom name styles for players to unlock! ' +
-        'Stay tuned and keep \'em in the green!'
+      description: 'We are now looking to the future to improve Wordle League. Themed scoreboards are rolling out to keep things interesting and align with the seasons. A podium screen will now be sent to close out a season and enhance the visibility of the Wordle athelete who won the Season Championchip. ' +
+        'We have plans to introduce a rewards system that allows players to customize their names on the scoreboard. We will continue to maintain the project code for as long as Wordle is being played and local champions are being praised.'
     },
   ];
 }

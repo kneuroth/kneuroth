@@ -18,6 +18,7 @@
       class="surface-laptop"
       [class.is-floating]="floating().has('laptop')"
       [class.glass-edge]="floating().has('laptop')"
+      [class.glass-dark]="floating().has('laptop')"
       slot="laptop"
     >
       <!-- The name itself is the way in: "Kelly" is the link, the greeting
@@ -89,6 +90,7 @@
       routerLink="/portfolio"
       [class.is-floating]="floating().has('cube-label')"
       [class.glass-edge]="floating().has('cube-label')"
+      [class.glass-dark]="floating().has('cube-label')"
       ><span glowSweep class="glow-sweep label-text">portfolio</span></a
     >
 
@@ -112,6 +114,7 @@
       slot="notebook-label"
       [class.is-floating]="floating().has('notebook-label')"
       [class.glass-edge]="floating().has('notebook-label')"
+      [class.glass-dark]="floating().has('notebook-label')"
       ><span glowSweep class="glow-sweep label-text">blog</span></span
     >
   }

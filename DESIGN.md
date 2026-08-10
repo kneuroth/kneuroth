@@ -234,14 +234,24 @@ Rules for working on it:
   _projected_, because it's the link and it has to stay on the object it's drawn
   on. It lands around 80×105px there, a real tap target.
 - **A floated surface is a different stylesheet.** It keeps its box but loses
-  the transform, so design-space px become real page px — and the surface still
-  clips, silently. The desk reads each surface's placement out of the layout
-  event and puts `.is-floating` on the slotted root, so the CSS answers to what
-  the element decided rather than restating the manifest's breakpoint. Size
-  floated content against the box (`min()` of a vw- and a vh-relative unit, then
-  `em` off that) and give it its own ground: off the laptop screen there's no
-  black panel behind the type any more, so the floated card brings a dark
-  frosted one.
+  the transform, so design-space px become real page px. The desk reads each
+  surface's placement out of the layout event and puts `.is-floating` on the
+  slotted root, so the CSS answers to what the element decided rather than
+  restating the manifest's breakpoint. Size floated content against the box
+  (`min()` of a vw- and a vh-relative unit, then `em` off that) and give it its
+  own ground: off the laptop screen there's no black panel behind the type any
+  more, so the floated card brings the site's glass with it — `.glass-edge` +
+  `.glass-dark`, the dark inward-drawn variant of the panel material (see "The
+  frosted edge is one definition").
+- **A floated surface does not clip, and that is deliberate.** `clip` in the
+  manifest means "stay inside the object this was marked onto"; once floated, a
+  surface has left that object, so `@image-aware/element` (0.1.1+) renders it
+  unclipped — which is the only reason a floated card's bloom and drop shadow
+  survive at all. The consequence is that an overflow now spills onto the
+  photograph instead of being cut, so **a floated card that can overflow must
+  ask for the clip back on itself** (`overflow: hidden` on the slotted element —
+  its own box-shadow is unaffected). The laptop card does; the labels are two
+  short words and don't need to.
 - **The type flips with the surface, wherever it lands.** The name is dark ink
   on the pale notebook page while projected, and light letters with a shadow
   once it floats over open photograph. Same rule as always — read the background
@@ -268,11 +278,29 @@ and the one page that deliberately covers the desk.
 
 `.glass-edge` in `styles.css` owns the site's edge: a 2px stroke that breathes
 white→blue on the shared `breathe` rhythm, a soft drop shadow, and a blue bloom
-that fades in as the stroke goes blue. It lives globally because three things
-need the identical edge and only one of them is `<app-glass-panel>` — the desk's
-floated panels on a small screen sit inside clipping surfaces and want their own
-dark fill, so they wear the class directly. **Fill is deliberately not part of
-it**: the panel is white frosted, the desk's cards are dark. Edge only.
+that fades in as the stroke goes blue. It lives globally because two things need
+the identical edge and only one of them is `<app-glass-panel>` — the desk's
+floated cards can't be that component, so they wear the class directly. **Fill
+is deliberately not part of it**: the panel is white frosted, the desk's cards
+are dark. Edge only.
+
+`.glass-dark` is that fill, and the pair is the panel material for anything that
+can't be the component. **The desk's floated cards are glass panels in every way
+that shows** — bloom, breathing stroke, transparent strip, frosted interior, in
+that order — with two differences their ground forces:
+
+- **They're darker.** Every other panel sits on a page with the desk's veil
+  dropped behind it, where white frost at `0.2` is enough. These float onto the
+  picture itself with nothing dimming it, so the fill is near-black
+  (`rgb(8 4 5 / 0.72)`) to hold the same contrast against a bright windowsill.
+- **Their layers are drawn inward.** The component stands its strip 9px _proud_
+  of the panel; every surface in the manifest sets `"clip": true`, so anything
+  outside the box is cut off. The fill is therefore an inner layer inset by
+  `--glass-strip`, and the ring between it and the stroke is the strip.
+
+Set `--glass-strip` per card and keep the host's padding comfortably larger than
+it, or content lands on the strip instead of on the glass. The fill is on
+`::after`, leaving `::before` free for whatever the card itself wants.
 
 Two sharp edges when using it:
 

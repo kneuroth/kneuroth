@@ -377,16 +377,17 @@
    on the shared `breathe` rhythm, a soft drop shadow, and a blue bloom that
    fades in as the stroke goes blue.
 
-   It lives here, globally, because three different things need the identical
-   edge and only one of them is <app-glass-panel>: the desk's floated panels on
-   a small screen can't use that component (they sit inside clipping surfaces
-   and want their own dark fill), and they should not carry a second, drifting
-   copy of these numbers.
+   It lives here, globally, because two different things need the identical edge
+   and only one of them is <app-glass-panel>: the desk's floated panels on a
+   small screen can't be that component (they are image surfaces, which clip, so
+   its outward strip would be cut off — see .glass-dark below), and they should
+   not carry a second, drifting copy of these numbers.
 
    The color-mix expressions are written out rather than routed through a custom
    property on purpose — an intermediate property freezes the animation, the
    same trap as the glow ring's conic gradient. Fill is deliberately NOT here:
-   the panel is white frosted, the desk's floated cards are dark. Edge only.
+   the panel is white frosted, the desk's floated cards are dark (.glass-dark).
+   Edge only.
    ───────────────────────────────────────────────────────────────────────── */
 .glass-edge {
   border: 2px solid
@@ -410,6 +411,50 @@
   .glass-edge {
     animation: none;
   }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   .glass-dark — the other half of that material: the frosted fill, for a panel
+   standing on the raw photograph. Wear it with .glass-edge and the result is an
+   <app-glass-panel> in every way that shows — bloom, breathing stroke,
+   transparent strip, frosted interior, in that order — with two differences the
+   ground forces.
+
+   It is DARKER. Every other panel on the site sits on a page with the desk's
+   veil dropped behind it, and white frost at 0.2 is enough. These float out onto
+   the picture itself with nothing dimming it, so the fill goes near-black to
+   hold the same contrast against a bright windowsill.
+
+   And its layers are drawn INWARD. The component stands its strip 9px proud of
+   the panel; every surface in the manifest clips (`"clip": true`), so a layer
+   outside the box is simply cut off. Same order, drawn the only direction this
+   box allows: the fill is an inner layer, inset by --glass-strip, and the ring
+   between it and the stroke is the strip — no fill, no blur, the photograph
+   straight through.
+
+   Keep the host's padding comfortably larger than --glass-strip, or content
+   lands on the strip instead of on the glass.
+   ───────────────────────────────────────────────────────────────────────── */
+.glass-dark {
+  position: relative;
+  /* Contains the fill's negative z-index, so it stays behind this panel's own
+     content instead of falling through to whatever is behind the panel. */
+  isolation: isolate;
+}
+
+/* ::after, not ::before: a card's ::before is the one a caller is likely to want
+   (a marker, a leading glyph), and nothing should have to choose between its own
+   glass and its content. */
+.glass-dark::after {
+  content: '';
+  position: absolute;
+  inset: var(--glass-strip, 0.35em);
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: rgb(8 4 5 / 0.72);
+  -webkit-backdrop-filter: blur(6px) saturate(1.1);
+  backdrop-filter: blur(6px) saturate(1.1);
 }
 
 /* Lighter (white-dominant) ↔ bluer, and back. */

@@ -112,7 +112,8 @@
 
 .laptop-link {
   /* Sized so the longer of the two — the address — clears 490 design px minus
-     the padding. The surface clips, so an overflow is cut, not scrolled. */
+     the padding. The surface clips while projected, so an overflow is cut, not
+     scrolled; floated, the card clips itself for the same reason. */
   font-size: 24px;
   font-weight: 600;
 }
@@ -133,14 +134,25 @@
    photograph into boxes of their own (80vw x 16vh, top and bottom).
 
    A floated surface keeps its box but loses the transform, so design-space px
-   are suddenly real page px and the surface still clips. Everything below is
-   therefore sized against the box itself: one `min()` of a width-relative and a
-   height-relative unit sets the base, and the rest is `em` off it, so the type
-   fits both constraints of a box that is a share of the viewport — no
-   breakpoints to keep in step with the manifest's own. */
+   are suddenly real page px. Everything below is therefore sized against the box
+   itself: one `min()` of a width-relative and a height-relative unit sets the
+   base, and the rest is `em` off it, so the type fits both constraints of a box
+   that is a share of the viewport — no breakpoints to keep in step with the
+   manifest's own.
+
+   A floated surface does NOT clip (@image-aware/element 0.1.1 and up: `clip`
+   means "stay on the object", and a floated one has left it). That's what lets
+   the cards below show their bloom and drop shadow at all — but it also means an
+   overflow spills onto the photograph instead of being cut, so the one card that
+   can overflow asks for the clip back itself. */
 .surface-laptop.is-floating {
   height: 100%;
   white-space: nowrap;
+  /* The address is the longest line on the site and it only just fits. Cut is
+     bad; spilled across the windowsill is worse. Clipping our own box costs
+     nothing that matters — an element's own box-shadow is painted outside its
+     border box, so .glass-edge's bloom and shadow survive this. */
+  overflow: hidden;
 }
 
 /* Off the laptop screen, this text has the whole photograph behind it instead of
@@ -149,17 +161,18 @@
 .surface-laptop.is-floating {
   /* Width binds on a phone (the JSON's longest line is ~26em of monospace),
      height binds on a tablet. Deliberately no minimum: a floor large enough to
-     read would overflow the narrowest box, and this surface clips. */
+     read would overflow the narrowest box, and the card clips. */
   font-size: min(2.85vw, 1.5vh);
   gap: 0.7em;
   padding: 0.9em 1em;
   border-radius: 0.9em;
-  /* Stroke and bloom come from .glass-edge, bound in the template — the same
-     edge the nav bar and the project slabs draw. Only the dark fill is local:
-     these sit on the bright half of the photograph, not on a page. */
-  background: rgb(8 4 5 / 0.72);
-  -webkit-backdrop-filter: blur(6px) saturate(1.1);
-  backdrop-filter: blur(6px) saturate(1.1);
+  /* The whole material — stroke, bloom, strip, dark frost — is .glass-edge +
+     .glass-dark, bound in the template: an <app-glass-panel> in everything that
+     shows, drawn inward because the card fills its placement exactly and has
+     nowhere outside it to go. Nothing about it is local. The strip is trimmed a
+     little: the padding here is narrow (the longest line only just fits), so the
+     content needs the room. */
+  --glass-strip: 0.3em;
 }
 
 .surface-laptop.is-floating .laptop-hello {
@@ -389,26 +402,14 @@
      edge's rhythm with it. */
   animation: breathe 4s ease-in-out infinite;
   box-sizing: border-box;
-  gap: 0.5em;
   padding: 0.6em 1.1em;
   border-radius: 0.9em;
-  /* Stroke and bloom from .glass-edge, as on the laptop's card. */
-  background: rgb(8 4 5 / 0.72);
-  -webkit-backdrop-filter: blur(6px) saturate(1.1);
-  backdrop-filter: blur(6px) saturate(1.1);
+  /* Material from .glass-edge + .glass-dark, as on the laptop's card. The type
+     here is large, so the em-sized strip would be too — hold it to the same few
+     px the laptop card shows, or the word ends up ringed. */
+  --glass-strip: 0.16em;
   font-size: min(6vw, 3.4vh);
   text-shadow: none;
-}
-
-/* A quiet mark that this is a place, not a stray word — the same dot the label
-   would wear in a nav. */
-.surface-label.is-floating::before {
-  content: '';
-  width: 0.42em;
-  height: 0.42em;
-  border-radius: 50%;
-  background: rgb(165 197 222 / 0.9);
-  box-shadow: 0 0 0.6em rgb(130 175 225 / 0.85);
 }
 
 /* Nothing to click yet, so nothing claims otherwise. */

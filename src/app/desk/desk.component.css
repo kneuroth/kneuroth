@@ -261,6 +261,26 @@
 
 .label-text {
   display: block;
+  /* A dark edge so the words hold against the photograph — bright sill in one
+     place, dark laptop in another.
+
+     It has to be `drop-shadow`, not `text-shadow`: .glow-sweep paints the
+     letters by clipping a gradient to transparent-filled text, and a
+     text-shadow would be painted behind the glyphs and show straight through
+     them as a blur. A filter applies to the painted result, so it traces the
+     letterforms. The chain keeps .glow-sweep's blue halo first and adds a tight
+     dark one under it; both states are restated because overriding `filter`
+     replaces the whole chain. */
+  filter: drop-shadow(0 0 8px rgb(130 175 225 / 0.45))
+    drop-shadow(0 1px 2px rgb(6 3 4 / 0.95))
+    drop-shadow(0 0 6px rgb(6 3 4 / 0.8));
+}
+
+.surface-label:hover .label-text,
+.surface-label:focus-visible .label-text {
+  filter: drop-shadow(0 0 13px rgb(150 190 235 / 0.8))
+    drop-shadow(0 1px 2px rgb(6 3 4 / 0.95))
+    drop-shadow(0 0 6px rgb(6 3 4 / 0.8));
 }
 
 @keyframes labelFloat {

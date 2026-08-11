@@ -4,13 +4,7 @@ import { HeaderComponent } from '@app/header/header.component';
 import { RevealDirective } from '@shared/ui/reveal.directive';
 import { PortfolioEntryComponent } from './portfolio-entry/portfolio-entry.component';
 import { PortfolioEntry } from './model';
-import {
-  ARCADE,
-  ART_3D,
-  RTCC,
-  SENTENCE_GENERATOR,
-  WORDLE_BOT,
-} from './constants';
+import { ARCADE, ART_3D, RTCC, WORDLE_BOT } from './constants';
 
 /**
  * The project showcase — where the cube on the home page leads.
@@ -27,7 +21,6 @@ export class PortfolioComponent {
     WORDLE_BOT,
     ARCADE,
     RTCC,
-    SENTENCE_GENERATOR,
     ART_3D,
   ];
 }

@@ -14,16 +14,6 @@ export const WORDLE_BOT: PortfolioEntry = {
   },
 };
 
-export const SENTENCE_GENERATOR: PortfolioEntry = {
-  title: 'Case Study: Sentence Generator',
-  description:
-    'A tool to aggregate data to automate the generation of precise and accurate sentences',
-  image: ['portfolio-images/sentence-gen.png'],
-  media: {
-    'pi-youtube': 'https://youtu.be/d4WSyCknZ2g',
-  },
-};
-
 export const ART_3D: PortfolioEntry = {
   title: '3D Art',
   description: 'A collection of 3D printed art pieces',

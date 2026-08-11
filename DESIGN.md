@@ -34,6 +34,25 @@ never a colour of their own** — no ad-hoc greys, no disc of their own, no
 per-icon glow opacities. `.logo-link` adds only the house's one-shot load bloom
 and squash on top.
 
+**A glass button is an object, not a word.** `<app-glow-button>` and
+`.glow-sweep` treat a control as _text with light behind it_;
+`<app-glass-button>` is the other kind — a pressable slab of the same frosted
+material as `<app-glass-panel>`, with the panel's layers intact (rim, clear
+strip, frosted interior). Its rim is where the difference lives: instead of the
+cube triad haloing the control from behind, the **border carries it**, on the
+same `glowSpin`/`glowCube` cycle. The colour that says "interactive" is still
+there, read as a lit rim on a solid object rather than a glow escaping from
+under one. Reach for it when a control should feel like a thing on the desk;
+reach for `<app-glow-button>` when it should feel like a word you can say.
+
+Its `tone` comes from the ground, exactly as a `.glow-link` variant does:
+`light` (default) is the panel's white frost, for a button on a page; `dark` is
+the near-black frost — the same numbers as `.glass-dark` — for a button standing
+on the photograph, where nothing dims what's behind it. The rim doesn't change
+between them; the cube colours read on both. Setting `link` renders the slab as
+an `<a>` rather than a `<button>`, because somewhere-to-go has to be
+middle-clickable and copyable.
+
 **Text links use `.glow-sweep` — this is the canonical link style.** Every text
 link (nav words, project links, the desk's labels) rests as a **gentle breathing
 white→blue gradient** clipped to the letters (bottom background layer + the
@@ -99,13 +118,39 @@ intermediate custom property freezes the animation). `glowSpin` revolves it via
 
 ## Typography
 
-Current: system sans, one weight scale, Tailwind size utilities. This is the
-least developed axis of the system and the clearest next opportunity — a
-characteristic display face for page titles (`app-page-title`, the home `h2`)
-paired with the current sans for body would give the pages an identity the glow
-can't carry alone. **Not yet adopted** — flagged here so it's a deliberate
-choice, not an oversight. Until then: titles `text-2xl`+, body `text-sm`–`lg`,
-muted secondary text at `/70`–`/60` opacity.
+**The whole site is set in monospace, and that is the point.** It began on the
+desk — the links on the laptop screen and the words over the cube and the
+notebook are typed, because they sit on a screen in a photograph of a
+programmer's desk — and it is now the app's face everywhere: an homage to the
+career the site exists to describe. The glow was carrying the site's identity
+alone; this is the other half of it.
+
+One stack, `--font-mono` in the `@theme` block of `src/styles.css`, applied
+through `--default-font-family`. Set it there, never per component — the desk's
+projected type reads the same token, so page type and photographed type cannot
+drift apart. Redefining `--font-sans` would have done the same job while making
+`font-sans` a lie; don't.
+
+**And it is all lower case.** Same origin, same idea: the desk's labels were
+lowercase, and with one typewriter face and no capitals the pages read as
+something typed rather than something published.
+`body { text-transform: lowercase }` in `styles.css` does it for everything
+rendered.
+
+Do it there, not in the strings. Sentence case stays in the DOM, so a screen
+reader still says "Wordle League", the words stay searchable and quotable, and
+undoing it is one line instead of an edit to every string on the site. Two
+exceptions, both because no stylesheet can reach them: **route `title`s** in
+`app.routes.ts` and the `<title>` in `index.html` become the browser tab, so
+those are lowercase in the source. `.keep-case` is the escape hatch for anything
+that must hold its capitals — a code sample, or a name that stops being itself
+in lower case.
+
+Mono is wider and slower to read than a proportional face, so **prose has to be
+kept short** — this is a typographic constraint on the writing now, not just a
+styling choice. Titles `text-2xl`+, body `text-sm`–`lg`, muted secondary text at
+`/70`–`/60` opacity. One weight scale; the `600` on labels and buttons is the
+heaviest thing here.
 
 ## Structure & layout
 
@@ -320,11 +365,12 @@ writing raw markup or a bare PrimeNG control.** They wrap primitives + tokens;
 they are not a general widget kit — add one only when a pattern actually
 repeats.
 
-| Component             | Selector            | Use for                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| --------------------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `GlowButtonComponent` | `<app-glow-button>` | Every button. Sets the `.glow-link` treatment; pass `variant` (`warm`/`dark`/`azure`, or `icon` for any icon-only button), `label`/`icon`, `size`, `rounded`, `ariaLabel`; listen to `(onClick)`.                                                                                                                                                                                                                                                         |
-| `GlassPanelComponent` | `<app-glass-panel>` | The frosted-glass surface. `variant`: `floating` (default rounded white panel, e.g. the 3D-art gallery), `header`/`footer` (full-bleed adaptive-frost bar with a hairline edge). `edge`: `left`/`right` joins a floating panel to that screen edge — outer corners square and that side's stroke drops, so nothing draws a boundary where the panel leaves the screen (the project slabs). Handles its own print reset. Set layout utilities on the host. |
-| `RevealDirective`     | `appReveal="left\   | Flies an element in from the side of the screen the first time it scrolls into view (the home page's alternating project entries). Goes on a **wrapper** — the wrapper is observed and stays put, its child travels. An ancestor must set `overflow-x: clip`.                                                                                                                                                                                             | Slides an element in from one side the first time it scrolls into view (the home page's alternating project entries). The parent must set `overflow-x: clip`. |
+| Component              | Selector             | Use for                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| ---------------------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GlowButtonComponent`  | `<app-glow-button>`  | Every button. Sets the `.glow-link` treatment; pass `variant` (`warm`/`dark`/`azure`, or `icon` for any icon-only button), `label`/`icon`, `size`, `rounded`, `ariaLabel`; listen to `(onClick)`.                                                                                                                                                                                                                                                         |
+| `GlassButtonComponent` | `<app-glass-button>` | A pressable slab of glass — the panel's material at button scale, with the cube triad on its rim instead of behind it. Content-projected (label, icon, or both); pass `tone` (`light`/`dark`, picked from the ground), `link` (renders an `<a>`), `type`, `disabled`, `ariaLabel`; listen to `(onClick)`. Tune `--glass-radius`, `--glass-rim`, `--glass-strip`; set layout on the host.                                                                  |
+| `GlassPanelComponent`  | `<app-glass-panel>`  | The frosted-glass surface. `variant`: `floating` (default rounded white panel, e.g. the 3D-art gallery), `header`/`footer` (full-bleed adaptive-frost bar with a hairline edge). `edge`: `left`/`right` joins a floating panel to that screen edge — outer corners square and that side's stroke drops, so nothing draws a boundary where the panel leaves the screen (the project slabs). Handles its own print reset. Set layout utilities on the host. |
+| `RevealDirective`      | `appReveal="left\    | Flies an element in from the side of the screen the first time it scrolls into view (the home page's alternating project entries). Goes on a **wrapper** — the wrapper is observed and stays put, its child travels. An ancestor must set `overflow-x: clip`.                                                                                                                                                                                             | Slides an element in from one side the first time it scrolls into view (the home page's alternating project entries). The parent must set `overflow-x: clip`. |
 
 Conventions for this layer:
 

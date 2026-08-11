@@ -11,6 +11,21 @@
   --color-wordle-green: #538d4e;
   --color-wordle-gold: #b59f3b;
   --color-wordle-bg: #0f172a;
+
+  /* ── The site's voice ────────────────────────────────────────────────────
+     One typewriter stack, everywhere. It started on the desk — the links on
+     the laptop screen and the words over the cube and the notebook are typed,
+     because they are on a screen in a photograph of a programmer's desk — and
+     it is now the whole app's face: an homage to the career the site is about.
+
+     Set as --default-font-family rather than by redefining --font-sans, so the
+     document inherits mono while Tailwind's `font-sans` / `font-mono`
+     utilities keep meaning what they say. The desk reads --font-mono directly,
+     so the projected type and the page type can never drift apart. */
+  --font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    'Courier New', monospace;
+  --default-font-family: var(--font-mono);
 }
 
 :root {
@@ -19,6 +34,27 @@
      than on .glow-sweep because icons need it without being sweep links —
      see .glow-link-icon and the desk's laptop glyphs. */
   --sweep-base: rgb(165 197 222 / 1);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   The site is written in lower case. It started on the desk's labels and now
+   runs everywhere: with one typewriter face and no capitals, the pages read as
+   something typed rather than something published.
+
+   Done as a transform rather than by lowercasing the source, deliberately.
+   Sentence case survives in the DOM, so a screen reader still says "Wordle
+   League" and not "wordle league", the words stay searchable and quotable, and
+   turning this off is one line rather than an edit of every string on the site.
+
+   Add `.keep-case` to anything that has to hold its capitals — a code sample,
+   or a name that stops being itself in lower case.
+   ───────────────────────────────────────────────────────────────────────── */
+body {
+  text-transform: lowercase;
+}
+
+.keep-case {
+  text-transform: none;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────

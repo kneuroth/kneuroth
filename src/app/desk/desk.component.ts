@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import type { ErrorEventDetail, LayoutEventDetail } from '@image-aware/angular';
+import { GlassButtonComponent } from '@shared/ui/glass-button/glass-button.component';
 import { GlowSweepDirective } from '@shared/ui/glow-sweep.directive';
 import { DeskService } from './desk.service';
 
@@ -30,7 +31,7 @@ import { DeskService } from './desk.service';
  */
 @Component({
   selector: 'app-desk',
-  imports: [RouterLink, GlowSweepDirective],
+  imports: [RouterLink, GlowSweepDirective, GlassButtonComponent],
   templateUrl: './desk.component.html',
   styleUrl: './desk.component.css',
   host: {

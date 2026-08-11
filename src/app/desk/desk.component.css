@@ -15,13 +15,6 @@
    ───────────────────────────────────────────────────────────────────────── */
 
 :host {
-  /* One typewriter stack for everything on the desk that is meant to read as
-     typed — the words over the cube and the notebook, and the links on the
-     screen — so they speak with one voice. */
-  --desk-mono:
-    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
-    'Courier New', monospace;
-
   position: fixed;
   inset: 0;
   z-index: -1;
@@ -332,12 +325,17 @@
   align-items: center;
   justify-content: center;
   height: 100%;
-  /* Matches the JSON on the laptop screen, exactly — same declaration. */
-  font-family: var(--desk-mono);
+  /* The site's one typewriter stack, same as the laptop screen and everything
+     else now — stated rather than inherited because this type is projected onto
+     an object in the photograph and must match it exactly. */
+  font-family: var(--font-mono);
   font-size: 26px;
   font-weight: 600;
   letter-spacing: 0.02em;
   line-height: 1;
+  /* Lower case is the whole site's now (see styles.css), but it is restated
+     here for the same reason the font is: this type has to match what is
+     written into the manifest for the laptop screen, exactly. */
   text-transform: lowercase;
   white-space: nowrap;
   /* The drift is on the root and the sweep is on the word inside it, because
@@ -390,26 +388,25 @@
 }
 
 /* Floated out of the photograph on a small screen, a bare word on open picture
-   is thin — it reads as a stray caption rather than a place to go. Give it the
-   same frosted card the laptop's content gets, sized to the box it was floated
-   into. It also stops drifting: the card is a fixed piece of furniture on a
-   small screen, and a bobbing panel reads as a glitch where a bobbing word over
-   an object reads as life. */
-.surface-label.is-floating {
-  /* The card holds still — but `animation` is one property, and this element
-     also carries .glass-edge, whose stroke breathes. So the drift is *replaced*
-     by that breathe rather than switched off; setting `none` here would take the
-     edge's rhythm with it. */
-  animation: breathe 4s ease-in-out infinite;
-  box-sizing: border-box;
-  padding: 0.6em 1.1em;
-  border-radius: 0.9em;
-  /* Material from .glass-edge + .glass-dark, as on the laptop's card. The type
-     here is large, so the em-sized strip would be too — hold it to the same few
-     px the laptop card shows, or the word ends up ringed. */
-  --glass-strip: 0.16em;
+   is thin — it reads as a stray caption rather than a place to go. The notebook's
+   label becomes an <app-glass-button> there instead (see the template): the
+   object the word lost when the manifest dropped the notebook, given back as a
+   slab you can press.
+
+   Only sizing belongs here. The material, the rim and every state are the
+   component's, and this is the seam where that has to stay true — the moment a
+   caller starts re-styling the slab, there are two glass buttons on the site. */
+.notebook-button {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* Sized against the floated box like everything else out here: whichever of
+     the two viewport units binds first. The button's own padding and rim are px
+     and stay put, so only the word scales. */
   font-size: min(6vw, 3.4vh);
-  text-shadow: none;
+  /* Squarer than a free-standing button, because it is filling a wide, shallow
+     strip the manifest chose rather than sizing itself to its label. */
+  --glass-radius: 0.9em;
 }
 
 /* Nothing to click yet, so nothing claims otherwise. */
@@ -424,8 +421,7 @@
     transition: none;
   }
 
-  .surface-label,
-  .surface-label.is-floating {
+  .surface-label {
     animation: none;
   }
 }

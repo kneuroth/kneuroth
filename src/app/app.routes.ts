@@ -6,23 +6,26 @@ import { ThreeDArtComponent } from '@pages/3d-art/3d-art.component';
 import { PortfolioComponent } from '@pages/portfolio/portfolio.component';
 import { BlogComponent } from '@pages/blog/blog.component';
 
+// Titles are lower case in the source, not by transform: they become the browser
+// tab and the bookmark, which no stylesheet can reach. Everything rendered on a
+// page is lowercased by `body { text-transform }` instead — see styles.css.
 export const routes: Routes = [
   {
     title: '',
     path: '',
     component: HomeComponent,
   },
-  { title: 'About Kelly', path: 'about', component: AboutComponent },
+  { title: 'about kelly', path: 'about', component: AboutComponent },
   {
-    title: 'Projects',
+    title: 'projects',
     path: 'portfolio',
     pathMatch: 'full',
     component: PortfolioComponent,
   },
-  { title: 'Blog', path: 'blog', component: BlogComponent },
-  { title: '3D Art', path: '3d-art', component: ThreeDArtComponent },
+  { title: 'blog', path: 'blog', component: BlogComponent },
+  { title: '3d art', path: '3d-art', component: ThreeDArtComponent },
   {
-    title: 'Wordle League',
+    title: 'wordle league',
     path: 'wordle-league',
     component: WordleLeagueComponent,
   },

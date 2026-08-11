@@ -62,10 +62,10 @@ Prettier is configured (`.prettierrc`: single quotes, 80-col,
   no backend or HTTP layer — content is edited in source. Typed models live in
   adjacent `model.ts` / `*.model.ts` files.
 - **Styling**: Tailwind 4 via PostCSS. `src/styles.css` imports tailwind and
-  defines the custom color palette and print rules in an `@theme` block
-  (`--color-frenchgrey` and the three `--color-wordle-*`). Many components use
-  inline templates/styles (configured as the schematic default in
-  `angular.json`).
+  defines the custom color palette, the site-wide monospace face
+  (`--font-mono` + `--default-font-family` — see DESIGN.md's Typography section)
+  and print rules in an `@theme` block. Many components use inline
+  templates/styles (configured as the schematic default in `angular.json`).
 - **Images and static assets** live in `public/` (served from root); portfolio
   and 3D-art galleries reference files under `public/portfolio-images/` and
   `public/3d-art/`. `opportunities.jpg` and its `opportunities.surfaces.json`
@@ -89,7 +89,8 @@ surface — base warm on dark/photographic surfaces, `glow-link-azure` on
 light/frosted-glass ones. Don't add bare buttons or one-off hover styles.
 
 The design-system patterns are encapsulated as a small in-repo component library
-under `@shared/ui` — `<app-glow-button>` (every button) and `<app-glass-panel>`
+under `@shared/ui` — `<app-glow-button>` (a control that reads as a word),
+`<app-glass-button>` (one that reads as an object) and `<app-glass-panel>`
 (every frosted surface), plus the `glowSweep` and `appReveal` directives. Prefer
 these over raw markup or bare PrimeNG controls; plain non-button links stay as
 `<a class="glow-sweep …">`, and any icon is `.glow-link glow-link-icon`.

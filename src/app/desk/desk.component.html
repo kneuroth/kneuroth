@@ -88,9 +88,6 @@
       data-group="cube"
       slot="cube-label"
       routerLink="/portfolio"
-      [class.is-floating]="floating().has('cube-label')"
-      [class.glass-edge]="floating().has('cube-label')"
-      [class.glass-dark]="floating().has('cube-label')"
       ><span glowSweep class="glow-sweep label-text">portfolio</span></a
     >
 
@@ -99,24 +96,40 @@
 
          There is nowhere to go yet, so this is deliberately NOT a link — no
          href, no tab stop, no pointer cursor. It reads as a real part of the
-         desk without promising a destination it hasn't got. When the blog
-         exists, the wrapper becomes an <a routerLink="/blog"> and the label
-         moves inside it, exactly as the cube's does. -->
+         desk without promising a destination it hasn't got. -->
     <div class="notebook-face" data-group="notebook" slot="notebook">
       <span
         class="surface-lit"
         style="--face: #ffffff; --lit-opacity: 0.5"
       ></span>
     </div>
-    <span
-      class="surface-label"
-      data-group="notebook"
-      slot="notebook-label"
-      [class.is-floating]="floating().has('notebook-label')"
-      [class.glass-edge]="floating().has('notebook-label')"
-      [class.glass-dark]="floating().has('notebook-label')"
-      ><span glowSweep class="glow-sweep label-text">blog</span></span
-    >
+
+    <!-- The label is two different things depending on where it lands, so it is
+         two elements rather than one wearing a costume.
+
+         Projected, it hovers over the notebook: a bare drifting word, because
+         the object underneath it is the thing you are looking at and a slab
+         would bury it.
+
+         Floated, there is no notebook — the manifest drops it — so the word
+         would be a caption on open photograph with nothing to belong to. There
+         it becomes a glass button: an object in its own right, which is exactly
+         what the small screen took away. -->
+    @if (floating().has('notebook-label')) {
+      <!-- Dark tone: out here the veil is lifted and the ground is the
+           photograph, so white frost would vanish into the bright sill. -->
+      <app-glass-button
+        class="notebook-button"
+        slot="notebook-label"
+        tone="dark"
+        link="/blog"
+        >blog</app-glass-button
+      >
+    } @else {
+      <span class="surface-label" data-group="notebook" slot="notebook-label"
+        ><span glowSweep class="glow-sweep label-text">blog</span></span
+      >
+    }
   }
 </image-surface>
 

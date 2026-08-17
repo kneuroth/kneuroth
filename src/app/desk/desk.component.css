@@ -111,16 +111,6 @@
   font-weight: 600;
 }
 
-/* ── The notebook ─────────────────────────────────────────────────────────
-   Same shape of thing as a cube face: a box whose only content is the light it
-   throws when you point at it. */
-.notebook-face {
-  position: relative;
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
 /* ── Floating placements ───────────────────────────────────────────────────
    On a phone the manifest crops in on the sill, keeps the cube projected — it's
    the link, it has to stay on the object — and floats these two out of the
@@ -138,20 +128,16 @@
    the cards below show their bloom and drop shadow at all — but it also means an
    overflow spills onto the photograph instead of being cut, so the one card that
    can overflow asks for the clip back itself. */
+/* Off the laptop screen, this text has the whole photograph behind it instead of
+   a black panel — so it brings its own. Frosted like every other surface on the
+   site, just darker, because it sits on the bright half of the shot. */
 .surface-laptop.is-floating {
-  height: 100%;
   white-space: nowrap;
   /* The address is the longest line on the site and it only just fits. Cut is
      bad; spilled across the windowsill is worse. Clipping our own box costs
      nothing that matters — an element's own box-shadow is painted outside its
      border box, so .glass-edge's bloom and shadow survive this. */
   overflow: hidden;
-}
-
-/* Off the laptop screen, this text has the whole photograph behind it instead of
-   a black panel — so it brings its own. Frosted like every other surface on the
-   site, just darker, because it sits on the bright half of the shot. */
-.surface-laptop.is-floating {
   /* Width binds on a phone (the JSON's longest line is ~26em of monospace),
      height binds on a tablet. Deliberately no minimum: a floor large enough to
      read would overflow the narrowest box, and the card clips. */
@@ -195,11 +181,12 @@
    on the photo is what lets any one of them light the whole group — including
    the label, which is a surface of its own now.
 
-   Three knobs, all per-object and all settable inline in the template:
-   `--face` is the colour of the light, `--lit-opacity` how far it goes at full
-   strength (white on a pale notebook page needs far less than teal on a cube),
-   and `--lit-idle` the resting level on touch, which defaults to a quarter of
-   full so an object tuned down stays proportionate without a second number. */
+   Three knobs, all per-object and all set inline in the template: `--face` is
+   the colour of the light, `--lit-opacity` how far it goes at full strength
+   (white on a pale notebook page needs far less than teal on a cube), and
+   `--lit-rest` what share of that it sits at untouched. Every level below full
+   is a fraction of `--lit-opacity` rather than a number of its own, so an
+   object tuned down stays proportionate in all of its states. */
 .cube-face,
 .notebook-face {
   position: relative;
@@ -209,11 +196,14 @@
 }
 
 .surface-lit {
-  --lit-idle: calc(var(--lit-opacity, 0.9) * 0.25);
-
   position: absolute;
   inset: 0;
-  opacity: 0;
+  /* Never fully out: each object rests at a share of its hover strength, in its
+     own colour, so the desk reads as a set of live things rather than a still
+     photograph. Pointing at one takes it the rest of the way. Half by default;
+     the notebook asks for more, because it is capped low to begin with and half
+     of a low cap is nearly nothing. */
+  opacity: calc(var(--lit-opacity, 0.9) * var(--lit-rest, 0.5));
   transition: opacity 0.28s ease;
   /* Light added to the object rather than paint over it: a soft bloom in the
      middle and its own colour burning in from the edges, so what's underneath
@@ -245,6 +235,13 @@
   [data-group='notebook']
   .surface-lit {
   opacity: var(--lit-opacity, 0.9);
+  /* Full strength has to beat the touch breath as well as the resting level: an
+     animation wins over a plain declaration on the same property, so the
+     opacity above only lands once the animation is out of the way. Dropping it
+     also hands the swell back to the 0.28s transition. Inert everywhere there
+     is no breath running, which is why it can sit here rather than in the touch
+     block — that keeps this six-line selector to one copy. */
+  animation: none;
 }
 
 /* ── Touch: the glow has to offer itself ──────────────────────────────────
@@ -253,35 +250,24 @@
    pointer, and a device with no pointer never gets told. A touch laptop has the
    same problem at any width.
 
-   So on those devices the light never fully goes out: it rests faint, and every
-   few seconds swells to full for a beat and settles back. Long dim stretch,
-   short bright one — a breath rather than a blink.
+   A still half-light doesn't say it either, so on those devices the glow
+   becomes a beacon: it drops to a fainter idle and every few seconds swells to
+   *full* — the same place a hover would take it — for a beat, then settles
+   back. Long dim stretch, short bright one, a breath rather than a blink.
 
-   It lives on `.surface-lit`, which is the one element every lit object already
-   uses, so the cube and the notebook get it now and anything given a
-   `.surface-lit` later gets it for nothing. No timers, no JS, nothing to leak.
-   The stagger comes off the same `data-group` that already relates an object's
-   pieces: both cube faces share a delay so the cube pulses as one thing, and
-   the notebook is offset so the desk never blinks in unison. */
+   Everything the beacon needs is in here, since none of it means anything to a
+   pointer: `--lit-idle` is the floor it breathes from, and the stagger comes
+   off the same `data-group` that already relates an object's pieces — both cube
+   faces share a delay so the cube pulses as one thing, and the notebook is
+   offset so the desk never blinks in unison. */
 @media (hover: none) {
   .surface-lit {
+    --lit-idle: calc(var(--lit-opacity, 0.9) * 0.25);
     animation: litBreath 7s ease-in-out var(--lit-delay, 0s) infinite;
   }
 
   [data-group='notebook'] .surface-lit {
     --lit-delay: 2.8s;
-  }
-
-  /* A tap still wins outright: an animation beats a plain declaration on the
-     same property, so the interaction rule above only lands once this is out of
-     the way. Dropping it also hands the swell back to the 0.28s transition. */
-  .photo:has([data-group='cube']:is(:hover, :focus-visible, :active))
-    [data-group='cube']
-    .surface-lit,
-  .photo:has([data-group='notebook']:is(:hover, :focus-visible, :active))
-    [data-group='notebook']
-    .surface-lit {
-    animation: none;
   }
 }
 
@@ -299,10 +285,11 @@
   }
 }
 
-/* Reduced motion keeps the *affordance* and drops the *motion*: the objects
-   still sit lit on touch, they just stop breathing. Removing the glow entirely
+/* Reduced motion keeps the *affordance* and drops the *motion*: on touch the
+   objects still sit lit, they just stop breathing. Removing the glow entirely
    would take the hint away from the people who asked for less movement, not
-   less information. */
+   less information. Nothing here for a pointer — that glow already holds
+   still. */
 @media (hover: none) and (prefers-reduced-motion: reduce) {
   .surface-lit {
     animation: none;

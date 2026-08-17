@@ -372,7 +372,12 @@ body {
        --sweep-c1/--sweep-c2 for one pass, so it only shows while sweeping. Its
        band sits at ~29–33%, i.e. the right edge of the window at rest, so on
        hover colour lands on the first frame (snappy) then sweeps off.
-     - BOTTOM: the resting look — a static left→right white→base gradient. */
+     - BOTTOM: the resting look — a static top→bottom white→base gradient. The
+       breathe drives its colour stop, so the balance rises and falls through
+       the letter height rather than sliding across the word. Cap-height is a
+       short axis, so the whole range lands inside every glyph at once and the
+       word shifts as one; the 90deg version graded the first letter
+       differently from the last. */
   background-image:
     linear-gradient(
       100deg,
@@ -383,7 +388,7 @@ body {
       transparent 37%,
       transparent 100%
     ),
-    linear-gradient(90deg, #ffffff, var(--sweep-base) var(--breathe, 80%));
+    linear-gradient(180deg, #ffffff, var(--sweep-base) var(--breathe, 80%));
   background-size:
     300% 100%,
     100% 100%;
@@ -395,17 +400,17 @@ body {
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
-  /* Ambient glow that breathes with the colour: a soft blue halo that fades in
-     as the text goes blue (color-mix on --breathe, inlined so it repaints).
-     Same effect as the glass-panel border. Always on — the hover sweep no longer
-     touches `filter`, so this blue glow persists through the pass too. */
   /* Ambient glow — a steady soft blue halo, independent of the breathe (breathe
-     only drives the letter gradient below). */
+     only drives the letter gradient below). Always on: the hover sweep no longer
+     touches `filter`, so this blue glow persists through a pass too. */
   filter: drop-shadow(0 0 8px rgb(130 175 225 / 0.45));
   /* Ease the hover glow-boost in/out. */
   transition: filter 0.25s ease;
-  /* Slow, gentle drift of the white↔blue balance in the letters. */
-  animation: breathe 4s ease-in-out infinite;
+  /* Drift of the white↔blue balance in the letters. Quicker than .glass-edge,
+     which runs these same keyframes at 4s: a stroke around a panel is scenery
+     and wants the slow rhythm, but a link is small, read up close, and reads as
+     inert at that tempo. Same shape, its own clock. */
+  animation: breathe 2.5s ease-in-out infinite;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────

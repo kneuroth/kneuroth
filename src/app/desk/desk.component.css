@@ -376,9 +376,9 @@
 
 /* Floated out of the photograph on a small screen, a bare word on open picture
    is thin — it reads as a stray caption rather than a place to go. The notebook's
-   label becomes an <app-glass-button> there instead (see the template): the
+   label slot becomes an <app-glass-button> there instead (see the template): the
    object the word lost when the manifest dropped the notebook, given back as a
-   slab you can press.
+   slab you can press — and pointed at the about page, since the blog is empty.
 
    Only sizing belongs here. The material, the rim and every state are the
    component's, and this is the seam where that has to stay true — the moment a

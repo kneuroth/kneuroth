@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { HeaderComponent } from '@app/header/header.component';
+import { GlassPanelComponent } from '@shared/ui/glass-panel/glass-panel.component';
 
 /**
- * Blank on purpose — the nav needs somewhere to point, and nothing is written
- * yet. The notebook on the desk carries the same word.
+ * A placeholder — the nav needs somewhere to point, and nothing is written yet,
+ * so it says as much. The notebook on the desk glows grey to match.
  */
 @Component({
   selector: 'app-blog',
-  imports: [HeaderComponent],
+  imports: [HeaderComponent, GlassPanelComponent],
   templateUrl: './blog.component.html',
   standalone: true,
   styles: `

@@ -18,8 +18,14 @@ import { GlassPanelComponent } from '@shared/ui/glass-panel/glass-panel.componen
          overflow:hidden — and the panel's frosted layer stands 7px proud of its
          host, so the carousel sliced exactly that off the top of every tile.
          Out here nothing clips it, and the prints read as one collection
-         instead of a row of separately framed objects. -->
-    <app-glass-panel class="mx-auto my-8 block max-w-7xl p-4 sm:p-6">
+         instead of a row of separately framed objects.
+
+         The width leaves a gutter on each side because that same edge stands
+         9px proud of the host: a full-width panel pushes it past the viewport
+         and the whole page scrolls sideways by that much. -->
+    <app-glass-panel
+      class="mx-auto my-8 block w-[calc(100%-2rem)] max-w-7xl p-4 sm:p-6"
+    >
       <p-carousel
         [value]="prints"
         [numVisible]="3"

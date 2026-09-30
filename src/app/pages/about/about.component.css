@@ -101,7 +101,8 @@ app-about .kp-label {
     0 0 10px color-mix(in srgb, var(--kind) 60%, transparent);
   transition:
     color 0.25s ease,
-    text-shadow 0.25s ease;
+    text-shadow 0.25s ease,
+    background-color 0.25s ease;
 }
 
 /* Named just below the face's bottom edge. */
@@ -133,16 +134,26 @@ app-about .kp-leaf .kp-label {
 }
 
 /* Leaves and categories are what gets pressed. The neon kind colour stands in
-   for the usual .glow-sweep here: the colour is the meaning. */
+   for the usual .glow-sweep here: the colour is the meaning.
+
+   Neon on its own doesn't hold up over the frost and the bright photograph
+   behind it — the glow bleeds into a pale ground and the words go soft. So
+   each one sits on a small dark tag (the .glass-dark fill, lighter), its text
+   mixed nearer white, with a tight dark shadow under the glow to cut the
+   letters out. The whole node fades as its face turns away, tag and all. */
 app-about .kp-leaf .kp-label,
 app-about .kp-category .kp-label {
   pointer-events: auto;
   cursor: pointer;
-  padding: 2px 5px;
+  padding: 2px 6px;
   border: 0;
   border-radius: 6px;
-  background: none;
+  background: rgb(8 4 5 / 0.55);
   font-family: inherit;
+  color: color-mix(in srgb, var(--kind) 45%, white);
+  text-shadow:
+    0 1px 2px rgb(0 0 0 / 0.9),
+    0 0 8px color-mix(in srgb, var(--kind) 70%, transparent);
 }
 
 app-about .kp-node button.kp-label:hover,
@@ -153,6 +164,12 @@ app-about .is-lit .kp-label {
     0 0 6px var(--kind),
     0 0 16px var(--kind),
     0 0 28px var(--kind);
+}
+
+/* The chosen chain's tags take on their kind's colour too, so the path still
+   reads as the one lit now that everything around it stays legible. */
+app-about .is-lit button.kp-label {
+  background: color-mix(in srgb, var(--kind) 28%, rgb(8 4 5 / 0.7));
 }
 
 app-about .kp-node button.kp-label:focus-visible {

@@ -91,8 +91,11 @@ const SEGMENTS = 16;
 const THREAD_TIME = 0.45;
 const STEM_TIME = 0.4;
 /** While something is chosen, everything else drops to this. On top of that,
-    faces other than the front one are dimmed by `presence()`. */
-const DIM_LABEL = 0.5;
+    faces other than the front one are dimmed by `presence()`. Labels only
+    step back a little — they're still what you press next, so they have to
+    stay readable; the chosen chain stands out by its glow, not by the rest
+    fading. The lines can go further, they're just scenery. */
+const DIM_LABEL = 0.85;
 const DIM_LINE = 0.4;
 
 const KIND_TOKEN: Record<Kind, string> = {
@@ -1364,16 +1367,17 @@ function paint(
  * How present a face's labels and lines are, from how squarely it faces the
  * viewer (`facing`, -1…1) against the face that does so most (`front`).
  *
- * The front face is at full strength. Every other face is halved — so when
- * two faces are both in view, the one less turned toward you reads at half
- * the other — and halved again once it's turned away behind the pyramid.
- * Each step is eased over a narrow band rather than switched, so nothing
- * flickers as two faces trade places at an edge.
+ * The front face is at full strength. A face still in view but less turned
+ * toward you steps back only slightly — its words can still be pressed, so
+ * they have to stay readable — and one turned away behind the pyramid drops
+ * to about a quarter, the same as ever. Each step is eased over a narrow band
+ * rather than switched, so nothing flickers as two faces trade places at an
+ * edge.
  */
 function presence(facing: number, front: number): number {
   const offFront = smoothstep(0, 0.12, front - facing);
   const behind = smoothstep(0.05, -0.15, facing);
-  return (1 - 0.5 * offFront) * (1 - 0.5 * behind);
+  return (1 - 0.2 * offFront) * (1 - 0.68 * behind);
 }
 
 /** 0 at `from`, 1 at `to`, eased between; `to` may be below `from`. */

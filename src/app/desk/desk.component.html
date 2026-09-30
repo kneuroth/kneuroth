@@ -91,8 +91,9 @@
       ><span glowSweep class="glow-sweep label-text">portfolio</span></a
     >
 
-    <!-- The notebook: the same object-and-a-word pattern as the cube, glowing
-         white off the page instead of the cube's own colours.
+    <!-- The notebook: the same object-and-a-word pattern as the cube, but its
+         light is grey rather than a colour of its own — lit, so it's plainly
+         part of the desk, but dull, so it reads as not ready yet.
 
          There is nowhere to go yet, so this is deliberately NOT a link — no
          href, no tab stop, no pointer cursor. It reads as a real part of the
@@ -100,7 +101,7 @@
     <div class="notebook-face" data-group="notebook" slot="notebook">
       <span
         class="surface-lit"
-        style="--face: #ffffff; --lit-opacity: 0.5; --lit-rest: 0.75"
+        style="--face: #55555c; --lit-opacity: 0.55; --lit-rest: 0.75"
       ></span>
     </div>
 
@@ -114,7 +115,12 @@
          Floated, there is no notebook — the manifest drops it — so the word
          would be a caption on open photograph with nothing to belong to. There
          it becomes a glass button: an object in its own right, which is exactly
-         what the small screen took away. -->
+         what the small screen took away.
+
+         And with no notebook to belong to, the slot goes to somewhere there is
+         to go: the button is "about". The blog has nothing in it yet, and on a
+         phone the one way to the about page — "Kelly" on the floated laptop
+         card — is small and easy to miss as a link. -->
     @if (floating().has('notebook-label')) {
       <!-- Dark tone: out here the veil is lifted and the ground is the
            photograph, so white frost would vanish into the bright sill. -->
@@ -122,8 +128,8 @@
         class="notebook-button"
         slot="notebook-label"
         tone="dark"
-        link="/blog"
-        >blog</app-glass-button
+        link="/about"
+        >about</app-glass-button
       >
     } @else {
       <span class="surface-label" data-group="notebook" slot="notebook-label"

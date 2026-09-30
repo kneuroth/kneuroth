@@ -66,6 +66,13 @@ ambient/random sweep** — hover is the only trigger. On `<app-glow-button>`, pa
 add `glowSweep`. Icon-only action buttons keep the rotating ring; text links
 sweep.
 
+**Somewhere not ready yet adds `.glow-sweep-pending`** (today: every link to
+the blog). It is still a real, clickable link, but it rests white→grey with a
+grey halo, and its hover pass is a grey band running the _opposite_ way, left to
+right (`sweepOnceBack`). Same shape, so it belongs to the set; wrong colour and
+wrong direction, so it reads as not quite on. Drop the class when the place is
+ready — nothing else changes.
+
 ### Variant selection is by surface, not by mood
 
 | Surface                                                    | Variant                     | Why                                                                |

@@ -553,6 +553,48 @@ body {
   }
 }
 
+/* ── .glow-sweep-pending ─────────────────────────────────────────────────
+   The same link, for somewhere that isn't ready yet (the blog). Still a link,
+   still clickable, still swept on hover — but everything that says "alive" is
+   turned down: it rests white→grey instead of white→blue, the halo is grey,
+   GlowSweepDirective hands it a grey band instead of cube colours, and the band
+   runs the other way, left to right. Same shape, so it plainly belongs to the
+   set; wrong colour and wrong direction, so it reads as not quite on yet. */
+.glow-sweep-pending {
+  --sweep-base: rgb(160 160 168 / 1);
+}
+
+.glow-sweep-pending:not(.p-button) {
+  filter: drop-shadow(0 0 8px rgb(170 170 178 / 0.35));
+}
+
+.glow-sweep-pending:not(.p-button):hover,
+.glow-sweep-pending:not(.p-button):focus-visible {
+  filter: drop-shadow(0 0 12px rgb(190 190 198 / 0.6));
+}
+
+.glow-sweep-pending.is-sweeping {
+  animation:
+    breathe 4s ease-in-out infinite,
+    sweepOnceBack 0.9s linear;
+}
+
+/* sweepOnce, mirrored: the band enters at the left edge of the word and leaves
+   off the right. (With the 300% layer, a larger position moves the band left,
+   so this runs from high to low — and past zero to clear the last letter.) */
+@keyframes sweepOnceBack {
+  from {
+    background-position:
+      43% center,
+      0% center;
+  }
+  to {
+    background-position:
+      -12% center,
+      0% center;
+  }
+}
+
 /* No hover changes — the sweep just runs. Keyboard focus gets a plain outline
    (the text itself is transparent, so an outline is the reliable indicator). */
 .glow-sweep:focus-visible {

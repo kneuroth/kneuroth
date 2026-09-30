@@ -53,6 +53,9 @@
    Near-black in the photo, so this is the site's dark surface: the canonical
    swept text link, no scrim needed. */
 .surface-laptop {
+  /* The name's offsetParent, so its offsets are design-space coordinates on
+     this surface — which is what the desk maps its hint through. */
+  position: relative;
   box-sizing: border-box;
   height: 100%;
   display: flex;
@@ -79,6 +82,54 @@
    .glow-sweep carries its own letter-spacing, which fights the heading's. */
 .laptop-name {
   letter-spacing: inherit;
+}
+
+/* The name and its hint stack, centred on each other, while the pair still sits
+   on the heading's line: the name's baseline is the wrapper's, so "Hello, I'm"
+   lines up with it and the hint hangs below. */
+.laptop-name-wrap {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* "(click for 'about')" — in the floated card, sized off the heading in em. The
+   projected version is .name-hint, further down. Both breathe on the labels'
+   loop, so it reads as one of the floating words rather than small print. */
+.laptop-name-hint {
+  margin-top: 0.3em;
+  font-size: 0.3em;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  white-space: nowrap;
+  color: rgb(187 185 190 / 0.7);
+  pointer-events: none;
+  animation: labelFloat 3.6s ease-in-out infinite;
+}
+
+/* The projected hint, in the desk's own flat layer: the desk puts its top-centre
+   just under "Kelly" on screen, and it never tilts with the laptop. `translate`
+   centres it and the drift runs on the inner span, so the two transforms don't
+   overwrite each other. */
+.name-hint {
+  position: absolute;
+  translate: -50% 0;
+  pointer-events: none;
+  font-family: var(--font-mono);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  white-space: nowrap;
+  text-transform: lowercase;
+  color: rgb(187 185 190 / 0.75);
+  filter: drop-shadow(0 1px 2px rgb(6 3 4 / 0.95))
+    drop-shadow(0 0 6px rgb(6 3 4 / 0.8));
+}
+
+.name-hint-text {
+  display: block;
+  animation: labelFloat 3.6s ease-in-out infinite;
 }
 
 .laptop-links {
@@ -356,6 +407,22 @@
     drop-shadow(0 0 6px rgb(6 3 4 / 0.8));
 }
 
+/* The blog's word is pending (see .glow-sweep-pending in styles.css), so its
+   halo is grey — restated here because .label-text's own chain above outranks
+   the global one. The dark edge underneath stays: the ground hasn't changed. */
+.label-text.glow-sweep-pending {
+  filter: drop-shadow(0 0 8px rgb(170 170 178 / 0.35))
+    drop-shadow(0 1px 2px rgb(6 3 4 / 0.95))
+    drop-shadow(0 0 6px rgb(6 3 4 / 0.8));
+}
+
+.surface-label:hover .label-text.glow-sweep-pending,
+.surface-label:focus-visible .label-text.glow-sweep-pending {
+  filter: drop-shadow(0 0 12px rgb(190 190 198 / 0.6))
+    drop-shadow(0 1px 2px rgb(6 3 4 / 0.95))
+    drop-shadow(0 0 6px rgb(6 3 4 / 0.8));
+}
+
 @keyframes labelFloat {
   0%,
   100% {
@@ -378,7 +445,7 @@
    is thin — it reads as a stray caption rather than a place to go. The notebook's
    label slot becomes an <app-glass-button> there instead (see the template): the
    object the word lost when the manifest dropped the notebook, given back as a
-   slab you can press — and pointed at the about page, since the blog is empty.
+   slab you can press.
 
    Only sizing belongs here. The material, the rim and every state are the
    component's, and this is the seam where that has to stay true — the moment a
@@ -396,19 +463,15 @@
   --glass-radius: 0.9em;
 }
 
-/* Nothing to click yet, so nothing claims otherwise. */
-.notebook-face,
-[data-group='notebook'].surface-label {
-  cursor: default;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .surface-lit,
   .veil {
     transition: none;
   }
 
-  .surface-label {
+  .surface-label,
+  .laptop-name-hint,
+  .name-hint-text {
     animation: none;
   }
 }

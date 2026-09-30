@@ -27,6 +27,10 @@ export class GlowSweepDirective implements OnInit, OnDestroy {
     ['#dc7889', '#6697d6'], // white, red, blue
   ];
 
+  /** The band a `.glow-sweep-pending` link gets instead: somewhere not ready
+      yet sweeps grey, not in cube colours. */
+  private static readonly PENDING: [string, string] = ['#6e6e76', '#a4a4ac'];
+
   private stopped = false;
   /** The element that actually carries the swept text: a button's label, or,
    *  for a plain link, the host itself. Resolved lazily (the label renders
@@ -63,10 +67,11 @@ export class GlowSweepDirective implements OnInit, OnDestroy {
     if (this.stopped) return;
     const t = this.target();
     if (t.classList.contains('is-sweeping')) return; // one at a time
-    const [c1, c2] =
-      GlowSweepDirective.GROUPS[
-        Math.floor(Math.random() * GlowSweepDirective.GROUPS.length)
-      ];
+    const [c1, c2] = t.classList.contains('glow-sweep-pending')
+      ? GlowSweepDirective.PENDING
+      : GlowSweepDirective.GROUPS[
+          Math.floor(Math.random() * GlowSweepDirective.GROUPS.length)
+        ];
     t.style.setProperty('--sweep-c1', c1);
     t.style.setProperty('--sweep-c2', c2);
     // Restart the one-shot animation on the animating element.
@@ -76,7 +81,9 @@ export class GlowSweepDirective implements OnInit, OnDestroy {
   };
 
   private readonly onEnd = (e: AnimationEvent): void => {
-    if (e.animationName !== 'sweepOnce') return;
+    // sweepOnceBack is the pending variant's pass (see .glow-sweep-pending).
+    if (e.animationName !== 'sweepOnce' && e.animationName !== 'sweepOnceBack')
+      return;
     const t = this.target();
     t.classList.remove('is-sweeping');
     // Back to the resting gradient until the next hover.

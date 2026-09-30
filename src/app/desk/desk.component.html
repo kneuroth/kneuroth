@@ -23,11 +23,27 @@
     >
       <!-- The name itself is the way in: "Kelly" is the link, the greeting
            around it is not. Same swept treatment as the links below it. -->
+      <!-- A hint under the name says so, since a name doesn't look like a
+           button. It's outside the link (.glow-sweep would paint it as one) and
+           hidden from screen readers, which already announce the link. Only
+           here when floated: projected, it's drawn upright in front of the
+           screen instead (see .name-hint below the photo). -->
       <h2 class="laptop-hello">
         Hello, I'm
-        <a glowSweep class="glow-sweep laptop-name" routerLink="/about"
-          >Kelly</a
-        >
+        <span class="laptop-name-wrap">
+          <a
+            #laptopName
+            glowSweep
+            class="glow-sweep laptop-name"
+            routerLink="/about"
+            >Kelly</a
+          >
+          @if (floating().has('laptop')) {
+            <span class="laptop-name-hint" aria-hidden="true"
+              >(click for 'about')</span
+            >
+          }
+        </span>
       </h2>
       <!-- Each icon sits outside its link: .glow-sweep clips its background to
            the glyphs and blanks the text fill, which would swallow an icon
@@ -91,19 +107,23 @@
       ><span glowSweep class="glow-sweep label-text">portfolio</span></a
     >
 
-    <!-- The notebook: the same object-and-a-word pattern as the cube, but its
-         light is grey rather than a colour of its own — lit, so it's plainly
-         part of the desk, but dull, so it reads as not ready yet.
-
-         There is nowhere to go yet, so this is deliberately NOT a link — no
-         href, no tab stop, no pointer cursor. It reads as a real part of the
-         desk without promising a destination it hasn't got. -->
-    <div class="notebook-face" data-group="notebook" slot="notebook">
-      <span
+    <!-- The notebook: the same object-and-a-word pattern as the cube, and a
+         link the same way — the page is a decorative duplicate so a click
+         anywhere on it works, and the label is the real link. Its light is grey
+         rather than a colour of its own: lit, so it's plainly part of the desk,
+         but dull, because the blog behind it is still empty. -->
+    <a
+      class="notebook-face"
+      data-group="notebook"
+      slot="notebook"
+      routerLink="/blog"
+      aria-hidden="true"
+      tabindex="-1"
+      ><span
         class="surface-lit"
         style="--face: #55555c; --lit-opacity: 0.55; --lit-rest: 0.75"
-      ></span>
-    </div>
+      ></span
+    ></a>
 
     <!-- The label is two different things depending on where it lands, so it is
          two elements rather than one wearing a costume.
@@ -115,12 +135,7 @@
          Floated, there is no notebook — the manifest drops it — so the word
          would be a caption on open photograph with nothing to belong to. There
          it becomes a glass button: an object in its own right, which is exactly
-         what the small screen took away.
-
-         And with no notebook to belong to, the slot goes to somewhere there is
-         to go: the button is "about". The blog has nothing in it yet, and on a
-         phone the one way to the about page — "Kelly" on the floated laptop
-         card — is small and easy to miss as a link. -->
+         what the small screen took away. -->
     @if (floating().has('notebook-label')) {
       <!-- Dark tone: out here the veil is lifted and the ground is the
            photograph, so white frost would vanish into the bright sill. -->
@@ -128,16 +143,40 @@
         class="notebook-button"
         slot="notebook-label"
         tone="dark"
-        link="/about"
-        >about</app-glass-button
+        link="/blog"
+        ><span glowSweep class="glow-sweep glow-sweep-pending"
+          >blog</span
+        ></app-glass-button
       >
     } @else {
-      <span class="surface-label" data-group="notebook" slot="notebook-label"
-        ><span glowSweep class="glow-sweep label-text">blog</span></span
+      <!-- Pending: the blog is a real link but has nothing in it yet, so the
+           word sweeps grey, the wrong way (see .glow-sweep-pending). -->
+      <a
+        class="surface-label"
+        data-group="notebook"
+        slot="notebook-label"
+        routerLink="/blog"
+        ><span glowSweep class="glow-sweep glow-sweep-pending label-text"
+          >blog</span
+        ></a
       >
     }
   }
 </image-surface>
+
+<!-- The name hint while the laptop is projected: in the desk's flat layer, not
+     on the tilted screen, so it stays upright. The desk places it under "Kelly"
+     through the laptop's own transform — see `nameHint`. -->
+@if (nameHint(); as hint) {
+  <span
+    class="name-hint"
+    aria-hidden="true"
+    [style.left.px]="hint.x"
+    [style.top.px]="hint.y"
+    [style.font-size.px]="hint.size"
+    ><span class="name-hint-text">(click for 'about')</span></span
+  >
+}
 
 <!-- Off the desk, the photo is scenery again: a veil drops so the frosted panels
      of every other page read against it. -->

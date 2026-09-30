@@ -41,6 +41,7 @@ import { GlowSweepDirective } from '@shared/ui/glow-sweep.directive';
               [routerLink]="navItem.path"
               [fragment]="navItem.fragment"
               class="glow-sweep text-lg font-bold px-5 py-2.5 rounded-2xl"
+              [class.glow-sweep-pending]="navItem.pending"
               >{{ navItem.label }}</a
             >
           }
@@ -55,10 +56,17 @@ export class HeaderComponent {
   animateOnLoad = input(false);
 
   /** The three places to go. No "Home" — the logo beside these already goes
-      there, and the home page is the one page that never shows this bar. */
-  navItems: { label: string; path: string; fragment?: string }[] = [
+      there, and the home page is the one page that never shows this bar.
+      `pending` marks one that isn't ready yet: it sweeps grey, backwards
+      (see .glow-sweep-pending). */
+  navItems: {
+    label: string;
+    path: string;
+    fragment?: string;
+    pending?: boolean;
+  }[] = [
     { label: 'Portfolio', path: '/portfolio' },
-    { label: 'Blog', path: '/blog' },
+    { label: 'Blog', path: '/blog', pending: true },
     { label: 'About', path: '/about' },
   ];
 }

@@ -34,6 +34,13 @@
      than on .glow-sweep because icons need it without being sweep links —
      see .glow-link-icon and the desk's laptop glyphs. */
   --sweep-base: rgb(165 197 222 / 1);
+
+  /* The about page's pyramid codes every node by what it is, and the colour
+     is the meaning: red is a bias, green a habit, blue a way of sense-making.
+     Scoped to that page — nothing else on the site speaks in these. */
+  --neon-bias: #ff3131;
+  --neon-habit: #39ff14;
+  --neon-sensemaking: #1f8fff;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────

@@ -107,6 +107,13 @@ raw hex, in components.
   is why the two sit together.
 - **Nav / header:** nav words on a frosted-glass bar, resting white→
   `--sweep-base`; the house beside them is that same pale blue, solid.
+- **About-page neon (scoped to the pyramid only):** `--neon-bias #ff3131`,
+  `--neon-habit #39ff14`, `--neon-sensemaking #1f8fff`, on `:root` in
+  `styles.css`. Every node, thread and label on the pyramid is coloured by what
+  it is, and there the colour is the meaning — so its leaf buttons glow in their
+  kind's neon instead of wearing `.glow-sweep`. Its glass matches the panels:
+  the same 9px frost, a clear strip, and edges breathing white→blue on the 4s
+  rhythm.
 - **Wordle sub-brand (scoped to the Wordle League page only):**
   `--color-wordle-green #538d4e`, `--color-wordle-gold #b59f3b`,
   `--color-wordle-bg #0f172a`. Do not use these outside that page.

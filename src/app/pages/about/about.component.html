@@ -1,5 +1,43 @@
 <app-header class="no-print"></app-header>
 
-<!-- Deliberately empty. "Kelly" on the home page's laptop screen links here, and
-     the raw material for what goes in is written up in docs/about-me-source.md.
-     The header stays so this isn't a dead end — it's chrome, not content. -->
+<!-- The pyramid. PyramidScene fills this with the frost, the canvas and the
+     label layer; drag turns it, the wheel or a pinch zooms, arrow keys step
+     face to face. -->
+<div
+  #stage
+  class="kp-stage"
+  tabindex="0"
+  role="group"
+  aria-label="how kelly makes sense of things — drag or use the arrow keys to turn it, scroll or pinch to zoom, and choose a word to trace it back"
+>
+  <!-- One sentence, written out from thing to category to leaf. It rides just
+       under the pyramid (the scene sets --kp-under), names the thing facing
+       you, and a chosen category or leaf finishes it in that kind's colour. -->
+  <div class="kp-sentence glass-edge glass-dark">
+    <!-- The words alone are the live region, so the close button's name isn't
+         read out with every change. -->
+    <p aria-live="polite">
+      when thinking about
+      <!-- The comma rides in the same interpolation as the thing, so no space
+           can open up before it. -->
+      <span class="kp-sentence-thing">{{ subject() }}</span
+      >{{ ending() ? ',' : '' }}
+      @if (ending(); as ending) {
+        <span class="kp-sentence-ending" [class]="'kp-' + ending.kind">{{
+          ending.text
+        }}</span>
+      }
+    </p>
+    @if (ending()) {
+      <app-glow-button
+        class="kp-sentence-close"
+        variant="icon"
+        icon="pi pi-times"
+        size="small"
+        [rounded]="true"
+        ariaLabel="clear the choice"
+        (onClick)="clear()"
+      ></app-glow-button>
+    }
+  </div>
+</div>

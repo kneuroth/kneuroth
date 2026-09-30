@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
-import { AboutComponent } from '@pages/about/about.component';
 import { WordleLeagueComponent } from '@pages/wordle-league/wordle-league.component';
 import { ThreeDArtComponent } from '@pages/3d-art/3d-art.component';
 import { PortfolioComponent } from '@pages/portfolio/portfolio.component';
@@ -15,7 +14,13 @@ export const routes: Routes = [
     path: '',
     component: HomeComponent,
   },
-  { title: 'about kelly', path: 'about', component: AboutComponent },
+  // Lazy: the pyramid brings three.js, which nothing else on the site needs.
+  {
+    title: 'about kelly',
+    path: 'about',
+    loadComponent: () =>
+      import('@pages/about/about.component').then((m) => m.AboutComponent),
+  },
   {
     title: 'projects',
     path: 'portfolio',

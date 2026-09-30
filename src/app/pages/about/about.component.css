@@ -1,0 +1,246 @@
+/* The about page: the header, then the pyramid filling the rest of the screen.
+   Unencapsulated (the scene builds its own label DOM), so everything is
+   scoped under app-about. The neon kind colours are tokens in styles.css. */
+
+app-about {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+app-about .kp-stage {
+  position: relative;
+  flex: 1;
+  min-height: 28rem;
+  overflow: hidden;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  /* Dragging turns the pyramid; it mustn't scroll the page as well. */
+  touch-action: none;
+  /* Label size: a base that follows the screen, times --kp-zoom, which the
+     scene raises gently as the visitor zooms in. */
+  --kp-font: calc(clamp(9px, 1.5vmin, 13px) * var(--kp-zoom, 1));
+}
+
+app-about .kp-stage.is-dragging {
+  cursor: grabbing;
+}
+
+app-about .kp-stage:focus-visible {
+  outline: 2px solid var(--sweep-base);
+  outline-offset: -8px;
+  border-radius: 1.5rem;
+}
+
+app-about .kp-frost,
+app-about .kp-canvas,
+app-about .kp-labels {
+  position: absolute;
+  inset: 0;
+}
+
+/* The glass: the panels' frost, clipped by the scene to the pyramid's outline
+   each frame. */
+app-about .kp-frost {
+  pointer-events: none;
+  background: rgb(255 255 255 / 0.14);
+  -webkit-backdrop-filter: blur(9px) saturate(1.15);
+  backdrop-filter: blur(9px) saturate(1.15);
+  clip-path: polygon(0 0, 0 0, 0 0);
+}
+
+app-about .kp-labels {
+  pointer-events: none;
+}
+
+/* ── Nodes ───────────────────────────────────────────────────────────────
+   Each node is a zero-size box at its point in space: the dot is centred on
+   it and the words hang off it — above a thing, beside a category, below a
+   leaf (a tag on the end of its thread). */
+app-about .kp-node {
+  width: 0;
+  height: 0;
+  --kind: #ffffff;
+}
+
+app-about .kp-sensemaking {
+  --kind: var(--neon-sensemaking);
+}
+app-about .kp-habit {
+  --kind: var(--neon-habit);
+}
+app-about .kp-bias {
+  --kind: var(--neon-bias);
+}
+
+app-about .kp-dot {
+  position: absolute;
+  left: -4px;
+  top: -4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--kind);
+  box-shadow:
+    0 0 6px var(--kind),
+    0 0 12px var(--kind);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+app-about .kp-label {
+  position: absolute;
+  white-space: nowrap;
+  font-size: var(--kp-font);
+  letter-spacing: 0.03em;
+  color: color-mix(in srgb, var(--kind) 72%, white);
+  text-shadow:
+    0 0 4px var(--kind),
+    0 0 10px color-mix(in srgb, var(--kind) 60%, transparent);
+  transition:
+    color 0.25s ease,
+    text-shadow 0.25s ease;
+}
+
+/* Named just below the face's bottom edge. */
+app-about .kp-thing .kp-label {
+  left: 0;
+  top: 8px;
+  transform: translateX(-50%);
+  font-size: calc(var(--kp-font) * 1.35);
+  font-weight: 600;
+  color: var(--color-frenchgrey, #bbb9be);
+  text-shadow:
+    0 1px 2px rgb(0 0 0 / 0.5),
+    0 0 10px rgb(150 190 235 / 0.45);
+}
+
+/* Above the dot: the stem runs down to the thing and the threads hang off
+   the front, so the words stay clear of both. */
+app-about .kp-category .kp-label {
+  left: 0;
+  bottom: 5px;
+  transform: translateX(-50%);
+  font-weight: 600;
+}
+
+app-about .kp-leaf .kp-label {
+  left: 0;
+  top: 5px;
+  transform: translateX(-50%);
+}
+
+/* Leaves and categories are what gets pressed. The neon kind colour stands in
+   for the usual .glow-sweep here: the colour is the meaning. */
+app-about .kp-leaf .kp-label,
+app-about .kp-category .kp-label {
+  pointer-events: auto;
+  cursor: pointer;
+  padding: 2px 5px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  font-family: inherit;
+}
+
+app-about .kp-node button.kp-label:hover,
+app-about .kp-node button.kp-label:focus-visible,
+app-about .is-lit .kp-label {
+  color: color-mix(in srgb, var(--kind) 35%, white);
+  text-shadow:
+    0 0 6px var(--kind),
+    0 0 16px var(--kind),
+    0 0 28px var(--kind);
+}
+
+app-about .kp-node button.kp-label:focus-visible {
+  outline: 1px solid var(--kind);
+  outline-offset: 2px;
+}
+
+app-about .is-lit .kp-dot {
+  transform: scale(1.5);
+  box-shadow:
+    0 0 8px var(--kind),
+    0 0 20px var(--kind),
+    0 0 32px var(--kind);
+}
+
+app-about .kp-thing.is-lit .kp-label {
+  color: #ffffff;
+  text-shadow:
+    0 0 8px rgb(255 255 255 / 0.9),
+    0 0 20px rgb(150 190 235 / 0.9);
+}
+
+/* ── The sentence ────────────────────────────────────────────────────────
+   Fixed under the pyramid. The thing reads like the labels under each face;
+   the ending wears its kind's neon, the same as the nodes it came from. */
+app-about .kp-sentence {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  /* Just under the pyramid, but never pushed off the bottom of the stage. */
+  top: min(var(--kp-under, 75%), calc(100% - 7rem));
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: min(46rem, calc(100% - 2rem));
+  margin: 0;
+  padding: 0.6rem 1.1rem;
+  border-radius: 1rem;
+  --glass-strip: 0.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  pointer-events: none;
+  text-align: center;
+  font-size: clamp(0.95rem, 2.2vmin, 1.25rem);
+  line-height: 1.5;
+  color: rgb(255 255 255 / 0.8);
+  text-shadow: 0 1px 3px rgb(0 0 0 / 0.6);
+}
+
+app-about .kp-sentence p {
+  margin: 0;
+}
+
+/* The X is the one part of the card you can press; the rest lets drags
+   through to the pyramid. */
+app-about .kp-sentence-close {
+  flex: none;
+  margin-right: -0.4rem;
+  pointer-events: auto;
+}
+
+app-about .kp-sentence-thing {
+  font-weight: 600;
+  color: #ffffff;
+  text-shadow:
+    0 1px 3px rgb(0 0 0 / 0.6),
+    0 0 10px rgb(150 190 235 / 0.6);
+}
+
+app-about .kp-sentence-ending {
+  font-weight: 600;
+  color: color-mix(in srgb, var(--kind) 55%, white);
+  text-shadow:
+    0 0 6px var(--kind),
+    0 0 16px color-mix(in srgb, var(--kind) 70%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  app-about .kp-dot,
+  app-about .kp-label {
+    transition: none;
+  }
+}
+
+/* Paper gets nothing useful from a canvas that turns. */
+@media print {
+  app-about .kp-stage,
+  app-about .kp-sentence {
+    display: none;
+  }
+}

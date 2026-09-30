@@ -181,6 +181,12 @@
   font-size: 2.2em;
 }
 
+/* Floated, the way to `about` is a glass button of its own under `blog`, so the
+   hint under the name has nothing left to say. */
+.surface-laptop.is-floating .laptop-name-hint {
+  display: none;
+}
+
 .surface-laptop.is-floating .laptop-links {
   gap: 0.35em;
 }
@@ -422,6 +428,20 @@
    Only sizing belongs here. The material, the rim and every state are the
    component's, and this is the seam where that has to stay true — the moment a
    caller starts re-styling the slab, there are two glass buttons on the site. */
+.notebook-buttons {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* The second slab: the blog button's box again, one gap below it. Out of flow
+   so the blog button still fills the placement the manifest gave it. */
+.about-button {
+  position: absolute;
+  top: calc(100% + 0.45em);
+  left: 0;
+}
+
 .notebook-button {
   display: block;
   width: 100%;

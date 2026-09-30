@@ -133,15 +133,24 @@
     @if (floating().has('notebook-label')) {
       <!-- Dark tone: out here the veil is lifted and the ground is the
            photograph, so white frost would vanish into the bright sill. -->
-      <app-glass-button
-        class="notebook-button"
-        slot="notebook-label"
-        tone="dark"
-        link="/blog"
-        ><span glowSweep class="glow-sweep glow-sweep-pending"
-          >blog</span
-        ></app-glass-button
-      >
+      <!-- `about` stands under it as a second slab. It has no surface of its own
+           in the manifest, so it hangs off the blog button's box — same size,
+           one gap down — which a floated surface allows because it doesn't
+           clip. It replaces the hint under the name, which is hidden out here
+           (see .laptop-name-hint). -->
+      <div class="notebook-buttons" slot="notebook-label">
+        <app-glass-button class="notebook-button" tone="dark" link="/blog"
+          ><span glowSweep class="glow-sweep glow-sweep-pending"
+            >blog</span
+          ></app-glass-button
+        >
+        <app-glass-button
+          class="notebook-button about-button"
+          tone="dark"
+          link="/about"
+          ><span glowSweep class="glow-sweep">about</span></app-glass-button
+        >
+      </div>
     } @else {
       <!-- Pending: the blog is a real link but has nothing in it yet, so the
            word sweeps grey, the wrong way (see .glow-sweep-pending). -->

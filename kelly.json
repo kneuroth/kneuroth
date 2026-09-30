@@ -1,0 +1,57 @@
+{
+  "things": [
+    {
+      "type": "problem-solving",
+      "sensemaking": [
+        {
+          "type": "contextual",
+          "examples": [
+            "option-gathering",
+            "boundary-defining",
+            "scope-defining",
+            "zooming-out"
+          ]
+        },
+        {
+          "type": "experiential",
+          "examples": ["own-word-forming", "personna-assuming"]
+        }
+      ],
+      "habits": [
+        {
+          "type": "visual",
+          "examples": ["map-creating", "visual-aid"]
+        },
+        {
+          "type": "categorical",
+          "examples": ["breaking-down", "group-naming", "pattern-matching"]
+        }
+      ],
+      "biases": ["solution-oriented"]
+    },
+    {
+      "type": "people",
+      "sensemaking": [
+        {
+          "type": "contextual",
+          "examples": [
+            "question-asking",
+            "humour-centeredness",
+            "sillyness-evaluating"
+          ]
+        }
+      ],
+      "biases": ["people-pleasing", "humour-sensitive", "user-centered"]
+    },
+    {
+      "type": "design",
+      "sensemaking": [
+        {
+          "type": "experiential",
+          "examples": ["personna-assuming", "intuiting", "break-finding"]
+        }
+      ],
+      "biases": ["function-centered", "user-centered"]
+    }
+  ]
+}

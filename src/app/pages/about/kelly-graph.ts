@@ -26,10 +26,11 @@ export interface CategoryNode {
 }
 
 /**
- * The lowest level — an exact habit, sense-making method or bias. Floats in
- * front of the pyramid on threads. `parents` are category ids, or the thing id
- * for a bias (biases hang straight off their thing). A leaf named under more
- * than one thing is one leaf with several parents and faces.
+ * The lowest level — an exact habit, sense-making method or bias. `parents`
+ * are category ids, or the thing id for a leaf listed straight under its thing
+ * (every bias, and any habit or sense-making not in a category). A leaf named
+ * under more than one thing is one leaf with several parents and faces — and
+ * may hang from a category on one face and straight off the thing on another.
  */
 export interface LeafNode {
   id: string;
@@ -98,12 +99,17 @@ export function buildKellyGraph(kelly: Kelly): KellyGraph {
       face,
     });
 
-    const branches: [CategoryKind, KellyCategory[] | undefined][] = [
+    const branches: [CategoryKind, (KellyCategory | string)[] | undefined][] = [
       ['sensemaking', thing.sensemaking],
       ['habit', thing.habits],
     ];
     for (const [kind, list] of branches) {
       for (const category of list ?? []) {
+        // A plain name is a leaf straight under the thing, like a bias.
+        if (typeof category === 'string') {
+          addLeaf(kind, category, thingId, face);
+          continue;
+        }
         const id = `${thingId}/${kind}/${category.type}`;
         categories.push({
           id,

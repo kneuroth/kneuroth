@@ -4,7 +4,7 @@
       "type": "problem-solving",
       "sensemaking": [
         {
-          "type": "contextual",
+          "type": "contextualizing",
           "examples": [
             "option-gathering",
             "boundary-defining",
@@ -13,45 +13,37 @@
           ]
         },
         {
-          "type": "experiential",
+          "type": "experiencing",
           "examples": ["own-word-forming", "personna-assuming"]
         }
       ],
       "habits": [
         {
-          "type": "visual",
+          "type": "visualizing",
           "examples": ["map-creating", "visual-aid"]
         },
         {
-          "type": "categorical",
-          "examples": ["breaking-down", "group-naming", "pattern-matching"]
+          "type": "categorizing",
+          "examples": ["breaking-down", "group-naming", "commonality-finding"]
         }
       ],
       "biases": ["solution-oriented"]
     },
     {
       "type": "people",
-      "sensemaking": [
-        {
-          "type": "contextual",
-          "examples": [
-            "question-asking",
-            "humour-centeredness",
-            "sillyness-evaluating"
-          ]
-        }
-      ],
-      "biases": ["people-pleasing", "humour-sensitive", "user-centered"]
+      "sensemaking": ["commonality-finding", "being-silly", "humour"],
+      "habits": ["question-asking", "commonality-finding"],
+      "biases": ["people-pleasing", "humour", "user-centered"]
     },
     {
       "type": "design",
       "sensemaking": [
         {
-          "type": "experiential",
+          "type": "experiencing",
           "examples": ["personna-assuming", "intuiting", "break-finding"]
         }
       ],
-      "biases": ["function-centered", "user-centered"]
+      "biases": ["user-centered"]
     }
   ]
 }

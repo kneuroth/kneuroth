@@ -107,8 +107,8 @@ app-about .kp-label {
 
 /* Named just below the face's bottom edge — and the sentence around it:
    "when approaching a problem" (see THING_PHRASES), which a choice finishes.
-   It's one centred block that wraps rather than one long line, so a finished sentence fits a
-   phone. The max-content width is what lets it wrap at all: the node it hangs
+   It's one centred block that wraps rather than one long line, so a finished
+   sentence fits a phone. The max-content width is what lets it wrap at all: the node it hangs
    from is zero-wide, which would otherwise squeeze it to its longest word. The
    scene nudges it sideways by --kp-shift to keep it on screen when its face
    turns towards an edge. */
@@ -294,6 +294,21 @@ app-about .kp-flat .kp-label {
   border-radius: 8px;
   line-height: 1.2;
   letter-spacing: 0;
+}
+
+/* Categories sit above their dot — their leaves' lines leave downward — in
+   slightly bigger type (FLAT_CATEGORY). */
+app-about .kp-flat.kp-category .kp-label {
+  top: auto;
+  bottom: 8px;
+  font-size: calc(var(--kp-font) * 1.15);
+}
+
+/* The sentence printed on the glass: it turns and zooms with its face, so its
+   width is a share of the base edge (≈ 4.6 world units), not of the screen. */
+app-about .kp-flat.kp-thing .kp-label {
+  max-width: 30em;
+  line-height: 1.35;
 }
 
 @media (prefers-reduced-motion: reduce) {

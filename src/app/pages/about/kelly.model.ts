@@ -4,11 +4,15 @@ export interface KellyCategory {
   examples: string[];
 }
 
-/** One "thing" — a subject Kelly makes sense of. Each is a face of the pyramid. */
+/**
+ * One "thing" — a subject Kelly makes sense of. Each is a face of the pyramid.
+ * Sense-making and habits are listed either in categories or, as plain names,
+ * straight under the thing (the way biases always are).
+ */
 export interface KellyThing {
   type: string;
-  sensemaking?: KellyCategory[];
-  habits?: KellyCategory[];
+  sensemaking?: (KellyCategory | string)[];
+  habits?: (KellyCategory | string)[];
   biases?: string[];
 }
 

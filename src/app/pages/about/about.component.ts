@@ -15,13 +15,13 @@ import { HeaderComponent } from '@app/header/header.component';
 import kelly from '../../../../public/kelly.json';
 import { buildKellyGraph, Kind, ThingNode } from './kelly-graph';
 import {
-  BIAS_PHRASE,
   CATEGORY_PHRASES,
+  directPhrase,
   LEAF_PHRASES,
   thingPhrase,
 } from './kelly-phrases.data';
 import { Kelly } from './kelly.model';
-import { PyramidChoice, PyramidScene } from './pyramid-scene';
+import { PyramidChoice, PyramidScene, SentenceEnding } from './pyramid-scene';
 
 const KELLY: Kelly = kelly;
 
@@ -55,39 +55,52 @@ export class AboutComponent {
   /** What the visitor chose, if anything. */
   private readonly choice = signal<PyramidChoice | null>(null);
 
-  /** How the sentence opens — "when approaching a problem" — for the things
-      it's about: the choice's, else the one in front. */
-  protected readonly subject = computed(() => {
-    const chosen = this.choice()?.things ?? [];
-    const front = this.front();
-    const things = chosen.length ? chosen : front ? [front] : [];
-    return things
-      .map((thing) => {
-        const { lead, name } = thingPhrase(thing.name, thing.label);
-        return `${lead} ${name}`;
-      })
-      .join(' and ');
-  });
-
-  /** The rest of the sentence, and the kind that colours it. */
-  protected readonly ending = computed(() => {
+  /**
+   * The rest of each chosen thing's sentence, keyed by thing id. Each is
+   * worded for its own thing: a leaf shared between faces may hang from a
+   * category on one and straight off the thing on the other, so the middle of
+   * the sentence — the category's phrase, or the stand-in for a leaf with no
+   * category — is chosen per thing.
+   */
+  protected readonly endings = computed(() => {
     const choice = this.choice();
     if (!choice) return null;
     const { leaf } = choice;
-    const category = choice.categories[0];
-    const kind: Kind = leaf?.kind ?? category?.kind ?? 'habit';
-
-    const middle =
-      leaf?.kind === 'bias'
-        ? BIAS_PHRASE
-        : category
-          ? (CATEGORY_PHRASES[`${category.kind}:${category.name}`] ??
-            words(category.label))
+    const endings = new Map<string, SentenceEnding>();
+    for (const thing of choice.things) {
+      const category = choice.categories.find((c) => c.thing === thing.id);
+      const kind: Kind = leaf?.kind ?? category?.kind ?? 'habit';
+      const middle = category
+        ? (CATEGORY_PHRASES[`${category.kind}:${category.name}`] ??
+          words(category.label))
+        : leaf
+          ? directPhrase(leaf.kind, thing.name)
           : '';
-    const end = leaf
-      ? (LEAF_PHRASES[leaf.id as `${Kind}:${string}`] ?? words(leaf.label))
-      : '';
-    return { kind, text: ['kelly', middle, end].filter(Boolean).join(' ') };
+      const end = leaf
+        ? (LEAF_PHRASES[leaf.id as `${Kind}:${string}`] ?? words(leaf.label))
+        : '';
+      endings.set(thing.id, {
+        kind,
+        text: ['kelly', middle.trim(), end].filter(Boolean).join(' '),
+      });
+    }
+    return endings;
+  });
+
+  /** The whole sentence, for screen readers: each chosen thing's, else just
+      the opening of the one in front. */
+  protected readonly spoken = computed(() => {
+    const chosen = this.choice()?.things ?? [];
+    const front = this.front();
+    const things = chosen.length ? chosen : front ? [front] : [];
+    const endings = this.endings();
+    return things
+      .map((thing) => {
+        const { lead, name } = thingPhrase(thing.name, thing.label);
+        const ending = endings?.get(thing.id);
+        return `${lead} ${name}${ending ? `, ${ending.text}` : ''}`;
+      })
+      .join('; ');
   });
 
   private readonly scene = signal<PyramidScene | null>(null);
@@ -96,10 +109,10 @@ export class AboutComponent {
     const destroyRef = inject(DestroyRef);
     const zone = inject(NgZone);
 
-    // The ending is written under the chosen thing's face, in the scene.
+    // Each ending is written under its thing's face, in the scene.
     effect(() => {
-      const ending = this.ending();
-      this.scene()?.finish(ending);
+      const endings = this.endings();
+      this.scene()?.finish(endings);
     });
 
     afterNextRender(() => {

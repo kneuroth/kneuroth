@@ -10,34 +10,10 @@
   role="group"
   aria-label="how kelly makes sense of things — drag or use the arrow keys to turn it, scroll or pinch to zoom, and choose a word to trace it back"
 >
-  <!-- One sentence, written out from thing to category to leaf. It rides just
-       under the pyramid (the scene sets --kp-under), names the thing facing
-       you, and a chosen category or leaf finishes it in that kind's colour. -->
-  <div class="kp-sentence glass-edge glass-dark">
-    <!-- The words alone are the live region, so the close button's name isn't
-         read out with every change. -->
-    <p aria-live="polite">
-      when thinking about
-      <!-- The comma rides in the same interpolation as the thing, so no space
-           can open up before it. -->
-      <span class="kp-sentence-thing">{{ subject() }}</span
-      >{{ ending() ? ',' : '' }}
-      @if (ending(); as ending) {
-        <span class="kp-sentence-ending" [class]="'kp-' + ending.kind">{{
-          ending.text
-        }}</span>
-      }
-    </p>
-    @if (ending()) {
-      <app-glow-button
-        class="kp-sentence-close"
-        variant="icon"
-        icon="pi pi-times"
-        size="small"
-        [rounded]="true"
-        ariaLabel="clear the choice"
-        (onClick)="clear()"
-      ></app-glow-button>
-    }
-  </div>
+  <!-- The sentence is drawn by the scene, under each face's thing. This is
+       the same sentence for screen readers only, read out as it changes. -->
+  <p class="kp-spoken" aria-live="polite">
+    when thinking about {{ subject()
+    }}{{ ending() ? ', ' + ending()!.text : '' }}
+  </p>
 </div>

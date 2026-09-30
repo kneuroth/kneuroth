@@ -25,24 +25,18 @@
            around it is not. Same swept treatment as the links below it. -->
       <!-- A hint under the name says so, since a name doesn't look like a
            button. It's outside the link (.glow-sweep would paint it as one) and
-           hidden from screen readers, which already announce the link. Only
-           here when floated: projected, it's drawn upright in front of the
-           screen instead (see .name-hint below the photo). -->
+           hidden from screen readers, which already announce the link. It's
+           written on the screen like everything else here, so it takes the
+           screen's tilt rather than standing apart from it. -->
       <h2 class="laptop-hello">
         Hello, I'm
         <span class="laptop-name-wrap">
-          <a
-            #laptopName
-            glowSweep
-            class="glow-sweep laptop-name"
-            routerLink="/about"
+          <a glowSweep class="glow-sweep laptop-name" routerLink="/about"
             >Kelly</a
           >
-          @if (floating().has('laptop')) {
-            <span class="laptop-name-hint" aria-hidden="true"
-              >(click for 'about')</span
-            >
-          }
+          <span class="laptop-name-hint" aria-hidden="true"
+            >(click for 'about')</span
+          >
         </span>
       </h2>
       <!-- Each icon sits outside its link: .glow-sweep clips its background to
@@ -121,7 +115,7 @@
       tabindex="-1"
       ><span
         class="surface-lit"
-        style="--face: #55555c; --lit-opacity: 0.55; --lit-rest: 0.75"
+        style="--face: #b8b8c0; --lit-opacity: 0.55; --lit-rest: 0.75"
       ></span
     ></a>
 
@@ -163,20 +157,6 @@
     }
   }
 </image-surface>
-
-<!-- The name hint while the laptop is projected: in the desk's flat layer, not
-     on the tilted screen, so it stays upright. The desk places it under "Kelly"
-     through the laptop's own transform — see `nameHint`. -->
-@if (nameHint(); as hint) {
-  <span
-    class="name-hint"
-    aria-hidden="true"
-    [style.left.px]="hint.x"
-    [style.top.px]="hint.y"
-    [style.font-size.px]="hint.size"
-    ><span class="name-hint-text">(click for 'about')</span></span
-  >
-}
 
 <!-- Off the desk, the photo is scenery again: a veil drops so the frosted panels
      of every other page read against it. -->

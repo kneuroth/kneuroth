@@ -25,11 +25,12 @@ export const LEAF_PHRASES: Record<`${Kind}:${string}`, string> = {
   'sensemaking:boundary-defining': 'by defining the boundaries',
   'sensemaking:scope-defining': 'by defining the scope',
   'sensemaking:zooming-out': 'by zooming out',
-  'sensemaking:own-word-forming': "by putting it in his own words",
+  'sensemaking:own-word-forming': 'by putting it in his own words',
   'sensemaking:personna-assuming': 'by becoming a persona',
   'sensemaking:question-asking': 'by asking questions',
   'sensemaking:humour-centeredness': 'by being humourous',
-  'sensemaking:sillyness-evaluating': 'by silly-checking (it\'s similar to a vibe check)',
+  'sensemaking:sillyness-evaluating':
+    "by silly-checking (it's similar to a vibe check)",
   'sensemaking:intuiting': 'by intuiting',
   'sensemaking:break-finding': 'by finding where things break',
 
@@ -39,7 +40,8 @@ export const LEAF_PHRASES: Record<`${Kind}:${string}`, string> = {
   'habit:group-naming': 'by distinguishing groups',
   'habit:pattern-matching': 'by finding patterns',
 
-  'bias:solution-oriented': 'toward a solution always existing, even when it doesn\'t',
+  'bias:solution-oriented':
+    "toward a solution always existing, even when it doesn't",
   'bias:people-pleasing': 'toward pleasing people',
   'bias:humour-sensitive': 'by a proclivity to find humour',
   'bias:function-centered': 'toward function',

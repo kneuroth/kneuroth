@@ -3,6 +3,7 @@ import {
   Component,
   computed,
   DestroyRef,
+  effect,
   ElementRef,
   inject,
   NgZone,
@@ -11,7 +12,6 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { HeaderComponent } from '@app/header/header.component';
-import { GlowButtonComponent } from '@shared/ui/glow-button/glow-button.component';
 import kelly from '../../../../public/kelly.json';
 import { buildKellyGraph, Kind, ThingNode } from './kelly-graph';
 import {
@@ -29,18 +29,18 @@ const words = (label: string) => label.replace(/-/g, ' ');
 
 /**
  * kelly.json as a glass pyramid: one face per thing, named under its bottom
- * edge, its categories on the glass, the exact habits, sense-making and biases
- * floating on threads in front. Under it, one sentence — "when thinking about
- * <the thing facing you>" — that a chosen category or leaf finishes, in its
- * kind's colour. The scene lives in `pyramid-scene.ts`; this mounts it and
- * writes the sentence.
+ * edge, its categories on the glass, and the exact habits, sense-making and
+ * biases on the glass too, joined to them by rigid traces. Each thing's name
+ * reads "when thinking about <thing>", and a chosen category or leaf finishes
+ * that sentence right there under its face, in its kind's colour. The scene
+ * lives in `pyramid-scene.ts`; this mounts it and writes the sentence's words.
  *
  * Unencapsulated because the scene builds its labels itself, outside Angular's
  * templates — every selector in the stylesheet is scoped under `app-about`.
  */
 @Component({
   selector: 'app-about',
-  imports: [HeaderComponent, GlowButtonComponent],
+  imports: [HeaderComponent],
   templateUrl: './about.component.html',
   styleUrl: './about.component.css',
   encapsulation: ViewEncapsulation.None,
@@ -87,28 +87,35 @@ export class AboutComponent {
     return { kind, text: ['kelly', middle, end].filter(Boolean).join(' ') };
   });
 
-  private scene: PyramidScene | null = null;
-
-  /** The sentence's X: drop the choice, back to just the thing in front. */
-  protected clear(): void {
-    this.scene?.clearSelection();
-  }
+  private readonly scene = signal<PyramidScene | null>(null);
 
   constructor() {
     const destroyRef = inject(DestroyRef);
     const zone = inject(NgZone);
+
+    // The ending is written under the chosen thing's face, in the scene.
+    effect(() => {
+      const ending = this.ending();
+      this.scene()?.finish(ending);
+    });
 
     afterNextRender(() => {
       // The render loop runs every frame; keep it out of change detection,
       // and step back in only when the sentence has something new to say.
       const scene = zone.runOutsideAngular(
         () =>
-          new PyramidScene(this.stage().nativeElement, buildKellyGraph(KELLY), {
-            front: (thing) => zone.run(() => this.front.set(thing)),
-            choose: (choice) => zone.run(() => this.choice.set(choice)),
-          }),
+          new PyramidScene(
+            this.stage().nativeElement,
+            buildKellyGraph(KELLY),
+            {
+              front: (thing) => zone.run(() => this.front.set(thing)),
+              choose: (choice) => zone.run(() => this.choice.set(choice)),
+            },
+            // 'floating' hangs the leaves in front on threads instead.
+            'surface',
+          ),
       );
-      this.scene = scene;
+      this.scene.set(scene);
       destroyRef.onDestroy(() => scene.dispose());
     });
   }

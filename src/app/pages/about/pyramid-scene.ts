@@ -3,6 +3,10 @@ import {
   CSS2DObject,
   CSS2DRenderer,
 } from 'three/examples/jsm/renderers/CSS2DRenderer.js';
+import {
+  CSS3DObject,
+  CSS3DRenderer,
+} from 'three/examples/jsm/renderers/CSS3DRenderer.js';
 import { Line2 } from 'three/examples/jsm/lines/Line2.js';
 import { LineGeometry } from 'three/examples/jsm/lines/LineGeometry.js';
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
@@ -14,14 +18,57 @@ import {
   ThingNode,
 } from './kelly-graph';
 
+/* ── Layouts ──────────────────────────────────────────────────────────────
+   Two ways to draw the same graph. `floating`: leaves hang in front of their
+   face on slack threads that the turning pyramid yanks. `surface`: leaves lie
+   on the glass itself (a shared one on the edge between its two faces), and
+   every connection is a rigid trace scratched into the face on a meandering
+   path. Surface needs the room, so its pyramid is bigger — and with nothing
+   floating out in front, the camera can frame it more tightly. */
+export type PyramidLayout = 'floating' | 'surface';
+
+interface LayoutConfig {
+  /** Leaves on the glass on rigid traces, rather than floating on threads. */
+  surface: boolean;
+  /** The tetrahedron's edge length. */
+  edge: number;
+  /** Radius the camera frames at zoom 1. */
+  fitRadius: number;
+  /** Zooming in stops this far from the centre. */
+  minDistance: number;
+  /** The view centre's height. */
+  viewY: number;
+  /** How far the view can drift off centre when zoomed right in. */
+  panExtent: number;
+  /** Keeps the camera above the base plane, so the base never shows. */
+  panFloor: number;
+}
+
+const LAYOUTS: Record<PyramidLayout, LayoutConfig> = {
+  floating: {
+    surface: false,
+    edge: 3.2,
+    // The pyramid and its leaves; the view sits a little low, where they hang.
+    fitRadius: 3.9,
+    minDistance: 5.5,
+    viewY: -0.15,
+    panExtent: 3,
+    panFloor: -0.4,
+  },
+  surface: {
+    surface: true,
+    edge: 4.6,
+    fitRadius: 3.5,
+    minDistance: 3.4,
+    viewY: 0.1,
+    panExtent: 3.6,
+    panFloor: -0.8,
+  },
+};
+
 /* ── Geometry ─────────────────────────────────────────────────────────────
    A regular tetrahedron centred on the origin: apex up, base down. Faces 0–2
    are the three things; the base is never drawn and never shown. */
-const EDGE = 3.2;
-const HEIGHT = EDGE * Math.sqrt(2 / 3);
-const APEX_Y = HEIGHT * 0.75;
-const BASE_Y = -HEIGHT * 0.25;
-const BASE_R = EDGE / Math.sqrt(3);
 
 /** A side face's normal leans up by asin(1/3); this tilt stands it square. */
 const REST_TILT = Math.asin(1 / 3);
@@ -46,22 +93,41 @@ const ARM_ANGLE = 0.7;
 /** Lifts drawn marks just off the glass. */
 const SURFACE = 0.01;
 
-/** Rough label footprint in world units, for spacing the leaves apart. */
+/** Surface layout: categories sit higher, leaving the wide lower half of the
+    face for the leaves, which fan down off them on shorter arms. */
+const SURFACE_CATEGORY_V = 0.45;
+const SURFACE_CATEGORY_ROWS = [0.4, 0.56];
+const SURFACE_SHARED_V = 0.72;
+const SURFACE_ARM_LENGTH = 0.6;
+const SURFACE_ARM_ANGLE = 0.85;
+/** Labels stay this far inside the face's edges. */
+const SURFACE_MARGIN = 0.06;
+/** A trace bends at a waypoint every so often along its length, each pushed
+    sideways by up to this much of the length (capped) — so it wanders, but
+    plainly heads from one end to the other. */
+const TRACE_STEP = 0.4;
+const TRACE_WANDER = 0.22;
+const TRACE_WANDER_MAX = 0.28;
+
+/** Surface leaves are printed flat on the glass (CSS3D), so their size is in
+    world units: FLAT_PX-pixel type, each CSS pixel FLAT_SCALE world units.
+    The rest matches `.kp-flat` in the stylesheet — a monospace face (0.6em a
+    character), a 1.2 line height, the tag's padding and its drop below the
+    dot — so the layout knows each label's true footprint. */
+const FLAT_PX = 20;
+const FLAT_SCALE = 0.0043;
+const FLAT_CHAR = 0.6 * FLAT_PX * FLAT_SCALE;
+const FLAT_PAD_X = 8 * FLAT_SCALE;
+const FLAT_H = (FLAT_PX * 1.2 + 2 * 3) * FLAT_SCALE;
+const FLAT_DROP = 8 * FLAT_SCALE;
+
+/** Rough label footprint in world units, for spacing the leaves apart — at the
+    floating layout's framing; other framings scale it by their fit radius. */
 const CHAR_W = 0.062;
 const LABEL_H = 0.26;
 const LABEL_GAP = 0.12;
 
 /* ── Camera ───────────────────────────────────────────────────────────── */
-/** Radius the camera frames at zoom 1: the pyramid and its leaves. */
-const FIT_RADIUS = 3.9;
-/** Zooming in stops this far from the centre, clear of the nearest leaf. */
-const MIN_DISTANCE = 5.5;
-/** The view centre sits a little low, where the leaves hang. */
-const VIEW_Y = -0.15;
-/** How far the view can drift off centre when zoomed right in. */
-const PAN_EXTENT = 3;
-/** Keeps the camera above the base plane, so the base never shows. */
-const PAN_FLOOR = -0.4;
 const WHEEL_ZOOM = 0.0015;
 
 /* ── Motion ───────────────────────────────────────────────────────────── */
@@ -120,6 +186,8 @@ interface ThingState {
   node: ThingNode;
   root: HTMLElement;
   local: THREE.Vector3;
+  /** Where the chosen sentence's ending is written, after the thing's name. */
+  ending: HTMLElement;
 }
 
 interface CategoryState {
@@ -142,7 +210,7 @@ interface LeafState {
   node: LeafNode;
   root: HTMLElement;
   button: HTMLButtonElement;
-  object: CSS2DObject;
+  object: CSS2DObject | CSS3DObject;
   rest: THREE.Vector3;
   lift: THREE.Vector3;
   pos: THREE.Vector3;
@@ -201,11 +269,15 @@ interface Box {
 /**
  * The about page's pyramid: kelly.json drawn on a glass tetrahedron. Each side
  * face is a thing, with its categories marked on the glass; the exact habits,
- * sense-making methods and biases float in front on threads. Choosing one
- * lights the path back up to its category and thing and turns that face round.
+ * sense-making methods and biases either float in front on threads or lie on
+ * the glass on rigid traces (see `PyramidLayout`). Choosing one lights the
+ * path back up to its category and thing and turns that face round.
  *
  * Plain three.js, mounted into `stage` and torn down by `dispose()`. Labels are
- * real DOM (CSS2DRenderer) so they are readable, focusable buttons; the frosted
+ * real DOM so they are readable, focusable buttons — facing the screen
+ * (CSS2DRenderer), or for surface leaves printed flat on their face
+ * (CSS3DRenderer). Under each face its thing's name is the middle of a
+ * sentence, "when thinking about <thing>", which a choice finishes; the frosted
  * blur is a CSS backdrop-filter clipped to the pyramid's projected outline,
  * which is the only way the glass can blur the photograph behind the canvas.
  */
@@ -215,11 +287,13 @@ export class PyramidScene {
     alpha: true,
   });
   private readonly labels = new CSS2DRenderer();
+  private readonly flatLabels = new CSS3DRenderer();
   private readonly scene = new THREE.Scene();
   private readonly camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
   private readonly group = new THREE.Group();
   private readonly frost = document.createElement('div');
-  private readonly faces = buildFaces();
+  private readonly layout: LayoutConfig;
+  private readonly faces: Face[];
   private readonly corners: THREE.Vector3[];
   private readonly faceMeshes: THREE.Mesh<
     THREE.BufferGeometry,
@@ -230,7 +304,7 @@ export class PyramidScene {
   private readonly categories = new Map<string, CategoryState>();
   private readonly leaves: LeafState[] = [];
   private readonly facing = [0, 0, 0];
-  private readonly faceNormals = this.faces.map(() => new THREE.Vector3());
+  private readonly faceNormals: THREE.Vector3[];
   private readonly colors: Record<Kind, THREE.Color>;
   private readonly edgeBlue: THREE.Color;
   private readonly reducedMotion = matchMedia(
@@ -256,7 +330,6 @@ export class PyramidScene {
   private maxZoom = 1;
   private fitDistance = 10;
   private readonly pan = new THREE.Vector2();
-  private sentenceTop = -1;
   private suppressClick = false;
   private selection: Selection | null = null;
   private front: ThingNode | null = null;
@@ -277,7 +350,12 @@ export class PyramidScene {
     private readonly stage: HTMLElement,
     graph: KellyGraph,
     private readonly events: PyramidEvents,
+    layout: PyramidLayout = 'floating',
   ) {
+    this.layout = LAYOUTS[layout];
+    this.faces = buildFaces(this.layout.edge);
+    this.faceNormals = this.faces.map(() => new THREE.Vector3());
+
     const style = getComputedStyle(stage);
     const token = (name: string, fallback: string) =>
       new THREE.Color(style.getPropertyValue(name).trim() || fallback);
@@ -293,7 +371,13 @@ export class PyramidScene {
     this.renderer.setClearColor(0x000000, 0);
     this.renderer.domElement.className = 'kp-canvas';
     this.labels.domElement.className = 'kp-labels';
-    stage.append(this.frost, this.renderer.domElement, this.labels.domElement);
+    this.flatLabels.domElement.className = 'kp-labels';
+    stage.append(
+      this.frost,
+      this.renderer.domElement,
+      this.flatLabels.domElement,
+      this.labels.domElement,
+    );
 
     this.scene.add(this.group);
     const face0 = this.faces[0];
@@ -336,6 +420,7 @@ export class PyramidScene {
     this.frost.remove();
     this.renderer.domElement.remove();
     this.labels.domElement.remove();
+    this.flatLabels.domElement.remove();
   }
 
   /* ── Construction ─────────────────────────────────────────────────────── */
@@ -395,9 +480,11 @@ export class PyramidScene {
       const local = facePoint(face, 0, 1)
         .addScaledVector(face.up, -THING_DROP)
         .addScaledVector(face.normal, SURFACE);
-      const root = nodeElement('kp-thing', node.label);
+      const { root, ending } = thingElement(node.label, () =>
+        this.clearSelection(),
+      );
       this.group.add(labelObject(root, local));
-      this.things.set(node.id, { node, root, local });
+      this.things.set(node.id, { node, root, local, ending });
     }
 
     const leafById = new Map(graph.leaves.map((leaf) => [leaf.id, leaf]));
@@ -422,6 +509,8 @@ export class PyramidScene {
         .filter((category) => category.face === k)
         .sort((a, b) => score(a) - score(b));
 
+      const { surface } = this.layout;
+      const rows = surface ? SURFACE_CATEGORY_ROWS : CATEGORY_ROWS;
       onFace.forEach((node, i) => {
         const u =
           onFace.length === 1
@@ -430,8 +519,10 @@ export class PyramidScene {
               (2 * CATEGORY_SPREAD * i) / (onFace.length - 1);
         const v =
           onFace.length > 2
-            ? CATEGORY_ROWS[i % CATEGORY_ROWS.length]
-            : CATEGORY_V;
+            ? rows[i % rows.length]
+            : surface
+              ? SURFACE_CATEGORY_V
+              : CATEGORY_V;
         const local = facePoint(face, u, v).addScaledVector(
           face.normal,
           SURFACE,
@@ -449,7 +540,11 @@ export class PyramidScene {
         const thing = this.things.get(node.thing);
         const stem = new Strand(this.group, this.colors[node.kind], this.dpr);
         if (thing) {
-          stem.setPath((t, out) => out.lerpVectors(local, thing.local, t));
+          if (surface) {
+            stem.setPolyline(this.trace(face, local, thing.local, node.id));
+          } else {
+            stem.setPath((t, out) => out.lerpVectors(local, thing.local, t));
+          }
         }
         const category: CategoryState = { node, root, button, local, stem };
         this.categories.set(node.id, category);
@@ -457,6 +552,10 @@ export class PyramidScene {
     }
 
     for (const node of graph.leaves) this.leaves.push(this.buildLeaf(node));
+    if (this.layout.surface) {
+      this.layoutSurface();
+      return;
+    }
     this.layoutLeaves();
 
     for (const leaf of this.leaves) {
@@ -472,9 +571,21 @@ export class PyramidScene {
       this.select(leaf, null),
     );
 
-    const object = new CSS2DObject(root);
-    object.center.set(0, 0);
-    this.scene.add(object);
+    // On the surface a leaf is fixed to the glass, so it and its traces turn
+    // with the pyramid; floating, it's placed in the world each frame.
+    const holder = this.layout.surface ? this.group : this.scene;
+    let object: CSS2DObject | CSS3DObject;
+    if (this.layout.surface) {
+      // Printed on the glass: turned into its face's plane by layoutSurface.
+      root.classList.add('kp-flat');
+      object = new CSS3DObject(root);
+      object.scale.setScalar(FLAT_SCALE);
+    } else {
+      const facing = new CSS2DObject(root);
+      facing.center.set(0, 0);
+      object = facing;
+    }
+    holder.add(object);
 
     const lift = new THREE.Vector3();
     for (const f of node.faces) lift.add(this.faces[f].normal);
@@ -488,7 +599,7 @@ export class PyramidScene {
         anchor: anchor ?? new THREE.Vector3(),
         world: new THREE.Vector3(),
         length: 1,
-        strand: new Strand(this.scene, this.colors[node.kind], this.dpr),
+        strand: new Strand(holder, this.colors[node.kind], this.dpr),
       };
     });
 
@@ -622,6 +733,203 @@ export class PyramidScene {
     }
   }
 
+  /**
+   * Surface rest positions. A shared leaf sits right on the edge between its
+   * two faces; every other leaf lies on its own face, fanned down below its
+   * category (or along the base beside its thing, for a bias) and nudged until
+   * no two labels overlap or run off the glass. Then each leaf is traced back
+   * to its parents.
+   */
+  private layoutSurface(): void {
+    const { faces } = this;
+    const { edge, fitRadius } = this.layout;
+    const bounds = triangle(edge);
+    // Labels are a fixed size on screen; this framing makes them this much
+    // bigger in world units than the floating one does.
+    const scale = fitRadius / LAYOUTS.floating.fitRadius;
+    const charW = CHAR_W * scale;
+    const labelH = LABEL_H * scale;
+
+    for (const leaf of this.leaves) {
+      if (leaf.node.faces.length < 2) continue;
+      const [j, k] = leaf.node.faces;
+      const vertex =
+        [j, (j + 1) % 3].find((v) => v === k || v === (k + 1) % 3) ?? j;
+      leaf.rest
+        .lerpVectors(faces[0].apex, faces[vertex].left, SURFACE_SHARED_V)
+        .addScaledVector(leaf.lift, SURFACE);
+    }
+
+    for (let k = 0; k < faces.length; k++) {
+      const face = faces[k];
+      const toPlane = (p: THREE.Vector3) => {
+        const d = this.tmp.subVectors(p, face.centroid);
+        return { x: d.dot(face.tangent), y: d.dot(face.up) };
+      };
+      const boxes: Box[] = [];
+      const fixed = (
+        p: THREE.Vector3,
+        w: number,
+        h: number,
+        ox: number,
+        oy: number,
+      ) => {
+        const { x, y } = toPlane(p);
+        boxes.push({ x, y, homeX: x, homeY: y, ox, oy, w, h, fixed: true });
+      };
+
+      for (const thing of this.things.values()) {
+        if (thing.node.face !== k) continue;
+        const w = thing.node.label.length * charW * 1.35 + 0.1;
+        const h = labelH * 1.35;
+        fixed(thing.local, w, h, 0, -(0.1 + h / 2));
+      }
+      for (const category of this.categories.values()) {
+        if (category.node.face !== k) continue;
+        const w = category.node.label.length * charW * 1.1 + 0.1;
+        fixed(category.local, w, labelH, 0, 0.08 + labelH / 2);
+      }
+
+      // Leaves are printed at a fixed world size, so their boxes are exact.
+      const leafBox = (leaf: LeafState) => {
+        const w = leaf.node.label.length * FLAT_CHAR + 2 * FLAT_PAD_X;
+        return { w, h: FLAT_H, ox: 0, oy: -(FLAT_DROP + FLAT_H / 2) };
+      };
+      for (const leaf of this.leaves) {
+        if (leaf.node.faces.length < 2 || !leaf.node.faces.includes(k)) {
+          continue;
+        }
+        const { w, h, ox, oy } = leafBox(leaf);
+        fixed(leaf.rest, w, h, ox, oy);
+      }
+
+      const movable: { leaf: LeafState; box: Box }[] = [];
+      let biasIndex = 0;
+      for (const leaf of this.leaves) {
+        if (leaf.node.faces.length !== 1 || leaf.node.faces[0] !== k) continue;
+        let x = 0;
+        let y = 0;
+        const parent = leaf.node.parents[0];
+        const category = this.categories.get(parent);
+        const thing = this.things.get(parent);
+        if (category) {
+          const at = toPlane(category.local);
+          const siblings = category.node.leaves;
+          const j = siblings.indexOf(leaf.node.id);
+          const angle = (j - (siblings.length - 1) / 2) * SURFACE_ARM_ANGLE;
+          x = at.x + Math.sin(angle) * SURFACE_ARM_LENGTH;
+          y = at.y - Math.cos(angle) * SURFACE_ARM_LENGTH;
+        } else if (thing) {
+          // Biases lie along the base, either side of their thing.
+          const at = toPlane(thing.local);
+          const side = biasIndex % 2 === 0 ? 1 : -1;
+          x = at.x + side * (0.8 + 0.6 * Math.floor(biasIndex / 2));
+          y = bounds.baseY + 0.45;
+          biasIndex++;
+        }
+        const box: Box = {
+          x,
+          y,
+          homeX: x,
+          homeY: y,
+          ...leafBox(leaf),
+          fixed: false,
+        };
+        boxes.push(box);
+        movable.push({ leaf, box });
+      }
+
+      relax(boxes, LABEL_GAP * scale, (box) => keepBoxOnFace(box, bounds));
+
+      for (const { leaf, box } of movable) {
+        leaf.rest
+          .copy(face.centroid)
+          .addScaledVector(face.tangent, box.x)
+          .addScaledVector(face.up, box.y)
+          .addScaledVector(face.normal, SURFACE);
+      }
+    }
+
+    const basis = new THREE.Matrix4();
+    const across = new THREE.Vector3();
+    const up = new THREE.Vector3();
+    for (const leaf of this.leaves) {
+      leaf.object.position.copy(leaf.rest);
+      // Lay the label in its face's plane, reading along the base. A shared
+      // leaf lies across its edge, reading along what its two faces agree is
+      // up, so it's the same tilt from either side.
+      up.set(0, 0, 0);
+      for (const f of leaf.node.faces) up.add(faces[f].up);
+      up.addScaledVector(leaf.lift, -up.dot(leaf.lift)).normalize();
+      across.crossVectors(up, leaf.lift);
+      leaf.object.quaternion.setFromRotationMatrix(
+        basis.makeBasis(across, up, leaf.lift),
+      );
+      for (const thread of leaf.threads) {
+        const face =
+          this.categories.get(thread.parent)?.node.face ??
+          this.things.get(thread.parent)?.node.face ??
+          leaf.node.faces[0];
+        thread.strand.setPolyline(
+          this.trace(
+            faces[face],
+            leaf.rest,
+            thread.anchor,
+            `${leaf.node.id}>${thread.parent}`,
+          ),
+        );
+      }
+    }
+  }
+
+  /**
+   * A rigid trace across a face from `from` to `to`: straight runs between
+   * waypoints, each stepped off the direct line by a seeded random amount — so
+   * a connection takes the same path every visit — that eases to nothing at
+   * the ends. Waypoints are kept on the face, so a trace never strays onto the
+   * next one; only its ends may sit on an edge or hang just under the base.
+   */
+  private trace(
+    face: Face,
+    from: THREE.Vector3,
+    to: THREE.Vector3,
+    seed: string,
+  ): THREE.Vector3[] {
+    const random = seededRandom(seed);
+    const bounds = triangle(this.layout.edge);
+    const toPlane = (p: THREE.Vector3) => {
+      const d = this.tmp.subVectors(p, face.centroid);
+      return new THREE.Vector2(d.dot(face.tangent), d.dot(face.up));
+    };
+    const a = toPlane(from);
+    const b = toPlane(to);
+    const length = a.distanceTo(b);
+    const side = new THREE.Vector2(a.y - b.y, b.x - a.x).divideScalar(
+      length || 1,
+    );
+    const runs = clamp(Math.round(length / TRACE_STEP) + 1, 2, 7);
+    const wander = Math.min(length * TRACE_WANDER, TRACE_WANDER_MAX);
+
+    const points = [from.clone()];
+    for (let i = 1; i < runs; i++) {
+      const t = (i + (random() - 0.5) * 0.6) / runs;
+      const offset = (random() * 2 - 1) * wander * Math.sin(Math.PI * t);
+      const p = a.clone().lerp(b, t).addScaledVector(side, offset);
+      p.y = clamp(p.y, bounds.baseY + SURFACE_MARGIN, bounds.apexY);
+      const room = Math.max(0, bounds.halfWidth(p.y) - SURFACE_MARGIN);
+      p.x = clamp(p.x, -room, room);
+      points.push(
+        face.centroid
+          .clone()
+          .addScaledVector(face.tangent, p.x)
+          .addScaledVector(face.up, p.y)
+          .addScaledVector(face.normal, SURFACE),
+      );
+    }
+    points.push(to.clone());
+    return points;
+  }
+
   /* ── Interaction ──────────────────────────────────────────────────────── */
 
   /** Choose a leaf, or a category on its own; choosing it again clears it. */
@@ -678,12 +986,27 @@ export class PyramidScene {
     this.turnTo(-Math.atan2(sin, cos), REST_TILT);
   }
 
-  /** Drops the current choice, if any. The page's X calls this too. */
+  /** Drops the current choice, if any. Each thing's X calls this too. */
   clearSelection(): void {
     if (!this.selection) return;
     this.selection.button.setAttribute('aria-pressed', 'false');
     this.selection = null;
     this.events.choose(null);
+  }
+
+  /**
+   * Finishes the sentence under the chosen thing's face — or both faces, for
+   * a shared leaf — in the chosen kind's colour; `null` takes it away. The
+   * page writes the words; this puts them after the thing's name.
+   */
+  finish(ending: { kind: Kind; text: string } | null): void {
+    for (const thing of this.things.values()) {
+      const shown = !!ending && !!this.selection?.things.has(thing.node.id);
+      thing.root.classList.toggle('is-finished', shown);
+      const words = thing.ending.firstElementChild as HTMLElement;
+      words.className = `kp-thing-words kp-${ending?.kind ?? 'habit'}`;
+      words.textContent = shown && ending ? ending.text : '';
+    }
   }
 
   private turnTo(yaw: number, tilt: number): void {
@@ -733,7 +1056,7 @@ export class PyramidScene {
       lastT: now,
       moved: false,
       onNode: !!(event.target as Element | null)?.closest?.(
-        '.kp-leaf, .kp-category, .kp-sentence-close',
+        '.kp-leaf, .kp-category, .kp-thing-close',
       ),
     };
   };
@@ -878,14 +1201,17 @@ export class PyramidScene {
 
     this.zoom = clamp(zoom, 1, this.maxZoom);
     const { nx, ny, halfW, halfH } = this.view(sx, sy);
-    this.pan.set(at.x - nx * halfW, at.y - ny * halfH - VIEW_Y);
+    this.pan.set(at.x - nx * halfW, at.y - ny * halfH - this.layout.viewY);
     this.placeCamera();
   }
 
   /** A screen point as a point on the plane through the pyramid's centre. */
   private toWorld(clientX: number, clientY: number): { x: number; y: number } {
     const { nx, ny, halfW, halfH } = this.view(clientX, clientY);
-    return { x: this.pan.x + nx * halfW, y: this.pan.y + VIEW_Y + ny * halfH };
+    return {
+      x: this.pan.x + nx * halfW,
+      y: this.pan.y + this.layout.viewY + ny * halfH,
+    };
   }
 
   /** Where a screen point falls in the view (-1…1), and the view's half-size
@@ -905,12 +1231,12 @@ export class PyramidScene {
 
   private placeCamera(): void {
     // Drifting off centre is only allowed as far as the zoom makes room for.
-    const room = PAN_EXTENT * (1 - 1 / this.zoom);
+    const room = this.layout.panExtent * (1 - 1 / this.zoom);
     this.pan.set(
       clamp(this.pan.x, -room, room),
-      clamp(this.pan.y, Math.max(-room, PAN_FLOOR), room),
+      clamp(this.pan.y, Math.max(-room, this.layout.panFloor), room),
     );
-    const y = this.pan.y + VIEW_Y;
+    const y = this.pan.y + this.layout.viewY;
     this.camera.position.set(this.pan.x, y, this.fitDistance / this.zoom);
     this.camera.lookAt(this.pan.x, y, 0);
     // Labels grow a little as you zoom, so zooming in also makes them easier
@@ -928,14 +1254,15 @@ export class PyramidScene {
     this.height = Math.max(1, this.stage.clientHeight);
     this.renderer.setSize(this.width, this.height);
     this.labels.setSize(this.width, this.height);
+    this.flatLabels.setSize(this.width, this.height);
 
     // Back the camera off until the pyramid and its floating leaves fit the
     // narrower of the two directions.
     const aspect = this.width / this.height;
     const halfV = THREE.MathUtils.degToRad(this.camera.fov / 2);
     const halfH = Math.atan(Math.tan(halfV) * aspect);
-    this.fitDistance = FIT_RADIUS / Math.sin(Math.min(halfV, halfH));
-    this.maxZoom = Math.max(1, this.fitDistance / MIN_DISTANCE);
+    this.fitDistance = this.layout.fitRadius / Math.sin(Math.min(halfV, halfH));
+    this.maxZoom = Math.max(1, this.fitDistance / this.layout.minDistance);
     this.zoom = Math.min(this.zoom, this.maxZoom);
     this.camera.aspect = aspect;
     this.camera.updateProjectionMatrix();
@@ -959,6 +1286,7 @@ export class PyramidScene {
     this.updateGlass(t);
 
     this.renderer.render(this.scene, this.camera);
+    this.flatLabels.render(this.scene, this.camera);
     this.labels.render(this.scene, this.camera);
   };
 
@@ -1040,6 +1368,8 @@ export class PyramidScene {
   }
 
   private stepLeaves(t: number, dt: number): void {
+    // Surface leaves are fixed to the glass and turn with it.
+    if (this.layout.surface) return;
     const world = this.group.matrixWorld;
     for (const leaf of this.leaves) {
       const target = this.target.copy(leaf.rest);
@@ -1189,22 +1519,6 @@ export class PyramidScene {
     this.frost.style.clipPath = `polygon(${outline
       .map((p) => `${p.x.toFixed(1)}px ${p.y.toFixed(1)}px`)
       .join(', ')})`;
-
-    // The sentence sits just under the pyramid — under its lowest corner and
-    // the names hanging below the bottom edges. CSS keeps it on screen.
-    let bottom = Math.max(...points.map((p) => p.y));
-    for (const thing of this.things.values()) {
-      const p = this.tmp
-        .copy(thing.local)
-        .applyMatrix4(this.group.matrixWorld)
-        .project(this.camera);
-      bottom = Math.max(bottom, ((1 - p.y) / 2) * this.height);
-    }
-    const top = Math.round(bottom + 40);
-    if (top !== this.sentenceTop) {
-      this.sentenceTop = top;
-      this.stage.style.setProperty('--kp-under', `${top}px`);
-    }
   }
 }
 
@@ -1240,6 +1554,34 @@ class Strand {
 
   setPath(at: (t: number, out: THREE.Vector3) => void): void {
     this.points.forEach((point, i) => at(i / SEGMENTS, point));
+    writeLine(this.glow, this.points);
+    writeLine(this.core, this.points);
+  }
+
+  /**
+   * A path of straight runs through `vertices`, bending exactly at each one.
+   * Every run gets at least one segment and the rest go to the longest, so
+   * the propagation still travels along it at an even pace.
+   */
+  setPolyline(vertices: THREE.Vector3[]): void {
+    const lengths = vertices
+      .slice(1)
+      .map((vertex, i) => vertex.distanceTo(vertices[i]));
+    const counts = lengths.map(() => 1);
+    for (let spare = SEGMENTS - lengths.length; spare > 0; spare--) {
+      let widest = 0;
+      counts.forEach((count, i) => {
+        if (lengths[i] / count > lengths[widest] / counts[widest]) widest = i;
+      });
+      counts[widest]++;
+    }
+    let n = 0;
+    this.points[0].copy(vertices[0]);
+    counts.forEach((count, i) => {
+      for (let s = 1; s <= count; s++) {
+        this.points[++n].lerpVectors(vertices[i], vertices[i + 1], s / count);
+      }
+    });
     writeLine(this.glow, this.points);
     writeLine(this.core, this.points);
   }
@@ -1329,6 +1671,45 @@ function nodeElement(
   return root;
 }
 
+/**
+ * A thing's label, which is also the sentence: the name sits centred under
+ * its face with "when thinking about" before it, and after it an ending —
+ * empty until a choice finishes the sentence (see `finish`) — with the X that
+ * clears the choice.
+ */
+function thingElement(
+  label: string,
+  onClear: () => void,
+): { root: HTMLElement; ending: HTMLElement } {
+  const root = nodeElement('kp-thing', label);
+  const text = root.querySelector('.kp-label') as HTMLElement;
+  text.textContent = '';
+
+  const lead = document.createElement('span');
+  lead.className = 'kp-thing-lead';
+  lead.textContent = 'when thinking about';
+  const name = document.createElement('span');
+  name.className = 'kp-thing-name';
+  name.textContent = label;
+
+  const ending = document.createElement('span');
+  ending.className = 'kp-thing-ending';
+  const words = document.createElement('span');
+  words.className = 'kp-thing-words';
+  const close = document.createElement('button');
+  close.type = 'button';
+  close.className = 'kp-thing-close glow-link glow-link-icon';
+  close.setAttribute('aria-label', 'clear the choice');
+  const icon = document.createElement('i');
+  icon.className = 'pi pi-times';
+  close.append(icon);
+  close.addEventListener('click', onClear);
+  ending.append(words, close);
+
+  text.append(lead, name, ending);
+  return { root, ending };
+}
+
 /** Wires up a node's button: its accessible name, pressed state and click. */
 function pressable(
   root: HTMLElement,
@@ -1388,17 +1769,16 @@ function smoothstep(from: number, to: number, x: number): number {
 
 /* ── Geometry helpers ───────────────────────────────────────────────────── */
 
-function buildFaces(): Face[] {
-  const apex = new THREE.Vector3(0, APEX_Y, 0);
+function buildFaces(edge: number): Face[] {
+  const height = edge * Math.sqrt(2 / 3);
+  const baseY = -height * 0.25;
+  const baseR = edge / Math.sqrt(3);
+  const apex = new THREE.Vector3(0, height * 0.75, 0);
   // Base vertex k at yaw -60° + k·120°, so face 0 (vertices 0 and 1) looks
   // straight down +z and face k looks along yaw k·120°.
   const base = [0, 1, 2].map((k) => {
     const a = -Math.PI / 3 + (k * Math.PI * 2) / 3;
-    return new THREE.Vector3(
-      BASE_R * Math.sin(a),
-      BASE_Y,
-      BASE_R * Math.cos(a),
-    );
+    return new THREE.Vector3(baseR * Math.sin(a), baseY, baseR * Math.cos(a));
   });
   return [0, 1, 2].map((k) => {
     const left = base[k];
@@ -1431,6 +1811,51 @@ function facePoint(face: Face, u: number, v: number): THREE.Vector3 {
     .addScaledVector(face.right.clone().sub(face.left), 0.5 * u * v);
 }
 
+/**
+ * A side face as a flat triangle, in its own plane coordinates: x along the
+ * base (`tangent`), y up the face (`up`), both from the centroid.
+ */
+function triangle(edge: number) {
+  const slant = (edge * Math.sqrt(3)) / 2;
+  const apexY = (2 * slant) / 3;
+  return {
+    apexY,
+    baseY: -slant / 3,
+    /** Half the face's width at height `y`. */
+    halfWidth: (y: number) => ((apexY - y) / slant) * (edge / 2),
+  };
+}
+
+/** Keeps a label box inside a face, clear of its edges by SURFACE_MARGIN. */
+function keepBoxOnFace(box: Box, bounds: ReturnType<typeof triangle>): void {
+  const m = SURFACE_MARGIN;
+  const halfBase = bounds.halfWidth(bounds.baseY);
+  const slant = bounds.apexY - bounds.baseY;
+  // The face narrows upward, so it's the box's top edge that has to fit.
+  const highest =
+    bounds.apexY - ((box.w / 2 + m) * slant) / halfBase - box.h / 2;
+  const cy = clamp(box.y + box.oy, bounds.baseY + box.h / 2 + m, highest);
+  const room = Math.max(0, bounds.halfWidth(cy + box.h / 2) - box.w / 2 - m);
+  const cx = clamp(box.x + box.ox, -room, room);
+  box.x = cx - box.ox;
+  box.y = cy - box.oy;
+}
+
+/** A repeatable random sequence in [0, 1) from a string (mulberry32). */
+function seededRandom(seed: string): () => number {
+  let h = 1779033703;
+  for (let i = 0; i < seed.length; i++) {
+    h = Math.imul(h ^ seed.charCodeAt(i), 3432918353);
+    h = (h << 13) | (h >>> 19);
+  }
+  return () => {
+    h = (h + 0x6d2b79f5) | 0;
+    let t = Math.imul(h ^ (h >>> 15), 1 | h);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
 function quadratic(
   a: THREE.Vector3,
   control: THREE.Vector3,
@@ -1446,8 +1871,15 @@ function quadratic(
   );
 }
 
-/** Pushes overlapping label boxes apart, each still drawn back to its start. */
-function relax(boxes: Box[]): void {
+/**
+ * Pushes overlapping label boxes apart, each still drawn back to its start —
+ * and, given `bound`, held within it after every step.
+ */
+function relax(
+  boxes: Box[],
+  gap = LABEL_GAP,
+  bound?: (box: Box) => void,
+): void {
   for (let iteration = 0; iteration < 500; iteration++) {
     for (let i = 0; i < boxes.length; i++) {
       for (let j = i + 1; j < boxes.length; j++) {
@@ -1456,8 +1888,8 @@ function relax(boxes: Box[]): void {
         if (a.fixed && b.fixed) continue;
         const dx = b.x + b.ox - (a.x + a.ox);
         const dy = b.y + b.oy - (a.y + a.oy);
-        const px = (a.w + b.w) / 2 + LABEL_GAP - Math.abs(dx);
-        const py = (a.h + b.h) / 2 + LABEL_GAP - Math.abs(dy);
+        const px = (a.w + b.w) / 2 + gap - Math.abs(dx);
+        const py = (a.h + b.h) / 2 + gap - Math.abs(dy);
         if (px <= 0 || py <= 0) continue;
         const share = a.fixed || b.fixed ? 1 : 0.5;
         const horizontal = px < py;
@@ -1477,6 +1909,7 @@ function relax(boxes: Box[]): void {
       if (box.fixed) continue;
       box.x += (box.homeX - box.x) * 0.02;
       box.y += (box.homeY - box.y) * 0.02;
+      bound?.(box);
     }
   }
 }

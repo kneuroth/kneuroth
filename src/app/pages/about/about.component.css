@@ -105,7 +105,10 @@ app-about .kp-label {
     background-color 0.25s ease;
 }
 
-/* Named just below the face's bottom edge. */
+/* Named just below the face's bottom edge — and the middle of the sentence.
+   The label is only as wide as the name, so the name stays centred under the
+   face; "when thinking about" hangs off its left and the ending a choice
+   writes hangs off its right. */
 app-about .kp-thing .kp-label {
   left: 0;
   top: 8px;
@@ -116,6 +119,89 @@ app-about .kp-thing .kp-label {
   text-shadow:
     0 1px 2px rgb(0 0 0 / 0.5),
     0 0 10px rgb(150 190 235 / 0.45);
+}
+
+app-about .kp-thing-lead,
+app-about .kp-thing-ending {
+  position: absolute;
+  top: 50%;
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  transform: translateY(-50%);
+  font-size: 0.74em;
+  font-weight: 400;
+}
+
+app-about .kp-thing-lead {
+  right: 100%;
+  margin-right: 0.45em;
+  color: rgb(255 255 255 / 0.7);
+}
+
+app-about .kp-thing-ending {
+  left: 100%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+app-about .is-finished .kp-thing-ending {
+  opacity: 1;
+}
+
+/* The comma belongs to the sentence, not to the ending's colour. */
+app-about .kp-thing-words::before {
+  content: ', ';
+  white-space: pre;
+  color: rgb(255 255 255 / 0.7);
+  text-shadow: none;
+}
+
+app-about .kp-thing-words {
+  font-weight: 600;
+  color: color-mix(in srgb, var(--kind) 55%, white);
+  text-shadow:
+    0 0 6px var(--kind),
+    0 0 16px color-mix(in srgb, var(--kind) 70%, transparent);
+}
+
+/* The X that clears the choice: the site's icon button, bare. Only there —
+   and only pressable — while the sentence is finished. */
+app-about .kp-thing-close {
+  display: grid;
+  place-items: center;
+  width: 1.7em;
+  height: 1.7em;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(8 4 5 / 0.55);
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+app-about .kp-thing-ending .kp-thing-close {
+  visibility: hidden;
+}
+
+app-about .is-finished .kp-thing-ending .kp-thing-close {
+  visibility: visible;
+  pointer-events: auto;
+}
+
+app-about .kp-thing-close .pi {
+  font-size: 0.75em;
+}
+
+/* Screen-reader copy of the sentence; the drawn one lives in the scene. */
+app-about .kp-spoken {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 /* Above the dot: the stem runs down to the thing and the threads hang off
@@ -192,59 +278,29 @@ app-about .kp-thing.is-lit .kp-label {
     0 0 20px rgb(150 190 235 / 0.9);
 }
 
-/* ── The sentence ────────────────────────────────────────────────────────
-   Fixed under the pyramid. The thing reads like the labels under each face;
-   the ending wears its kind's neon, the same as the nodes it came from. */
-app-about .kp-sentence {
-  position: absolute;
-  z-index: 1;
-  left: 50%;
-  /* Just under the pyramid, but never pushed off the bottom of the stage. */
-  top: min(var(--kp-under, 75%), calc(100% - 7rem));
-  transform: translateX(-50%);
-  width: max-content;
-  max-width: min(46rem, calc(100% - 2rem));
-  margin: 0;
-  padding: 0.6rem 1.1rem;
-  border-radius: 1rem;
-  --glass-strip: 0.3rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  pointer-events: none;
-  text-align: center;
-  font-size: clamp(0.95rem, 2.2vmin, 1.25rem);
-  line-height: 1.5;
-  color: rgb(255 255 255 / 0.8);
-  text-shadow: 0 1px 3px rgb(0 0 0 / 0.6);
+/* ── Leaves printed on the glass ─────────────────────────────────────────
+   Surface leaves are laid in their face's plane (CSS3D), so they're sized in
+   world units rather than screen pixels: the scene scales these pixels down
+   and zooming makes them bigger like everything else on the glass. The type
+   size, line height, padding and drop are mirrored by the FLAT_* constants in
+   pyramid-scene.ts, which lay the labels out — change them together. */
+app-about .kp-flat {
+  --kp-font: 20px;
 }
 
-app-about .kp-sentence p {
-  margin: 0;
+app-about .kp-flat .kp-dot {
+  left: -6px;
+  top: -6px;
+  width: 12px;
+  height: 12px;
 }
 
-/* The X is the one part of the card you can press; the rest lets drags
-   through to the pyramid. */
-app-about .kp-sentence-close {
-  flex: none;
-  margin-right: -0.4rem;
-  pointer-events: auto;
-}
-
-app-about .kp-sentence-thing {
-  font-weight: 600;
-  color: #ffffff;
-  text-shadow:
-    0 1px 3px rgb(0 0 0 / 0.6),
-    0 0 10px rgb(150 190 235 / 0.6);
-}
-
-app-about .kp-sentence-ending {
-  font-weight: 600;
-  color: color-mix(in srgb, var(--kind) 55%, white);
-  text-shadow:
-    0 0 6px var(--kind),
-    0 0 16px color-mix(in srgb, var(--kind) 70%, transparent);
+app-about .kp-flat .kp-label {
+  top: 8px;
+  padding: 3px 8px;
+  border-radius: 8px;
+  line-height: 1.2;
+  letter-spacing: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -256,8 +312,7 @@ app-about .kp-sentence-ending {
 
 /* Paper gets nothing useful from a canvas that turns. */
 @media print {
-  app-about .kp-stage,
-  app-about .kp-sentence {
+  app-about .kp-stage {
     display: none;
   }
 }

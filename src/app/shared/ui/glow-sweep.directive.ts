@@ -29,7 +29,7 @@ export class GlowSweepDirective implements OnInit, OnDestroy {
 
   /** The band a `.glow-sweep-pending` link gets instead: somewhere not ready
       yet sweeps grey, not in cube colours. */
-  private static readonly PENDING: [string, string] = ['#6e6e76', '#a4a4ac'];
+  private static readonly PENDING: [string, string] = ['#a4a4ac', '#cacad0'];
 
   private stopped = false;
   /** The element that actually carries the swept text: a button's label, or,

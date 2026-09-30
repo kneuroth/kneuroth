@@ -53,9 +53,6 @@
    Near-black in the photo, so this is the site's dark surface: the canonical
    swept text link, no scrim needed. */
 .surface-laptop {
-  /* The name's offsetParent, so its offsets are design-space coordinates on
-     this surface — which is what the desk maps its hint through. */
-  position: relative;
   box-sizing: border-box;
   height: 100%;
   display: flex;
@@ -93,9 +90,9 @@
   align-items: center;
 }
 
-/* "(click for 'about')" — in the floated card, sized off the heading in em. The
-   projected version is .name-hint, further down. Both breathe on the labels'
-   loop, so it reads as one of the floating words rather than small print. */
+/* "(click for 'about')" — small print on the screen under the name, sized off
+   the heading in em so it scales with it both projected and floated. Still,
+   on purpose: it's part of what's written on the laptop, not a floating word. */
 .laptop-name-hint {
   margin-top: 0.3em;
   font-size: 0.3em;
@@ -105,31 +102,6 @@
   white-space: nowrap;
   color: rgb(187 185 190 / 0.7);
   pointer-events: none;
-  animation: labelFloat 3.6s ease-in-out infinite;
-}
-
-/* The projected hint, in the desk's own flat layer: the desk puts its top-centre
-   just under "Kelly" on screen, and it never tilts with the laptop. `translate`
-   centres it and the drift runs on the inner span, so the two transforms don't
-   overwrite each other. */
-.name-hint {
-  position: absolute;
-  translate: -50% 0;
-  pointer-events: none;
-  font-family: var(--font-mono);
-  font-weight: 400;
-  letter-spacing: 0.02em;
-  line-height: 1;
-  white-space: nowrap;
-  text-transform: lowercase;
-  color: rgb(187 185 190 / 0.75);
-  filter: drop-shadow(0 1px 2px rgb(6 3 4 / 0.95))
-    drop-shadow(0 0 6px rgb(6 3 4 / 0.8));
-}
-
-.name-hint-text {
-  display: block;
-  animation: labelFloat 3.6s ease-in-out infinite;
 }
 
 .laptop-links {
@@ -469,9 +441,7 @@
     transition: none;
   }
 
-  .surface-label,
-  .laptop-name-hint,
-  .name-hint-text {
+  .surface-label {
     animation: none;
   }
 }

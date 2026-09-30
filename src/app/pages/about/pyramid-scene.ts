@@ -17,6 +17,7 @@ import {
   LeafNode,
   ThingNode,
 } from './kelly-graph';
+import { thingPhrase } from './kelly-phrases.data';
 
 /* ── Layouts ──────────────────────────────────────────────────────────────
    Two ways to draw the same graph. `floating`: leaves hang in front of their
@@ -188,6 +189,9 @@ interface ThingState {
   local: THREE.Vector3;
   /** Where the chosen sentence's ending is written, after the thing's name. */
   ending: HTMLElement;
+  /** The name and its sentence, and how far it's nudged to stay on screen. */
+  label: HTMLElement;
+  shift: number;
 }
 
 interface CategoryState {
@@ -276,8 +280,8 @@ interface Box {
  * Plain three.js, mounted into `stage` and torn down by `dispose()`. Labels are
  * real DOM so they are readable, focusable buttons — facing the screen
  * (CSS2DRenderer), or for surface leaves printed flat on their face
- * (CSS3DRenderer). Under each face its thing's name is the middle of a
- * sentence, "when thinking about <thing>", which a choice finishes; the frosted
+ * (CSS3DRenderer). Under each face its thing opens a sentence — "when
+ * approaching a problem" (see THING_PHRASES) — that a choice finishes; the frosted
  * blur is a CSS backdrop-filter clipped to the pyramid's projected outline,
  * which is the only way the glass can blur the photograph behind the canvas.
  */
@@ -299,14 +303,13 @@ export class PyramidScene {
     THREE.BufferGeometry,
     THREE.MeshBasicMaterial
   >[] = [];
-  private readonly edges: { glow: Line2; core: Line2; faces: number[] }[] = [];
+  private readonly edges: { line: Line2; faces: number[] }[] = [];
   private readonly things = new Map<string, ThingState>();
   private readonly categories = new Map<string, CategoryState>();
   private readonly leaves: LeafState[] = [];
   private readonly facing = [0, 0, 0];
   private readonly faceNormals: THREE.Vector3[];
   private readonly colors: Record<Kind, THREE.Color>;
-  private readonly edgeBlue: THREE.Color;
   private readonly reducedMotion = matchMedia(
     '(prefers-reduced-motion: reduce)',
   ).matches;
@@ -364,7 +367,6 @@ export class PyramidScene {
       habit: token(KIND_TOKEN.habit, '#39ff14'),
       sensemaking: token(KIND_TOKEN.sensemaking, '#1f8fff'),
     };
-    this.edgeBlue = token('--sweep-base', '#a5c5de');
 
     this.frost.className = 'kp-frost';
     this.renderer.setPixelRatio(this.dpr);
@@ -457,18 +459,10 @@ export class PyramidScene {
       [base[2], base[0], [2]],
     ];
     for (const [a, b, faces] of pairs) {
-      const glow = makeLine(
-        new THREE.Color(120 / 255, 165 / 255, 215 / 255),
-        10 * this.dpr,
-        0,
-        2,
-      );
-      const core = makeLine(new THREE.Color(0xffffff), 2 * this.dpr, 0.7, 2);
-      for (const line of [glow, core]) {
-        writeLine(line, [a, b]);
-        this.group.add(line);
-      }
-      this.edges.push({ glow, core, faces });
+      const line = makeLine(new THREE.Color(0xffffff), 1 * this.dpr, 0.75, 2);
+      writeLine(line, [a, b]);
+      this.group.add(line);
+      this.edges.push({ line, faces });
     }
   }
 
@@ -480,11 +474,13 @@ export class PyramidScene {
       const local = facePoint(face, 0, 1)
         .addScaledVector(face.up, -THING_DROP)
         .addScaledVector(face.normal, SURFACE);
-      const { root, ending } = thingElement(node.label, () =>
-        this.clearSelection(),
+      const { root, ending } = thingElement(
+        thingPhrase(node.name, node.label),
+        () => this.clearSelection(),
       );
       this.group.add(labelObject(root, local));
-      this.things.set(node.id, { node, root, local, ending });
+      const label = root.querySelector('.kp-label') as HTMLElement;
+      this.things.set(node.id, { node, root, local, ending, label, shift: 0 });
     }
 
     const leafById = new Map(graph.leaves.map((leaf) => [leaf.id, leaf]));
@@ -1275,7 +1271,7 @@ export class PyramidScene {
     this.updateFront();
     this.stepLeaves(t, dt);
     this.updateHighlight(t);
-    this.updateGlass(t);
+    this.updateGlass();
 
     this.renderer.render(this.scene, this.camera);
     this.flatLabels.render(this.scene, this.camera);
@@ -1475,7 +1471,7 @@ export class PyramidScene {
     }
   }
 
-  private updateGlass(t: number): void {
+  private updateGlass(): void {
     // Panes: a little brighter where the window light falls.
     const light = this.tmp.set(0.3, 0.8, 0.5).normalize();
     this.faceMeshes.forEach((mesh, k) => {
@@ -1483,16 +1479,10 @@ export class PyramidScene {
       mesh.material.opacity = this.facing[k] > 0 ? 0.04 + 0.1 * lambert : 0.03;
     });
 
-    // Edges: the site's .glass-edge — a stroke breathing white→blue with a
-    // blue bloom that comes in as it goes blue, on the same 4s rhythm.
-    const blue = this.reducedMotion
-      ? 0
-      : 0.75 * (0.5 - 0.5 * Math.cos((t / 4) * Math.PI * 2));
+    // Edges: a thin, steady stroke — fainter where it runs behind the glass.
     for (const edge of this.edges) {
       const front = edge.faces.some((f) => this.facing[f] > 0);
-      edge.core.material.color.setRGB(1, 1, 1).lerp(this.edgeBlue, blue);
-      edge.core.material.opacity = front ? 0.75 : 0.25;
-      edge.glow.material.opacity = blue * (front ? 0.45 : 0.12);
+      edge.line.material.opacity = front ? 0.75 : 0.25;
     }
 
     // Frost: the photograph blurred behind the pyramid's outline, drawn in
@@ -1511,6 +1501,34 @@ export class PyramidScene {
     this.frost.style.clipPath = `polygon(${outline
       .map((p) => `${p.x.toFixed(1)}px ${p.y.toFixed(1)}px`)
       .join(', ')})`;
+
+    this.keepSentencesOnScreen();
+  }
+
+  /**
+   * A thing's sentence is centred under its face, but a face turned towards
+   * the side of the screen would carry it off the edge — so nudge it back in,
+   * or centre it on the screen if it's wider than the screen allows.
+   */
+  private keepSentencesOnScreen(): void {
+    const margin = 8;
+    for (const thing of this.things.values()) {
+      const p = this.tmp
+        .copy(thing.local)
+        .applyMatrix4(this.group.matrixWorld)
+        .project(this.camera);
+      const x = ((p.x + 1) / 2) * this.width;
+      const half = thing.label.offsetWidth / 2;
+      const shift =
+        half * 2 > this.width - 2 * margin
+          ? this.width / 2 - x
+          : clamp(0, margin + half - x, this.width - margin - half - x);
+      const rounded = Math.round(shift);
+      if (rounded !== thing.shift) {
+        thing.shift = rounded;
+        thing.label.style.setProperty('--kp-shift', `${rounded}px`);
+      }
+    }
   }
 }
 
@@ -1664,25 +1682,25 @@ function nodeElement(
 }
 
 /**
- * A thing's label, which is also the sentence: the name sits centred under
- * its face with "when thinking about" before it, and after it an ending —
- * empty until a choice finishes the sentence (see `finish`) — with the X that
- * clears the choice.
+ * A thing's label, which is also the sentence, centred under its face and
+ * wrapping onto more lines as it grows: its lead ("when approaching a"), the
+ * name that lights up ("problem"), and an ending — empty until a choice
+ * finishes the sentence (see `finish`) — with the X that clears the choice.
  */
 function thingElement(
-  label: string,
+  phrase: { lead: string; name: string },
   onClear: () => void,
 ): { root: HTMLElement; ending: HTMLElement } {
-  const root = nodeElement('kp-thing', label);
+  const root = nodeElement('kp-thing', phrase.name);
   const text = root.querySelector('.kp-label') as HTMLElement;
   text.textContent = '';
 
   const lead = document.createElement('span');
   lead.className = 'kp-thing-lead';
-  lead.textContent = 'when thinking about';
+  lead.textContent = `${phrase.lead} `;
   const name = document.createElement('span');
   name.className = 'kp-thing-name';
-  name.textContent = label;
+  name.textContent = phrase.name;
 
   const ending = document.createElement('span');
   ending.className = 'kp-thing-ending';

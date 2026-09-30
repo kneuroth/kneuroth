@@ -18,6 +18,7 @@ import {
   BIAS_PHRASE,
   CATEGORY_PHRASES,
   LEAF_PHRASES,
+  thingPhrase,
 } from './kelly-phrases.data';
 import { Kelly } from './kelly.model';
 import { PyramidChoice, PyramidScene } from './pyramid-scene';
@@ -30,9 +31,9 @@ const words = (label: string) => label.replace(/-/g, ' ');
 /**
  * kelly.json as a glass pyramid: one face per thing, named under its bottom
  * edge, its categories on the glass, and the exact habits, sense-making and
- * biases on the glass too, joined to them by rigid traces. Each thing's name
- * reads "when thinking about <thing>", and a chosen category or leaf finishes
- * that sentence right there under its face, in its kind's colour. The scene
+ * biases on the glass too, joined to them by rigid traces. Each thing opens a
+ * sentence under its face — "when approaching a problem" — that a chosen
+ * category or leaf finishes right there, in its kind's colour. The scene
  * lives in `pyramid-scene.ts`; this mounts it and writes the sentence's words.
  *
  * Unencapsulated because the scene builds its labels itself, outside Angular's
@@ -54,16 +55,18 @@ export class AboutComponent {
   /** What the visitor chose, if anything. */
   private readonly choice = signal<PyramidChoice | null>(null);
 
-  /** The things the sentence is about: the choice's, else the one in front. */
+  /** How the sentence opens — "when approaching a problem" — for the things
+      it's about: the choice's, else the one in front. */
   protected readonly subject = computed(() => {
-    const things = this.choice()?.things ?? [];
+    const chosen = this.choice()?.things ?? [];
     const front = this.front();
-    const labels = things.length
-      ? things.map((thing) => thing.label)
-      : front
-        ? [front.label]
-        : [];
-    return labels.join(' and ');
+    const things = chosen.length ? chosen : front ? [front] : [];
+    return things
+      .map((thing) => {
+        const { lead, name } = thingPhrase(thing.name, thing.label);
+        return `${lead} ${name}`;
+      })
+      .join(' and ');
   });
 
   /** The rest of the sentence, and the kind that colours it. */

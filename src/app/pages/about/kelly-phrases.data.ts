@@ -1,14 +1,33 @@
 import { CategoryKind, Kind } from './kelly-graph';
 
 /*
- * The sentence under the pyramid: "when thinking about <thing>, kelly
- * <category> <leaf>". kelly.json holds the names; these are the same names
+ * The sentence under the pyramid: "<thing's lead> <thing>, kelly <category>
+ * <leaf>" — e.g. "when approaching a problem, kelly habitually categorizes by
+ * finding patterns". kelly.json holds the names; these are the same names
  * reworded to read in that sentence. Keyed by kind and the name exactly as
  * it is in the file.
  *
  * Each category's phrase carries its kind's word — "habitually", "makes sense
  * of it", "is biased" — so the sentence also says what its colour means.
  */
+
+/**
+ * How each thing opens its sentence, keyed by its type in the file. `lead`
+ * comes first; `name` is the word lit up as the thing itself.
+ */
+export const THING_PHRASES: Record<string, { lead: string; name: string }> = {
+  'problem-solving': { lead: 'when approaching a', name: 'problem' },
+  people: { lead: 'when interacting with', name: 'people' },
+  design: { lead: 'when thinking about', name: 'design' },
+};
+
+/** A thing with no phrase written yet reads the way the others used to. */
+export function thingPhrase(
+  name: string,
+  label: string,
+): { lead: string; name: string } {
+  return THING_PHRASES[name] ?? { lead: 'when thinking about', name: label };
+}
 
 /** A bias has no category of its own; this stands in for one. */
 export const BIAS_PHRASE = 'is biased';

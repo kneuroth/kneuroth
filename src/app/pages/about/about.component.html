@@ -13,7 +13,6 @@
   <!-- The sentence is drawn by the scene, under each face's thing. This is
        the same sentence for screen readers only, read out as it changes. -->
   <p class="kp-spoken" aria-live="polite">
-    when thinking about {{ subject()
-    }}{{ ending() ? ', ' + ending()!.text : '' }}
+    {{ subject() }}{{ ending() ? ', ' + ending()!.text : '' }}
   </p>
 </div>

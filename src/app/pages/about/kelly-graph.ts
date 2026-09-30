@@ -7,6 +7,8 @@ export type CategoryKind = Exclude<Kind, 'bias'>;
 /** A top-level thing: one face of the pyramid. */
 export interface ThingNode {
   id: string;
+  /** The type exactly as written in kelly.json. */
+  name: string;
   label: string;
   face: number;
 }
@@ -89,7 +91,12 @@ export function buildKellyGraph(kelly: Kelly): KellyGraph {
 
   kelly.things.slice(0, FACES).forEach((thing, face) => {
     const thingId = `thing:${thing.type}`;
-    things.push({ id: thingId, label: displayName(thing.type), face });
+    things.push({
+      id: thingId,
+      name: thing.type,
+      label: displayName(thing.type),
+      face,
+    });
 
     const branches: [CategoryKind, KellyCategory[] | undefined][] = [
       ['sensemaking', thing.sensemaking],

@@ -105,14 +105,22 @@ app-about .kp-label {
     background-color 0.25s ease;
 }
 
-/* Named just below the face's bottom edge — and the middle of the sentence.
-   The label is only as wide as the name, so the name stays centred under the
-   face; "when thinking about" hangs off its left and the ending a choice
-   writes hangs off its right. */
+/* Named just below the face's bottom edge — and the sentence around it:
+   "when approaching a problem" (see THING_PHRASES), which a choice finishes.
+   It's one centred block that wraps rather than one long line, so a finished sentence fits a
+   phone. The max-content width is what lets it wrap at all: the node it hangs
+   from is zero-wide, which would otherwise squeeze it to its longest word. The
+   scene nudges it sideways by --kp-shift to keep it on screen when its face
+   turns towards an edge. */
 app-about .kp-thing .kp-label {
   left: 0;
   top: 8px;
-  transform: translateX(-50%);
+  transform: translateX(calc(-50% + var(--kp-shift, 0px)));
+  width: max-content;
+  max-width: min(24em, calc(100vw - 2rem));
+  white-space: normal;
+  text-align: center;
+  line-height: 1.35;
   font-size: calc(var(--kp-font) * 1.35);
   font-weight: 600;
   color: var(--color-frenchgrey, #bbb9be);
@@ -123,30 +131,21 @@ app-about .kp-thing .kp-label {
 
 app-about .kp-thing-lead,
 app-about .kp-thing-ending {
-  position: absolute;
-  top: 50%;
-  display: flex;
-  align-items: center;
-  gap: 0.4em;
-  transform: translateY(-50%);
   font-size: 0.74em;
   font-weight: 400;
 }
 
 app-about .kp-thing-lead {
-  right: 100%;
-  margin-right: 0.45em;
   color: rgb(255 255 255 / 0.7);
 }
 
+/* Only takes up room once a choice has finished the sentence. */
 app-about .kp-thing-ending {
-  left: 100%;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  display: none;
 }
 
 app-about .is-finished .kp-thing-ending {
-  opacity: 1;
+  display: inline;
 }
 
 /* The comma belongs to the sentence, not to the ending's colour. */
@@ -165,27 +164,21 @@ app-about .kp-thing-words {
     0 0 16px color-mix(in srgb, var(--kind) 70%, transparent);
 }
 
-/* The X that clears the choice: the site's icon button, bare. Only there —
-   and only pressable — while the sentence is finished. */
+/* The X that clears the choice: the site's icon button, bare, sitting at the
+   end of the sentence's last line. */
 app-about .kp-thing-close {
-  display: grid;
+  display: inline-grid;
   place-items: center;
+  vertical-align: middle;
   width: 1.7em;
   height: 1.7em;
+  margin-left: 0.4em;
   padding: 0;
   border: 0;
   border-radius: 50%;
   background: rgb(8 4 5 / 0.55);
   cursor: pointer;
   font-size: 0.9em;
-}
-
-app-about .kp-thing-ending .kp-thing-close {
-  visibility: hidden;
-}
-
-app-about .is-finished .kp-thing-ending .kp-thing-close {
-  visibility: visible;
   pointer-events: auto;
 }
 

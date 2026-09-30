@@ -148,15 +148,18 @@ app-about .is-finished .kp-thing-ending {
   display: inline;
 }
 
-/* The comma belongs to the sentence, not to the ending's colour. */
+/* The commas (and the ", and" between two kinds' parts) belong to the
+   sentence, not to either part's colour. */
+app-about .kp-thing-words {
+  color: rgb(255 255 255 / 0.7);
+}
+
 app-about .kp-thing-words::before {
   content: ', ';
   white-space: pre;
-  color: rgb(255 255 255 / 0.7);
-  text-shadow: none;
 }
 
-app-about .kp-thing-words {
+app-about .kp-thing-part {
   font-weight: 600;
   color: color-mix(in srgb, var(--kind) 55%, white);
   text-shadow:
@@ -294,6 +297,25 @@ app-about .kp-flat .kp-label {
   border-radius: 8px;
   line-height: 1.2;
   letter-spacing: 0;
+}
+
+/* On the surface a leaf's words sit beside its dot, clear of the line it
+   hangs on (FLAT_BESIDE). */
+app-about .kp-flat.kp-beside .kp-label {
+  top: 0;
+  left: 14px;
+  transform: translateY(-50%);
+}
+
+/* A leaf of two kinds — one leaf with a line of each colour — carries its
+   second colour as a ring round its dot and a line under its words. */
+app-about .kp-multi .kp-dot {
+  outline: 2px solid var(--kind-2);
+  outline-offset: 1px;
+}
+
+app-about .kp-multi .kp-label {
+  box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--kind-2) 80%, transparent);
 }
 
 /* Categories sit above their dot — their leaves' lines leave downward — in

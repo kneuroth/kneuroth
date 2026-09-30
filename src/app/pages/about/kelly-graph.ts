@@ -25,17 +25,31 @@ export interface CategoryNode {
   leaves: string[];
 }
 
+/** One line from a leaf up to what it's listed under, as one kind. */
+export interface LeafLink {
+  /** A category id, or the thing id for a leaf listed straight under it. */
+  parent: string;
+  kind: Kind;
+  face: number;
+}
+
 /**
- * The lowest level — an exact habit, sense-making method or bias. `parents`
- * are category ids, or the thing id for a leaf listed straight under its thing
- * (every bias, and any habit or sense-making not in a category). A leaf named
- * under more than one thing is one leaf with several parents and faces — and
- * may hang from a category on one face and straight off the thing on another.
+ * The lowest level — an exact habit, sense-making method or bias. A name is
+ * one leaf wherever it's listed: under several things (several faces), under
+ * a category on one face and straight off the thing on another, or as more
+ * than one kind — "humour" as both sense-making and a bias is one leaf with a
+ * line of each colour. `links` has one entry per line; `parents`, `faces` and
+ * `kinds` are the distinct ones, in the order they appear in the file, so
+ * `kind` (the first) is the leaf's own colour.
  */
 export interface LeafNode {
   id: string;
+  /** The name exactly as written in kelly.json. */
+  name: string;
   label: string;
   kind: Kind;
+  kinds: Kind[];
+  links: LeafLink[];
   parents: string[];
   faces: number[];
 }
@@ -76,15 +90,22 @@ export function buildKellyGraph(kelly: Kelly): KellyGraph {
     parent: string,
     face: number,
   ): string => {
-    const id = `${kind}:${name}`;
+    const id = `leaf:${name}`;
     const leaf = leaves.get(id) ?? {
       id,
+      name,
       label: displayName(name),
       kind,
+      kinds: [],
+      links: [],
       parents: [],
       faces: [],
     };
     leaves.set(id, leaf);
+    if (!leaf.kinds.includes(kind)) leaf.kinds.push(kind);
+    if (!leaf.links.some((l) => l.parent === parent && l.kind === kind)) {
+      leaf.links.push({ parent, kind, face });
+    }
     if (!leaf.parents.includes(parent)) leaf.parents.push(parent);
     if (!leaf.faces.includes(face)) leaf.faces.push(face);
     return id;

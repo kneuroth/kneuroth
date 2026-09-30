@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import { HeaderComponent } from '@app/header/header.component';
 import kelly from '../../../../public/kelly.json';
-import { buildKellyGraph, Kind, ThingNode } from './kelly-graph';
+import { buildKellyGraph, ThingNode } from './kelly-graph';
 import {
   CATEGORY_PHRASES,
   directPhrase,
@@ -60,29 +60,62 @@ export class AboutComponent {
    * worded for its own thing: a leaf shared between faces may hang from a
    * category on one and straight off the thing on the other, so the middle of
    * the sentence — the category's phrase, or the stand-in for a leaf with no
-   * category — is chosen per thing.
+   * category — is chosen per thing. A leaf listed as two kinds under the same
+   * thing gets a part for each: "kelly makes sense of them through humour,
+   * and is biased by a proclivity to find humour".
    */
   protected readonly endings = computed(() => {
     const choice = this.choice();
     if (!choice) return null;
     const { leaf } = choice;
+    const categoryOf = (id: string) =>
+      choice.categories.find((category) => category.id === id);
     const endings = new Map<string, SentenceEnding>();
     for (const thing of choice.things) {
-      const category = choice.categories.find((c) => c.thing === thing.id);
-      const kind: Kind = leaf?.kind ?? category?.kind ?? 'habit';
-      const middle = category
-        ? (CATEGORY_PHRASES[`${category.kind}:${category.name}`] ??
-          words(category.label))
-        : leaf
-          ? directPhrase(leaf.kind, thing.name)
-          : '';
-      const end = leaf
-        ? (LEAF_PHRASES[leaf.id as `${Kind}:${string}`] ?? words(leaf.label))
-        : '';
-      endings.set(thing.id, {
-        kind,
-        text: ['kelly', middle.trim(), end].filter(Boolean).join(' '),
-      });
+      let parts: SentenceEnding['parts'];
+      if (leaf) {
+        // One part per line from this leaf to this thing, directly or
+        // through one of its categories.
+        parts = leaf.links
+          .filter(
+            (link) =>
+              link.parent === thing.id ||
+              categoryOf(link.parent)?.thing === thing.id,
+          )
+          .map((link) => {
+            const category = categoryOf(link.parent);
+            const middle = category
+              ? (CATEGORY_PHRASES[`${category.kind}:${category.name}`] ??
+                words(category.label))
+              : directPhrase(link.kind, thing.name);
+            const end =
+              LEAF_PHRASES[`${link.kind}:${leaf.name}`] ?? words(leaf.label);
+            return { kind: link.kind, middle: middle.trim(), end };
+          })
+          // Parts that end the same way say it once, at the end: "makes
+          // sense of them, and habitually connects with them by finding
+          // commonalities".
+          .map((part, i, all) => ({
+            kind: part.kind,
+            text:
+              i < all.length - 1 && all.every((p) => p.end === part.end)
+                ? part.middle
+                : `${part.middle} ${part.end}`,
+          }));
+      } else {
+        parts = choice.categories
+          .filter((category) => category.thing === thing.id)
+          .map((category) => ({
+            kind: category.kind,
+            text: (
+              CATEGORY_PHRASES[`${category.kind}:${category.name}`] ??
+              words(category.label)
+            ).trim(),
+          }));
+      }
+      if (!parts.length) continue;
+      parts[0] = { ...parts[0], text: `kelly ${parts[0].text}` };
+      endings.set(thing.id, { parts });
     }
     return endings;
   });
@@ -98,7 +131,8 @@ export class AboutComponent {
       .map((thing) => {
         const { lead, name } = thingPhrase(thing.name, thing.label);
         const ending = endings?.get(thing.id);
-        return `${lead} ${name}${ending ? `, ${ending.text}` : ''}`;
+        const rest = ending?.parts.map((part) => part.text).join(', and ');
+        return `${lead} ${name}${rest ? `, ${rest}` : ''}`;
       })
       .join('; ');
   });

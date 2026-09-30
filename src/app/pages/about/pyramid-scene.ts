@@ -100,18 +100,19 @@ const SURFACE = 0.01;
 const SURFACE_SHARED_V = 0.72;
 /** Labels stay this far inside the face's edges. */
 const SURFACE_MARGIN = 0.06;
-/** Categories go as high as they fit, but no lower than this above the base. */
-const CATEGORY_LOWEST = 1.4;
-/** Clear space between rows of categories, rows of leaves, and labels in a
-    row. */
-const CATEGORY_ROW_GAP = 0.12;
-const LEAF_ROW_GAP = 0.13;
-const LABEL_SPACING = 0.1;
-const CATEGORY_SPACING = 0.3;
-/** Each category's lines cross to its leaves on a level of their own, this
-    far above the top row of leaves, then this much higher per category. */
-const BUS_GAP = 0.16;
-const BUS_STEP = 0.07;
+/** Clusters (a category and its leaves) sit at least this far apart, and
+    are placed by trying spots this far apart — preferring low on the face,
+    and near their share of the face's width in left-to-right order. */
+const CLUSTER_GAP = 0.25;
+const CLUSTER_STEP = 0.05;
+const CLUSTER_PULL = 2;
+const CLUSTER_SPREAD = 1.2;
+/** How much a cluster would rather its list ran toward its nearer side. */
+const CLUSTER_LEAN_COST = 0.3;
+/** A cluster's leaves are listed down its line: the first this far from the
+    category's dot, then one every leaf's height plus this. */
+const LIST_START = 0.22;
+const LIST_GAP = 0.07;
 /** A line's bends keep this far inside the face's edges where they can. */
 const ROUTE_CLEARANCE = 0.03;
 /** Sideways travel per unit of height along a face's slanted sides (tan 30°):
@@ -129,6 +130,10 @@ const FLAT_CHAR = 0.6 * FLAT_PX * FLAT_SCALE;
 const FLAT_PAD_X = 8 * FLAT_SCALE;
 const FLAT_H = (FLAT_PX * 1.2 + 2 * 3) * FLAT_SCALE;
 const FLAT_DROP = 8 * FLAT_SCALE;
+/** A surface leaf's dot radius, and where its words start beside it
+    (`.kp-beside`). */
+const FLAT_DOT = 6 * FLAT_SCALE;
+const FLAT_BESIDE = 14 * FLAT_SCALE;
 /** Category type is this much bigger (`.kp-flat.kp-category`). */
 const FLAT_CATEGORY = 1.15;
 
@@ -142,17 +147,9 @@ const LABEL_GAP = 0.12;
 const WHEEL_ZOOM = 0.0015;
 
 /* ── Motion ───────────────────────────────────────────────────────────── */
-/** The opening spin: full speed for INTRO_HOLD, then eases out onto the face
-    of the pathway picked to show first (see the constructor). */
+/** The opening spin: full speed for INTRO_HOLD, then eases out onto face 0. */
 const INTRO_SPEED = 9;
 const INTRO_HOLD = 0.5;
-
-/** The opening view (see `defaultView`): leaf type at least this many screen
-    pixels tall, the front face framed with this much to spare, and room left
-    under its bottom edge for the sentence, in world units. */
-const READABLE_PX = 10;
-const FRAME_MARGIN = 1.08;
-const SENTENCE_ROOM = 0.7;
 
 const DRAG_YAW = 0.008;
 const DRAG_TILT = 0.006;
@@ -222,6 +219,8 @@ interface CategoryState {
 
 interface Thread {
   parent: string;
+  /** The kind this line joins the leaf as — and so its colour. */
+  kind: Kind;
   anchor: THREE.Vector3;
   world: THREE.Vector3;
   length: number;
@@ -268,10 +267,13 @@ export interface PyramidChoice {
   things: ThingNode[];
 }
 
-/** The rest of one thing's sentence, and the kind that colours it. */
+/**
+ * The rest of one thing's sentence: one part per way the choice hangs off
+ * that thing — usually one, but a leaf listed as two kinds under the same
+ * thing has a part for each — each in its own kind's colour.
+ */
 export interface SentenceEnding {
-  kind: Kind;
-  text: string;
+  parts: { kind: Kind; text: string }[];
 }
 
 export interface PyramidEvents {
@@ -279,6 +281,23 @@ export interface PyramidEvents {
   front(thing: ThingNode): void;
   /** A leaf or category was chosen, or the choice cleared (null). */
   choose(choice: PyramidChoice | null): void;
+}
+
+/** Where a cluster could go, how much it would rather not, and which way
+    its list leans there. */
+interface Spot {
+  x: number;
+  y: number;
+  cost: number;
+  lean: number;
+}
+
+/** A rectangle in a face's plane coordinates. */
+interface Rect {
+  x0: number;
+  x1: number;
+  y0: number;
+  y1: number;
 }
 
 interface Box {
@@ -365,12 +384,9 @@ export class PyramidScene {
   private raf = 0;
   private last = 0;
   private placed = false;
-  /** The spin's total turn, ending square on to the picked pathway's face. */
-  private introYaw = Math.PI * 2;
+  /** The spin's total turn: once round, ending square on to face 0. */
+  private readonly introYaw = Math.PI * 2;
   private introDecay = 0;
-  /** The pathway lit once the opening spin has settled. */
-  private pending: LeafState | null = null;
-  private viewed = false;
 
   // Scratch space for the render loop, so a frame allocates nothing.
   private readonly tmp = new THREE.Vector3();
@@ -428,22 +444,6 @@ export class PyramidScene {
     this.resize.observe(stage);
     this.fit();
 
-    // Open on a random pathway: the spin settles with its face (or, for a
-    // shared leaf, its edge) toward the viewer, and then it lights up.
-    const pick = this.leaves[Math.floor(Math.random() * this.leaves.length)];
-    if (pick) {
-      let sin = 0;
-      let cos = 0;
-      for (const f of pick.node.faces) {
-        sin += Math.sin(this.faces[f].angle);
-        cos += Math.cos(this.faces[f].angle);
-      }
-      const turn = Math.PI * 2;
-      const facing = ((-Math.atan2(sin, cos) % turn) + turn) % turn;
-      this.introYaw = turn + facing;
-      if (this.reducedMotion) this.yaw = facing;
-      this.pending = pick;
-    }
     this.introDecay = INTRO_SPEED / (this.introYaw - INTRO_SPEED * INTRO_HOLD);
     if (!this.reducedMotion) this.intro = performance.now() / 1000;
     this.last = performance.now() / 1000;
@@ -634,9 +634,17 @@ export class PyramidScene {
 
   private buildLeaf(node: LeafNode): LeafState {
     const root = nodeElement(`kp-leaf kp-${node.kind}`, node.label, true);
-    const button = pressable(root, `${node.label}, ${node.kind}`, () =>
-      this.select(leaf, null),
+    const button = pressable(
+      root,
+      `${node.label}, ${node.kinds.join(' and ')}`,
+      () => this.select(leaf, null),
     );
+    // A leaf of more than one kind wears its second colour too (see
+    // .kp-multi); each of its lines is in its own kind's.
+    if (node.kinds.length > 1) {
+      root.classList.add('kp-multi');
+      root.style.setProperty('--kind-2', `var(${KIND_TOKEN[node.kinds[1]]})`);
+    }
 
     // On the surface a leaf is fixed to the glass, so it and its traces turn
     // with the pyramid; floating, it's placed in the world each frame.
@@ -644,7 +652,8 @@ export class PyramidScene {
     let object: CSS2DObject | CSS3DObject;
     if (this.layout.surface) {
       // Printed on the glass: turned into its face's plane by layoutSurface.
-      root.classList.add('kp-flat');
+      // Its words sit beside its dot, clear of the line it hangs on.
+      root.classList.add('kp-flat', 'kp-beside');
       object = new CSS3DObject(root);
       object.scale.setScalar(FLAT_SCALE);
     } else {
@@ -658,15 +667,16 @@ export class PyramidScene {
     for (const f of node.faces) lift.add(this.faces[f].normal);
     lift.normalize();
 
-    const threads = node.parents.map((parent): Thread => {
+    const threads = node.links.map(({ parent, kind }): Thread => {
       const anchor =
         this.categories.get(parent)?.local ?? this.things.get(parent)?.local;
       return {
         parent,
+        kind,
         anchor: anchor ?? new THREE.Vector3(),
         world: new THREE.Vector3(),
         length: 1,
-        strand: new Strand(holder, this.colors[node.kind], this.dpr),
+        strand: new Strand(holder, this.colors[kind], this.dpr),
       };
     });
 
@@ -801,30 +811,65 @@ export class PyramidScene {
   }
 
   /**
-   * Surface layout: everything on the glass, set out on purpose rather than
-   * scattered.
+   * Surface layout: everything on the glass, in clusters.
    *
-   * On each face the categories sit high — one row, or two staggered rows if
-   * there are more than two — and the leaves sit low, in rows up from the
-   * base. Every group of leaves (a category's, or the biases hanging straight
-   * off the thing) gets a share of each row, in the same left-to-right order
-   * as what it hangs from, so its leaves sit under their parent and the lines
-   * rarely cross. A leaf shared by two things sits on the edge between their
-   * faces; one shared by all three, on the apex.
+   * Each category and its leaves are one tight cluster: the category's name
+   * on top, and its leaves listed down one straight line — parallel to one of
+   * the face's slanted sides — that runs from the category's dot, each leaf's
+   * words beside its dot, clear of the line. The leaves listed straight under
+   * the thing make a cluster of their own, climbing the same way from the
+   * thing at the middle of the base. Clusters are kept well apart, each as
+   * low on the face as it will go near its place in the left-to-right order,
+   * so what belongs together reads together and nothing else crowds it.
    *
-   * Then every connection is routed along the face's three directions only —
-   * parallel to its base or to one of its slanted sides (see `route`).
+   * A leaf shared by two things sits on the edge between their faces; one
+   * shared by all three, on the apex. Every other connection — thing up to
+   * category, category or thing out to a shared leaf — is routed along the
+   * face's three directions only (see `route`).
    */
   private layoutSurface(): void {
     const { faces } = this;
     const bounds = triangle(this.layout.edge);
     const m = SURFACE_MARGIN;
-    const room = (y: number) => 2 * Math.max(0, bounds.halfWidth(y) - m);
     const leafW = (leaf: LeafState) => flatWidth(leaf.node.label, 1);
     const leafH = flatHeight(1);
-    const categoryW = (category: CategoryState) =>
-      flatWidth(category.node.label, FLAT_CATEGORY);
-    const categoryH = flatHeight(FLAT_CATEGORY);
+    const pitch = leafH + LIST_GAP;
+    const catW = (c: CategoryState) => flatWidth(c.node.label, FLAT_CATEGORY);
+    const catH = flatHeight(FLAT_CATEGORY);
+
+    /** The room a leaf's dot and words take, with its dot at (x, y). */
+    const leafRect = (x: number, y: number, leaf: LeafState): Rect => ({
+      x0: x - FLAT_DOT,
+      x1: x + FLAT_BESIDE + leafW(leaf),
+      y0: y - leafH / 2,
+      y1: y + leafH / 2,
+    });
+    /** Whether pieces moved by (dx, dy) all sit on the face, at least `gap`
+        from everything already `taken`. Called for every spot tried, so it
+        allocates nothing. */
+    let taken: Rect[] = [];
+    const fits = (pieces: Rect[], dx: number, dy: number, gap: number) => {
+      for (const r of pieces) {
+        const x0 = r.x0 + dx;
+        const x1 = r.x1 + dx;
+        const y0 = r.y0 + dy;
+        const y1 = r.y1 + dy;
+        const room = bounds.halfWidth(y1) - m;
+        if (y0 < bounds.baseY + m || y1 > bounds.apexY - m) return false;
+        if (-x0 > room || x1 > room) return false;
+        for (const o of taken) {
+          if (
+            x1 + gap > o.x0 &&
+            o.x1 + gap > x0 &&
+            y1 + gap > o.y0 &&
+            o.y1 + gap > y0
+          ) {
+            return false;
+          }
+        }
+      }
+      return true;
+    };
 
     for (const leaf of this.leaves) {
       const shared = leaf.node.faces;
@@ -846,196 +891,137 @@ export class PyramidScene {
       leaf.rest.addScaledVector(leaf.lift, SURFACE);
     }
 
-    /** Where each category's lines run across to its leaves, per face. */
-    const busY = new Map<string, number>();
-
     for (let k = 0; k < faces.length; k++) {
       const face = faces[k];
-      const toPlane = (p: THREE.Vector3) => planePoint(face, p);
-      const boxes: Box[] = [];
+      taken = [];
+      const own = (parent: string) =>
+        this.leaves.filter(
+          (leaf) =>
+            leaf.node.faces.length === 1 && leaf.node.parents.includes(parent),
+        );
 
-      // ── Categories: as high as they fit, each row packed together and
-      // centred. More than two go over two staggered rows.
+      for (const leaf of this.leaves) {
+        if (leaf.node.faces.length > 1 && leaf.node.faces.includes(k)) {
+          const p = planePoint(face, leaf.rest);
+          taken.push(leafRect(p.x, p.y, leaf));
+        }
+      }
+
+      // The thing's own leaves climb up and to the right from its dot.
+      const thing = [...this.things.values()].find((t) => t.node.face === k);
+      if (thing) {
+        const at = planePoint(face, thing.local);
+        own(thing.node.id).forEach((leaf, i) => {
+          const d = LIST_START + i * pitch;
+          const x = at.x + SLOPE * d;
+          const y = at.y + d;
+          leaf.rest.copy(fromPlane(face, x, y));
+          taken.push(leafRect(x, y, leaf));
+        });
+      }
+
+      // Categories, in their left-to-right order (sorted in buildNodes so
+      // those sharing a leaf with a neighbour lean its way).
       const onFace = [...this.categories.values()].filter(
         (category) => category.node.face === k,
       );
-      const rows =
-        onFace.length > 2
-          ? [
-              onFace.filter((_, i) => i % 2 === 0),
-              onFace.filter((_, i) => i % 2 === 1),
-            ]
-          : [onFace];
-      const pitch = categoryH + FLAT_DROP + CATEGORY_ROW_GAP;
-      const lowest = bounds.baseY + CATEGORY_LOWEST;
-      const spots = new Map<CategoryState, { x: number; y: number }>();
-      /** Lays out one row at height y; says whether it fits there. */
-      const placeRow = (row: CategoryState[], y: number) => {
-        const widths = row.map(categoryW);
-        const total =
-          widths.reduce((sum, w) => sum + w, 0) +
-          (row.length - 1) * CATEGORY_SPACING;
-        let left = -total / 2;
-        row.forEach((category, i) => {
-          spots.set(category, { x: left + widths[i] / 2, y });
-          left += widths[i] + CATEGORY_SPACING;
+      // Each cluster's shape, for either way its list can lean: `lean` is
+      // which slope the list runs down (-1 down-left, 1 down-right), around
+      // the category's dot at (0, 0).
+      const shape = (category: CategoryState, lean: number) => {
+        const leaves = own(category.node.id);
+        const dots = leaves.map((_, j) => {
+          const d = LIST_START + j * pitch;
+          return { x: lean * SLOPE * d, y: -d };
         });
-        // The narrowest part of a row is the top of its labels.
-        return total <= room(y + FLAT_DROP + categoryH);
+        const pieces: Rect[] = [
+          {
+            x0: -catW(category) / 2,
+            x1: catW(category) / 2,
+            y0: -FLAT_DOT,
+            y1: FLAT_DROP + catH,
+          },
+          ...leaves.map((leaf, j) => leafRect(dots[j].x, dots[j].y, leaf)),
+        ];
+        return { leaves, dots, pieces };
       };
-      for (let top = bounds.apexY - 0.3; ; top -= 0.02) {
-        spots.clear();
-        const fits = rows
-          .map((row, r) => placeRow(row, top - r * pitch))
-          .every(Boolean);
-        if (fits || top - (rows.length - 1) * pitch <= lowest) break;
-      }
-      for (const [category, { x, y }] of spots) {
+      const moved = (pieces: Rect[], x: number, y: number) =>
+        pieces.map((r) => ({
+          x0: r.x0 + x,
+          x1: r.x1 + x,
+          y0: r.y0 + y,
+          y1: r.y1 + y,
+        }));
+      const area = (category: CategoryState) =>
+        shape(category, 1).pieces.reduce(
+          (sum, r) => sum + (r.x1 - r.x0) * (r.y1 - r.y0),
+          0,
+        );
+
+      // Each aims for its own share of the width, in left-to-right order. The
+      // outer ones go first — they're the ones sharing a leaf across the edge
+      // beside them — then the rest fill in towards the middle, biggest first.
+      const targets = new Map(
+        onFace.map((category, i) => [
+          category,
+          onFace.length === 1
+            ? 0
+            : (-1 + (2 * i) / (onFace.length - 1)) * CLUSTER_SPREAD,
+        ]),
+      );
+      const half = this.layout.edge / 2;
+      const order = [...onFace].sort(
+        (a, b) =>
+          Math.abs(targets.get(b) ?? 0) - Math.abs(targets.get(a) ?? 0) ||
+          area(b) - area(a),
+      );
+      for (const category of order) {
+        const target = targets.get(category) ?? 0;
+        // The list would rather run toward the nearer slanted side, parallel
+        // to it, but can lean the other way to fit.
+        const leans = target < 0 ? [-1, 1] : [1, -1];
+        let best = null as Spot | null;
+        // As low as it will go, near its place in the order — with the full
+        // gap round it if at all possible, closer only if it must.
+        for (const gap of [CLUSTER_GAP, CLUSTER_GAP / 2, 0.04]) {
+          for (const lean of leans) {
+            const { pieces } = shape(category, lean);
+            const penalty = lean === leans[0] ? 0 : CLUSTER_LEAN_COST;
+            for (let y = bounds.baseY; y <= bounds.apexY; y += CLUSTER_STEP) {
+              // Higher only costs more, so past the best so far is no use.
+              if (best && y - bounds.baseY + penalty >= best.cost) break;
+              for (let x = -half; x <= half; x += CLUSTER_STEP) {
+                const cost =
+                  y -
+                  bounds.baseY +
+                  CLUSTER_PULL * Math.abs(x - target) +
+                  penalty;
+                if (best && cost >= best.cost) continue;
+                if (fits(pieces, x, y, gap)) best = { x, y, cost, lean };
+              }
+            }
+          }
+          if (best) break;
+        }
+        const { x, y, lean } = best ?? { x: target, y: 0, lean: leans[0] };
+        const { leaves, dots, pieces } = shape(category, lean);
+        taken.push(...moved(pieces, x, y));
+
         category.local.copy(fromPlane(face, x, y));
         category.object.position.copy(category.local);
         category.object.quaternion.setFromRotationMatrix(faceBasis(face));
-        boxes.push({
-          x,
-          y,
-          homeX: x,
-          homeY: y,
-          ox: 0,
-          oy: FLAT_DROP + categoryH / 2,
-          w: categoryW(category),
-          h: categoryH,
-          fixed: true,
+        leaves.forEach((leaf, j) => {
+          leaf.rest.copy(fromPlane(face, x + dots[j].x, y + dots[j].y));
         });
       }
-
-      // Leaves shared with a neighbour are already on the edge; keep clear.
-      for (const leaf of this.leaves) {
-        if (leaf.node.faces.length < 2 || !leaf.node.faces.includes(k)) {
-          continue;
-        }
-        const { x, y } = toPlane(leaf.rest);
-        boxes.push({
-          x,
-          y,
-          homeX: x,
-          homeY: y,
-          ox: 0,
-          oy: -(FLAT_DROP + leafH / 2),
-          w: leafW(leaf),
-          h: leafH,
-          fixed: true,
-        });
-      }
-
-      // ── Leaves: in rows from the base up. Each group takes a share of the
-      // row sized by what it still has to place, and fills it left to right.
-      const thing = [...this.things.values()].find((t) => t.node.face === k);
-      const groups: { x: number; queue: LeafState[] }[] = [];
-      for (const category of onFace) {
-        groups.push({
-          x: spots.get(category)?.x ?? 0,
-          queue: this.leaves.filter(
-            (leaf) =>
-              leaf.node.faces.length === 1 &&
-              leaf.node.parents.includes(category.node.id),
-          ),
-        });
-      }
-      if (thing) {
-        groups.push({
-          x: 0,
-          queue: this.leaves.filter(
-            (leaf) =>
-              leaf.node.faces.length === 1 &&
-              leaf.node.parents.includes(thing.node.id),
-          ),
-        });
-      }
-      const active = groups
-        .filter((group) => group.queue.length)
-        .sort((a, b) => a.x - b.x);
-
-      const weight = (queue: LeafState[]) =>
-        queue.reduce((sum, leaf) => sum + leafW(leaf) + LABEL_SPACING, 0);
-      const rowPitch = leafH + FLAT_DROP + LEAF_ROW_GAP;
-      const placed: { leaf: LeafState; box: Box }[] = [];
-      let leafTop = bounds.baseY;
-      for (let r = 0; active.some((g) => g.queue.length) && r < 12; r++) {
-        const y = bounds.baseY + m + leafH + FLAT_DROP + r * rowPitch;
-        leafTop = y;
-        const width = room(y);
-        // The groups still placing leaves share the row by what they have
-        // left. One whose next leaf won't fit its share waits for the next
-        // row — the one furthest short first — and leaves the room to the
-        // rest, so nothing ever overlaps.
-        let going = active.filter((group) => group.queue.length);
-        const shareOf = (group: (typeof active)[number]) =>
-          (width * weight(group.queue)) /
-          going.reduce((sum, g) => sum + weight(g.queue), 0);
-        const short = (group: (typeof active)[number]) =>
-          (leafW(group.queue[0]) + LABEL_SPACING) / shareOf(group);
-        while (going.length > 1 && going.some((g) => short(g) > 1)) {
-          const worst = going.reduce((a, b) => (short(b) > short(a) ? b : a));
-          going = going.filter((group) => group !== worst);
-        }
-        const shares = going.map(shareOf);
-        let left = -width / 2;
-        going.forEach((group, g) => {
-          const share = shares[g];
-          const row: LeafState[] = [];
-          let used = 0;
-          while (group.queue.length) {
-            const next = leafW(group.queue[0]) + LABEL_SPACING;
-            if (row.length && used + next > share) break;
-            row.push(group.queue.shift()!);
-            used += next;
-          }
-          // Spread the row's leaves evenly across the group's share.
-          const spare = Math.max(0, share - used) / row.length;
-          let cursor = left + spare / 2;
-          for (const leaf of row) {
-            const w = leafW(leaf);
-            const x = cursor + (w + LABEL_SPACING) / 2;
-            cursor += w + LABEL_SPACING + spare;
-            const box: Box = {
-              x,
-              y,
-              homeX: x,
-              homeY: y,
-              ox: 0,
-              oy: -(FLAT_DROP + leafH / 2),
-              w,
-              h: leafH,
-              fixed: false,
-            };
-            boxes.push(box);
-            placed.push({ leaf, box });
-          }
-          left += share;
-        });
-      }
-
-      // Nothing placed above overlaps; this only clears the leaves off the
-      // ones already sitting on the edges.
-      relax(boxes, LABEL_SPACING, (box) => keepBoxOnFace(box, bounds));
-
-      for (const { leaf, box } of placed) {
-        leaf.rest.copy(fromPlane(face, box.x, box.y));
-      }
-
-      // Each category's lines cross over to its leaves on their own level,
-      // just above the leaves, so no two categories share a run.
-      onFace.forEach((category, i) => {
-        busY.set(category.node.id, leafTop + BUS_GAP + i * BUS_STEP);
-      });
 
       // Stems: from the thing up to each category.
       if (thing) {
         for (const category of onFace) {
-          const path = route(
+          const [path] = routes(
             bounds,
-            toPlane(thing.local),
-            toPlane(category.local),
-            null,
+            planePoint(face, thing.local),
+            planePoint(face, category.local),
           );
           category.stem.setPolyline(
             this.onFace(face, path, thing.local, category.local).reverse(),
@@ -1044,7 +1030,7 @@ export class PyramidScene {
       }
     }
 
-    // Orient every leaf in its face's plane, then route its threads.
+    // Lay every leaf in its face's plane, then route its lines.
     const across = new THREE.Vector3();
     const up = new THREE.Vector3();
     const basis = new THREE.Matrix4();
@@ -1068,23 +1054,27 @@ export class PyramidScene {
         );
       }
 
-      for (const thread of leaf.threads) {
-        const category = this.categories.get(thread.parent);
-        const thing = this.things.get(thread.parent);
-        const f = category?.node.face ?? thing?.node.face;
-        if (f === undefined) continue;
+      leaf.threads.forEach((thread, i) => {
+        const f =
+          this.categories.get(thread.parent)?.node.face ??
+          this.things.get(thread.parent)?.node.face;
+        if (f === undefined) return;
         const face = faces[f];
-        const from = planePoint(face, thread.anchor);
-        const to = planePoint(face, leaf.rest);
-        // From a category: across on its own level, then down. From the
-        // thing (a bias): up, then across into the leaf's dot from the side,
-        // so the line never runs through the leaf's own label.
-        const level = category ? (busY.get(category.node.id) ?? null) : to.y;
-        const path = route(bounds, from, to, level);
+        // A leaf joined to the same parent more than once (as two kinds)
+        // takes a different way there each time, so both colours show.
+        const again = leaf.threads
+          .slice(0, i)
+          .filter((t) => t.parent === thread.parent).length;
+        const options = routes(
+          bounds,
+          planePoint(face, thread.anchor),
+          planePoint(face, leaf.rest),
+        );
+        const path = options[Math.min(again, options.length - 1)];
         thread.strand.setPolyline(
           this.onFace(face, path, thread.anchor, leaf.rest).reverse(),
         );
-      }
+      });
     }
   }
 
@@ -1172,8 +1162,14 @@ export class PyramidScene {
       const ending = endings?.get(thing.node.id);
       thing.root.classList.toggle('is-finished', !!ending);
       const words = thing.ending.firstElementChild as HTMLElement;
-      words.className = `kp-thing-words kp-${ending?.kind ?? 'habit'}`;
-      words.textContent = ending?.text ?? '';
+      words.replaceChildren(
+        ...(ending?.parts ?? []).flatMap((part, i) => {
+          const span = document.createElement('span');
+          span.className = `kp-thing-part kp-${part.kind}`;
+          span.textContent = part.text;
+          return i ? [', and ', span] : [span];
+        }),
+      );
     }
   }
 
@@ -1326,7 +1322,7 @@ export class PyramidScene {
         this.zoomAt(null, null, this.zoom / 1.25);
         break;
       case '0':
-        this.defaultView();
+        this.zoomAt(null, null, 1);
         break;
       case 'Escape':
         this.clearSelection();
@@ -1434,50 +1430,6 @@ export class PyramidScene {
     this.zoom = Math.min(this.zoom, this.maxZoom);
     this.camera.aspect = aspect;
     this.camera.updateProjectionMatrix();
-    // The first time the stage has a size, open zoomed in; after that a
-    // resize keeps whatever zoom the visitor has chosen.
-    if (!this.viewed) {
-      this.viewed = true;
-      this.defaultView();
-      return;
-    }
-    this.placeCamera();
-  }
-
-  /**
-   * The view the page opens on, and the one `0` goes back to. Surface: zoomed
-   * in until the face toward the viewer (and its sentence) fills the screen —
-   * or further, on a small screen, until the leaves' type is big enough to
-   * read, even if the face's corners then run off the sides — and centred on
-   * that face. Zooming out from there shows the whole pyramid. Floating:
-   * the whole pyramid, as the leaves hang out past the faces.
-   */
-  private defaultView(): void {
-    if (!this.layout.surface) {
-      this.zoomAt(null, null, 1);
-      return;
-    }
-    const tan = Math.tan(THREE.MathUtils.degToRad(this.camera.fov / 2));
-    // Face 0 at rest, squared up to the camera. Every face is the same shape,
-    // so it stands for whichever one is in front.
-    const tilt = new THREE.Euler(REST_TILT, 0, 0);
-    const [apex, left, right, centroid] = (
-      ['apex', 'left', 'right', 'centroid'] as const
-    ).map((key) => this.faces[0][key].clone().applyEuler(tilt));
-    const top = apex.y;
-    const bottom = Math.min(left.y, right.y) - SENTENCE_ROOM;
-    const halfW = (Math.abs(right.x - left.x) / 2) * FRAME_MARGIN;
-    const halfH = ((top - bottom) / 2) * FRAME_MARGIN;
-    // Camera distances, measured to the centre as the zoom is, but worked out
-    // at the face's own depth, which sits nearer the camera.
-    const framed =
-      Math.max(halfH / tan, halfW / (tan * this.camera.aspect)) + centroid.z;
-    const leafType = FLAT_PX * FLAT_SCALE;
-    const readable =
-      (leafType * this.height) / (2 * READABLE_PX * tan) + centroid.z;
-    const distance = Math.min(framed, readable);
-    this.zoom = clamp(this.fitDistance / distance, 1, this.maxZoom);
-    this.pan.set(0, (top + bottom) / 2 - this.layout.viewY);
     this.placeCamera();
   }
 
@@ -1488,12 +1440,6 @@ export class PyramidScene {
     this.last = t;
 
     this.turn(t, dt);
-    // The opening pathway lights once the spin is over — or cut short.
-    if (this.pending && this.intro === null) {
-      const leaf = this.pending;
-      this.pending = null;
-      this.select(leaf, null);
-    }
     this.group.rotation.set(this.tilt, this.yaw, 0);
     this.group.updateMatrixWorld(true);
 
@@ -2101,23 +2047,21 @@ function flatHeight(scale: number): number {
 }
 
 /**
- * A line across a face from `a` to `b` (plane points) that only ever runs
+ * Lines across a face from `a` to `b` (plane points) that only ever run
  * parallel to one of the face's sides: across, like the base, or along one of
- * the two slopes, 60° from it. Any two points join in at most three runs — a
- * slope, a run across at some height, a slope — and `level` asks for that
- * run across to be at a particular height (clamped between the ends). With no
- * level, a clean two-slope chevron comes first where one reaches.
+ * the two slopes, 60° from it — best first. Any two points join in at most
+ * three runs — a slope, a run across at some height, a slope — and where a
+ * single slope or a two-slope chevron reaches, that comes first.
  *
  * The face is a triangle whose sides run in those same three directions, so a
- * path whose bends are all on the face stays on it: candidates are tried in
- * order and the first with every bend on the face, clear of its edges, wins.
+ * path whose bends are all on the face stays on it: only those are returned,
+ * the ones clear of the edges first. There is always at least one.
  */
-function route(
+function routes(
   bounds: ReturnType<typeof triangle>,
   a: THREE.Vector2,
   b: THREE.Vector2,
-  level: number | null,
-): THREE.Vector2[] {
+): THREE.Vector2[][] {
   const low = Math.min(a.y, b.y);
   const high = Math.max(a.y, b.y);
   const rise = high - low;
@@ -2128,15 +2072,10 @@ function route(
     .map((s) => (rise + (s * dx) / SLOPE) / 2)
     .filter((up) => up >= 0 && up <= rise)
     .map((up) => a.y + Math.sign(b.y - a.y) * up);
-  const middle = (a.y + b.y) / 2;
-  const levels =
-    level === null
-      ? [...chevrons, middle, b.y, a.y]
-      : [level, ...chevrons, middle, b.y, a.y];
+  const levels = [...chevrons, (a.y + b.y) / 2, b.y, a.y];
 
   const candidates: THREE.Vector2[][] = [];
-  for (const wanted of levels) {
-    const y = clamp(wanted, low, high);
+  for (const y of levels) {
     const first = Math.abs(y - a.y);
     const second = Math.abs(b.y - y);
     // Each slope can lean either way; take the pairings that leave least to
@@ -2162,13 +2101,16 @@ function route(
     p.y >= bounds.baseY + clearance &&
     p.y <= bounds.apexY - clearance &&
     Math.abs(p.x) <= bounds.halfWidth(p.y) - clearance;
+  const same = (p: THREE.Vector2[], q: THREE.Vector2[]) =>
+    p.length === q.length && p.every((v, i) => v.distanceTo(q[i]) < 1e-5);
+  const found: THREE.Vector2[][] = [];
   for (const clearance of [ROUTE_CLEARANCE, -1e-6]) {
-    const path = candidates.find((path) =>
-      path.slice(1, -1).every((p) => onFace(p, clearance)),
-    );
-    if (path) return path;
+    for (const path of candidates) {
+      if (!path.slice(1, -1).every((p) => onFace(p, clearance))) continue;
+      if (!found.some((f) => same(f, path))) found.push(path);
+    }
   }
-  return candidates[0];
+  return found.length ? found : [candidates[0]];
 }
 
 /** Drops points that sit on the one before, so no run has zero length. */
@@ -2178,21 +2120,6 @@ function dedupe(points: THREE.Vector2[]): THREE.Vector2[] {
   );
   if (out.length < 2) out.push(points[points.length - 1].clone());
   return out;
-}
-
-/** Keeps a label box inside a face, clear of its edges by SURFACE_MARGIN. */
-function keepBoxOnFace(box: Box, bounds: ReturnType<typeof triangle>): void {
-  const m = SURFACE_MARGIN;
-  const halfBase = bounds.halfWidth(bounds.baseY);
-  const slant = bounds.apexY - bounds.baseY;
-  // The face narrows upward, so it's the box's top edge that has to fit.
-  const highest =
-    bounds.apexY - ((box.w / 2 + m) * slant) / halfBase - box.h / 2;
-  const cy = clamp(box.y + box.oy, bounds.baseY + box.h / 2 + m, highest);
-  const room = Math.max(0, bounds.halfWidth(cy + box.h / 2) - box.w / 2 - m);
-  const cx = clamp(box.x + box.ox, -room, room);
-  box.x = cx - box.ox;
-  box.y = cy - box.oy;
 }
 
 function quadratic(
@@ -2210,15 +2137,8 @@ function quadratic(
   );
 }
 
-/**
- * Pushes overlapping label boxes apart, each still drawn back to its start —
- * and, given `bound`, held within it after every step.
- */
-function relax(
-  boxes: Box[],
-  gap = LABEL_GAP,
-  bound?: (box: Box) => void,
-): void {
+/** Pushes overlapping label boxes apart, each still drawn back to its start. */
+function relax(boxes: Box[]): void {
   for (let iteration = 0; iteration < 500; iteration++) {
     for (let i = 0; i < boxes.length; i++) {
       for (let j = i + 1; j < boxes.length; j++) {
@@ -2227,8 +2147,8 @@ function relax(
         if (a.fixed && b.fixed) continue;
         const dx = b.x + b.ox - (a.x + a.ox);
         const dy = b.y + b.oy - (a.y + a.oy);
-        const px = (a.w + b.w) / 2 + gap - Math.abs(dx);
-        const py = (a.h + b.h) / 2 + gap - Math.abs(dy);
+        const px = (a.w + b.w) / 2 + LABEL_GAP - Math.abs(dx);
+        const py = (a.h + b.h) / 2 + LABEL_GAP - Math.abs(dy);
         if (px <= 0 || py <= 0) continue;
         const share = a.fixed || b.fixed ? 1 : 0.5;
         const horizontal = px < py;
@@ -2248,7 +2168,6 @@ function relax(
       if (box.fixed) continue;
       box.x += (box.homeX - box.x) * 0.02;
       box.y += (box.homeY - box.y) * 0.02;
-      bound?.(box);
     }
   }
 }

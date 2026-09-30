@@ -271,7 +271,7 @@ interface Box {
  * face is a thing, with its categories marked on the glass; the exact habits,
  * sense-making methods and biases either float in front on threads or lie on
  * the glass on rigid traces (see `PyramidLayout`). Choosing one lights the
- * path back up to its category and thing and turns that face round.
+ * path back up to its category and thing, leaving the pyramid where it is.
  *
  * Plain three.js, mounted into `stage` and torn down by `dispose()`. Labels are
  * real DOM so they are readable, focusable buttons — facing the screen
@@ -974,16 +974,8 @@ export class PyramidScene {
         return node ? [node] : [];
       }),
     });
-
-    // Turn the thing's face to the viewer — for a shared leaf, the edge
-    // between its faces, so both things are in view.
-    let sin = 0;
-    let cos = 0;
-    for (const f of leaf?.node.faces ?? [category?.node.face ?? 0]) {
-      sin += Math.sin(this.faces[f].angle);
-      cos += Math.cos(this.faces[f].angle);
-    }
-    this.turnTo(-Math.atan2(sin, cos), REST_TILT);
+    // The pyramid stays where the visitor left it: choosing lights the path,
+    // it doesn't turn the face round.
   }
 
   /** Drops the current choice, if any. Each thing's X calls this too. */

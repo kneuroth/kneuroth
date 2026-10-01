@@ -30,8 +30,9 @@ const words = (label: string) => label.replace(/-/g, ' ');
 
 /**
  * kelly.json as a glass pyramid: one face per thing, named under its bottom
- * edge, its categories on the glass, and the exact habits, sense-making and
- * biases on the glass too, joined to them by rigid traces. Each thing opens a
+ * edge, with its categories on the glass — sense-making at the top, habits
+ * bottom left, biases bottom right — and the exact habits, sense-making and
+ * biases clustered round them, joined by straight lines. Each thing opens a
  * sentence under its face — "when approaching a problem" — that a chosen
  * category or leaf finishes right there, in its kind's colour. The scene
  * lives in `pyramid-scene.ts`; this mounts it and writes the sentence's words.
@@ -154,16 +155,10 @@ export class AboutComponent {
       // and step back in only when the sentence has something new to say.
       const scene = zone.runOutsideAngular(
         () =>
-          new PyramidScene(
-            this.stage().nativeElement,
-            buildKellyGraph(KELLY),
-            {
-              front: (thing) => zone.run(() => this.front.set(thing)),
-              choose: (choice) => zone.run(() => this.choice.set(choice)),
-            },
-            // 'floating' hangs the leaves in front on threads instead.
-            'surface',
-          ),
+          new PyramidScene(this.stage().nativeElement, buildKellyGraph(KELLY), {
+            front: (thing) => zone.run(() => this.front.set(thing)),
+            choose: (choice) => zone.run(() => this.choice.set(choice)),
+          }),
       );
       this.scene.set(scene);
       destroyRef.onDestroy(() => scene.dispose());

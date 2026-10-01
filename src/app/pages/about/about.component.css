@@ -18,9 +18,6 @@ app-about .kp-stage {
   -webkit-user-select: none;
   /* Dragging turns the pyramid; it mustn't scroll the page as well. */
   touch-action: none;
-  /* Label size: a base that follows the screen, times --kp-zoom, which the
-     scene raises gently as the visitor zooms in. */
-  --kp-font: calc(clamp(9px, 1.5vmin, 13px) * var(--kp-zoom, 1));
 }
 
 app-about .kp-stage.is-dragging {
@@ -55,13 +52,21 @@ app-about .kp-labels {
 }
 
 /* ── Nodes ───────────────────────────────────────────────────────────────
-   Each node is a zero-size box at its point in space: the dot is centred on
-   it and the words hang off it — above a thing, beside a category, below a
-   leaf (a tag on the end of its thread). */
+   Each node is a zero-size box at its point on the glass: the dot is centred
+   on it and the words hang off it — below a thing, above a category, beside
+   a leaf.
+
+   Every node is printed flat on its face (CSS3D), so it's sized in world
+   units rather than screen pixels: the scene scales these pixels down and
+   zooming makes them bigger like everything else on the glass. The type
+   size, line height, padding and offsets are mirrored by the FLAT_*
+   constants in pyramid-scene.ts, which lay the labels out — change them
+   together. */
 app-about .kp-node {
   width: 0;
   height: 0;
   --kind: #ffffff;
+  --kp-font: 20px;
 }
 
 app-about .kp-sensemaking {
@@ -76,10 +81,10 @@ app-about .kp-bias {
 
 app-about .kp-dot {
   position: absolute;
-  left: -4px;
-  top: -4px;
-  width: 8px;
-  height: 8px;
+  left: -6px;
+  top: -6px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background: var(--kind);
   box-shadow:
@@ -94,7 +99,7 @@ app-about .kp-label {
   position: absolute;
   white-space: nowrap;
   font-size: var(--kp-font);
-  letter-spacing: 0.03em;
+  line-height: 1.2;
   color: color-mix(in srgb, var(--kind) 72%, white);
   text-shadow:
     0 0 4px var(--kind),
@@ -107,17 +112,17 @@ app-about .kp-label {
 
 /* Named just below the face's bottom edge — and the sentence around it:
    "when approaching a problem" (see THING_PHRASES), which a choice finishes.
-   It's one centred block that wraps rather than one long line, so a finished
-   sentence fits a phone. The max-content width is what lets it wrap at all: the node it hangs
-   from is zero-wide, which would otherwise squeeze it to its longest word. The
-   scene nudges it sideways by --kp-shift to keep it on screen when its face
-   turns towards an edge. */
+   It's one centred block that wraps rather than one long line. The
+   max-content width is what lets it wrap at all: the node it hangs from is
+   zero-wide, which would otherwise squeeze it to its longest word. It turns
+   and zooms with its face, so its width is a share of the base edge (≈ 4.6
+   world units), not of the screen. */
 app-about .kp-thing .kp-label {
   left: 0;
   top: 8px;
-  transform: translateX(calc(-50% + var(--kp-shift, 0px)));
+  transform: translateX(-50%);
   width: max-content;
-  max-width: min(24em, calc(100vw - 2rem));
+  max-width: 30em;
   white-space: normal;
   text-align: center;
   line-height: 1.35;
@@ -200,19 +205,35 @@ app-about .kp-spoken {
   white-space: nowrap;
 }
 
-/* Above the dot: the stem runs down to the thing and the threads hang off
-   the front, so the words stay clear of both. */
+/* A category's name sits above its dot, in slightly bigger type (FLAT_BIG
+   and FLAT_DROP): its stem runs down to the thing, and no leaf is placed
+   straight above it, so the words stay clear of its lines. */
 app-about .kp-category .kp-label {
   left: 0;
-  bottom: 5px;
+  bottom: 8px;
   transform: translateX(-50%);
+  font-size: calc(var(--kp-font) * 1.15);
   font-weight: 600;
 }
 
+/* A leaf's words sit beside its dot (FLAT_BESIDE), clear of the lines that
+   meet there — to the right, or for one whose lines come in from the
+   right, to the left. */
 app-about .kp-leaf .kp-label {
-  left: 0;
-  top: 5px;
-  transform: translateX(-50%);
+  top: 0;
+  left: 14px;
+  transform: translateY(-50%);
+}
+
+app-about .kp-leaf.kp-beside-left .kp-label {
+  left: auto;
+  right: 14px;
+}
+
+/* A leaf under no category stands in for one, so it's as big as one. */
+app-about .kp-leaf.kp-big .kp-label {
+  font-size: calc(var(--kp-font) * 1.15);
+  font-weight: 600;
 }
 
 /* Leaves and categories are what gets pressed. The neon kind colour stands in
@@ -227,9 +248,9 @@ app-about .kp-leaf .kp-label,
 app-about .kp-category .kp-label {
   pointer-events: auto;
   cursor: pointer;
-  padding: 2px 6px;
+  padding: 3px 8px;
   border: 0;
-  border-radius: 6px;
+  border-radius: 8px;
   background: rgb(8 4 5 / 0.55);
   font-family: inherit;
   color: color-mix(in srgb, var(--kind) 45%, white);
@@ -274,39 +295,6 @@ app-about .kp-thing.is-lit .kp-label {
     0 0 20px rgb(150 190 235 / 0.9);
 }
 
-/* ── Leaves printed on the glass ─────────────────────────────────────────
-   Surface leaves are laid in their face's plane (CSS3D), so they're sized in
-   world units rather than screen pixels: the scene scales these pixels down
-   and zooming makes them bigger like everything else on the glass. The type
-   size, line height, padding and drop are mirrored by the FLAT_* constants in
-   pyramid-scene.ts, which lay the labels out — change them together. */
-app-about .kp-flat {
-  --kp-font: 20px;
-}
-
-app-about .kp-flat .kp-dot {
-  left: -6px;
-  top: -6px;
-  width: 12px;
-  height: 12px;
-}
-
-app-about .kp-flat .kp-label {
-  top: 8px;
-  padding: 3px 8px;
-  border-radius: 8px;
-  line-height: 1.2;
-  letter-spacing: 0;
-}
-
-/* On the surface a leaf's words sit beside its dot, clear of the line it
-   hangs on (FLAT_BESIDE). */
-app-about .kp-flat.kp-beside .kp-label {
-  top: 0;
-  left: 14px;
-  transform: translateY(-50%);
-}
-
 /* A leaf of two kinds — one leaf with a line of each colour — carries its
    second colour as a ring round its dot and a line under its words. */
 app-about .kp-multi .kp-dot {
@@ -316,21 +304,6 @@ app-about .kp-multi .kp-dot {
 
 app-about .kp-multi .kp-label {
   box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--kind-2) 80%, transparent);
-}
-
-/* Categories sit above their dot — their leaves' lines leave downward — in
-   slightly bigger type (FLAT_CATEGORY). */
-app-about .kp-flat.kp-category .kp-label {
-  top: auto;
-  bottom: 8px;
-  font-size: calc(var(--kp-font) * 1.15);
-}
-
-/* The sentence printed on the glass: it turns and zooms with its face, so its
-   width is a share of the base edge (≈ 4.6 world units), not of the screen. */
-app-about .kp-flat.kp-thing .kp-label {
-  max-width: 30em;
-  line-height: 1.35;
 }
 
 @media (prefers-reduced-motion: reduce) {

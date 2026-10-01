@@ -5,45 +5,74 @@
       "sensemaking": [
         {
           "type": "contextualizing",
+          "examples": ["whole-picture-seeing", "stakeholder-mapping"]
+        },
+        {
+          "type": "solution-exploring",
           "examples": [
-            "option-gathering",
-            "boundary-defining",
-            "scope-defining",
-            "zooming-out"
+            "solution-generating",
+            "solution-categorizing",
+            "priority-weighing"
           ]
         },
         {
-          "type": "experiencing",
-          "examples": ["own-word-forming", "personna-assuming"]
+          "type": "internalizing",
+          "examples": [
+            "problem-becoming",
+            "first-hand-experiencing",
+            "own-word-phrasing"
+          ]
         }
       ],
       "habits": [
+        "solution-jumping",
         {
-          "type": "visualizing",
-          "examples": ["map-creating", "visual-aid"]
+          "type": "zooming-out",
+          "examples": ["context-seeking", "blindspot-finding"]
         },
         {
-          "type": "categorizing",
-          "examples": ["breaking-down", "group-naming", "commonality-finding"]
+          "type": "documenting",
+          "examples": ["map-making", "note-taking"]
         }
       ],
-      "biases": ["solution-oriented"]
+      "biases": ["best-solution-seeking", "problem-skepticism"]
     },
     {
       "type": "people",
-      "sensemaking": ["commonality-finding", "being-silly", "humour"],
-      "habits": ["question-asking", "commonality-finding"],
-      "biases": ["people-pleasing", "humour", "user-centered"]
+      "sensemaking": [
+        "humour",
+        "connection-finding",
+        "question-asking",
+        {
+          "type": "empathizing",
+          "examples": ["listening", "shoe-standing"]
+        }
+      ],
+      "habits": [
+        "being-present",
+        {
+          "type": "joking",
+          "examples": ["joke-making", "laugh-finding"]
+        }
+      ],
+      "biases": ["laughter-loving", "comfort-seeking", "commonality-seeking"]
     },
     {
       "type": "design",
       "sensemaking": [
+        "user-imagining",
+        "intuition-following",
+        "edge-case-finding"
+      ],
+      "habits": [
+        "rationale-finding",
+        "aesthetic-polishing",
         {
-          "type": "experiencing",
-          "examples": ["personna-assuming", "intuiting", "break-finding"]
+          "type": "planning",
+          "examples": ["map-making", "visualizing", "prototyping"]
         }
       ],
-      "biases": ["user-centered"]
+      "biases": ["software-design", "tidiness", "minimalism", "user-centered"]
     }
   ]
 }

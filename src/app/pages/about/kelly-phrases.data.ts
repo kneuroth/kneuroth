@@ -2,8 +2,8 @@ import { CategoryKind, Kind } from './kelly-graph';
 
 /*
  * The sentence under the pyramid: "<thing's lead> <thing>, kelly <category>
- * <leaf>" — e.g. "when approaching a problem, kelly habitually categorizes by
- * finding commonalities". kelly.json holds the names; these are the same names
+ * <leaf>" — e.g. "when approaching a problem, kelly habitually zooms out by
+ * finding blindspots". kelly.json holds the names; these are the same names
  * reworded to read in that sentence. Keyed by kind and the name exactly as
  * it is in the file.
  *
@@ -42,6 +42,8 @@ export const BIAS_PHRASE = 'is biased';
 export const DIRECT_PHRASES: Record<`${CategoryKind}:${string}`, string> = {
   'sensemaking:people': 'makes sense of them',
   'habit:people': 'habitually connects with them',
+  'habit:problem-solving': 'habitually tackles it',
+  'habit:design': 'habitually looks at it',
 };
 
 const DIRECT_FALLBACK: Record<CategoryKind, string> = {
@@ -55,42 +57,63 @@ export function directPhrase(kind: Kind, thing: string): string {
 }
 
 export const CATEGORY_PHRASES: Record<`${CategoryKind}:${string}`, string> = {
-  'sensemaking:contextualizing': 'does sensemaking contextually',
-  'sensemaking:experiencing': 'makes sense through experience',
-  'habit:visualizing': 'habitually visualizes',
-  'habit:categorizing': 'habitually categorizes',
+  'sensemaking:contextualizing': 'makes sense of it in context',
+  'sensemaking:solution-exploring': 'makes sense of its possible solutions',
+  'sensemaking:internalizing': 'makes sense of it from the inside',
+  'sensemaking:empathizing': 'makes sense of them through empathy',
+  'habit:zooming-out': 'habitually zooms out',
+  'habit:documenting': 'habitually documents',
+  'habit:joking': 'habitually brings humour',
+  'habit:planning': 'habitually plans',
 };
 
 /**
  * Each leaf's phrase ends every sentence it's in, so a leaf under more than
- * one thing has to read after each of its middles: habit:commonality-finding
- * follows both "habitually categorizes" (problem-solving) and "habitually
- * connects with them" (people).
+ * one thing has to read after each of its middles: habit:map-making follows
+ * both "habitually documents" (problem-solving) and "habitually plans"
+ * (design).
  */
 export const LEAF_PHRASES: Record<`${Kind}:${string}`, string> = {
-  'sensemaking:option-gathering': 'by gathering options',
-  'sensemaking:boundary-defining': 'by defining the boundaries',
-  'sensemaking:scope-defining': 'by defining the scope',
-  'sensemaking:zooming-out': 'by zooming out',
-  'sensemaking:own-word-forming': 'by putting it in his own words',
-  'sensemaking:personna-assuming': 'by becoming a persona',
-  'sensemaking:intuiting': 'by intuiting',
-  'sensemaking:break-finding': 'by finding where things break',
-  'sensemaking:commonality-finding': 'by finding commonalities',
-  'sensemaking:being-silly': 'by being silly',
+  'sensemaking:whole-picture-seeing': 'by seeing the whole picture',
+  'sensemaking:stakeholder-mapping': "by working out who is and isn't involved",
+  'sensemaking:solution-generating': 'by thinking up several',
+  'sensemaking:solution-categorizing': 'by sorting them into groups',
+  'sensemaking:priority-weighing': 'by weighing their priorities',
+  'sensemaking:problem-becoming': 'by becoming the problem',
+  'sensemaking:first-hand-experiencing': 'by experiencing it first-hand',
+  'sensemaking:own-word-phrasing': 'by rephrasing it',
   'sensemaking:humour': 'through humour',
+  'sensemaking:connection-finding': 'by finding connections',
+  'sensemaking:question-asking': 'by asking about their life',
+  'sensemaking:listening': 'by listening',
+  'sensemaking:shoe-standing': 'by standing in their shoes',
+  'sensemaking:user-imagining':
+    'by imagining the people who will experience it',
+  'sensemaking:intuition-following': 'by following intuition',
+  'sensemaking:edge-case-finding': 'by finding edge cases',
 
-  'habit:map-creating': 'by creating maps',
-  'habit:visual-aid': 'with visual aids',
-  'habit:breaking-down': 'by breaking things down',
-  'habit:group-naming': 'by distinguishing groups',
-  'habit:commonality-finding': 'by finding commonalities',
-  'habit:question-asking': 'by asking questions',
+  'habit:solution-jumping': 'by jumping straight to solutions',
+  'habit:context-seeking': 'by looking for more context',
+  'habit:blindspot-finding': 'by finding blindspots',
+  'habit:map-making': 'by mapping things out',
+  'habit:note-taking': 'by writing down what matters',
+  'habit:being-present': 'by being present',
+  'habit:joke-making': 'by making jokes',
+  'habit:laugh-finding': 'by finding what makes them laugh',
+  'habit:rationale-finding': 'by figuring out why each choice was made',
+  'habit:aesthetic-polishing':
+    'by making sure it is aesthetically pleasing on top of its function',
+  'habit:visualizing': 'by visualizing it',
+  'habit:prototyping': 'by prototyping it',
 
-  'bias:solution-oriented':
-    "toward a solution always existing, even when it doesn't",
-  'bias:people-pleasing': 'toward pleasing people',
-  'bias:humour': 'by a proclivity to find humour',
-  'bias:function-centered': 'toward function',
-  'bias:user-centered': 'toward the user experience',
+  'bias:best-solution-seeking': 'toward finding the best solution',
+  'bias:problem-skepticism':
+    "toward skepticism of the problem as it's described",
+  'bias:laughter-loving': 'toward people who enjoy laughing',
+  'bias:comfort-seeking': 'toward people who are comfortable to be around',
+  'bias:commonality-seeking': 'toward people with things in common',
+  'bias:software-design': 'toward software design',
+  'bias:tidiness': 'toward tidy designs',
+  'bias:minimalism': 'toward minimalist designs',
+  'bias:user-centered': 'toward designing for human usability',
 };

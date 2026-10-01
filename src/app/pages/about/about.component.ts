@@ -62,8 +62,8 @@ export class AboutComponent {
    * category on one and straight off the thing on the other, so the middle of
    * the sentence — the category's phrase, or the stand-in for a leaf with no
    * category — is chosen per thing. A leaf listed as two kinds under the same
-   * thing gets a part for each: "kelly makes sense of them through humour,
-   * and is biased by a proclivity to find humour".
+   * thing gets a part for each — were "humour" also listed as a people bias:
+   * "kelly makes sense of them through humour, and is biased toward humour".
    */
   protected readonly endings = computed(() => {
     const choice = this.choice();
@@ -93,9 +93,9 @@ export class AboutComponent {
               LEAF_PHRASES[`${link.kind}:${leaf.name}`] ?? words(leaf.label);
             return { kind: link.kind, middle: middle.trim(), end };
           })
-          // Parts that end the same way say it once, at the end: "makes
-          // sense of them, and habitually connects with them by finding
-          // commonalities".
+          // Parts that end the same way say it once, at the end: were
+          // question-asking a people habit too, "makes sense of them, and
+          // habitually connects with them by asking about their life".
           .map((part, i, all) => ({
             kind: part.kind,
             text:

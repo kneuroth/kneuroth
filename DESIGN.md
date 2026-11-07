@@ -53,6 +53,13 @@ between them; the cube colours read on both. Setting `link` renders the slab as
 an `<a>` rather than a `<button>`, because somewhere-to-go has to be
 middle-clickable and copyable.
 
+**A search field is a surface, not a control.** It isn't pressed or said, it's
+written on, and it stays on screen the whole time someone types. So
+`<app-search-field>` wears the quietest edge on the site, the panel's, and none
+of the cube triad: no ring behind it, no lit rim. Focus holds the stroke at its
+blue end instead of breathing. That's the whole interaction, and anything more
+would be noise next to the text being typed.
+
 **Text links use `.glow-sweep` — this is the canonical link style.** Every text
 link (nav words, project links, the desk's labels) rests as a **gentle breathing
 white→blue gradient** clipped to the letters (bottom background layer + the
@@ -66,9 +73,9 @@ ambient/random sweep** — hover is the only trigger. On `<app-glow-button>`, pa
 add `glowSweep`. Icon-only action buttons keep the rotating ring; text links
 sweep.
 
-**Somewhere not ready yet adds `.glow-sweep-pending`** (today: every link to
-the blog). It is still a real, clickable link, but it rests white→grey with a
-grey halo, and its hover pass is a grey band running the _opposite_ way, left to
+**Somewhere not ready yet adds `.glow-sweep-pending`** (today: every link to the
+blog). It is still a real, clickable link, but it rests white→grey with a grey
+halo, and its hover pass is a grey band running the _opposite_ way, left to
 right (`sweepOnceBack`). Same shape, so it belongs to the set; wrong colour and
 wrong direction, so it reads as not quite on. Drop the class when the place is
 ready — nothing else changes.
@@ -384,6 +391,7 @@ repeats.
 | `GlowButtonComponent`  | `<app-glow-button>`  | Every button. Sets the `.glow-link` treatment; pass `variant` (`warm`/`dark`/`azure`, or `icon` for any icon-only button), `label`/`icon`, `size`, `rounded`, `ariaLabel`; listen to `(onClick)`.                                                                                                                                                                                                                                                         |
 | `GlassButtonComponent` | `<app-glass-button>` | A pressable slab of glass — the panel's material at button scale, with the cube triad on its rim instead of behind it. Content-projected (label, icon, or both); pass `tone` (`light`/`dark`, picked from the ground), `link` (renders an `<a>`), `type`, `disabled`, `ariaLabel`; listen to `(onClick)`. Tune `--glass-radius`, `--glass-rim`, `--glass-strip`; set layout on the host.                                                                  |
 | `GlassPanelComponent`  | `<app-glass-panel>`  | The frosted-glass surface. `variant`: `floating` (default rounded white panel, e.g. the 3D-art gallery), `header`/`footer` (full-bleed adaptive-frost bar with a hairline edge). `edge`: `left`/`right` joins a floating panel to that screen edge — outer corners square and that side's stroke drops, so nothing draws a boundary where the panel leaves the screen (the project slabs). Handles its own print reset. Set layout utilities on the host. |
+| `SearchFieldComponent` | `<app-search-field>` | A text field you type a query into. The panel's material at input scale: frost, clear strip, breathing white→blue stroke, a `--sweep-base` magnifier. Two-way `[(value)]`; pass `placeholder`, `ariaLabel`. Escape clears. Tune `--search-strip`, `--search-radius`; set width on the host.                                                                                                                                                               |
 | `RevealDirective`      | `appReveal="left\    | Flies an element in from the side of the screen the first time it scrolls into view (the home page's alternating project entries). Goes on a **wrapper** — the wrapper is observed and stays put, its child travels. An ancestor must set `overflow-x: clip`.                                                                                                                                                                                             | Slides an element in from one side the first time it scrolls into view (the home page's alternating project entries). The parent must set `overflow-x: clip`. |
 
 Conventions for this layer:

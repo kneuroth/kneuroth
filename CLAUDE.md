@@ -1,96 +1,93 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with
-code in this repository.
+Guidance for Claude Code working in this repository.
 
 ## What this is
 
-Kelly Neuroth's personal portfolio site — an Angular 20 single-page app deployed
-to GitHub Pages at https://kneuroth.github.io/kneuroth/. Built with PrimeNG 20
-(Aura theme) and Tailwind CSS 4. Requires Node 22.x.
+Kelly Neuroth's portfolio site, at https://kneuroth.github.io/kneuroth/ (Vite
+`base: '/kneuroth/'`). Vite + React 19 + React Router + Tailwind 4; a static
+SPA, no backend — content is data in source. It was an Angular app until the
+React rewrite; that version is in this repo's history.
+
+The design-system components come from **kneuroth-ui** (`../kneuroth-ui`), a
+shadcn registry, installed into `src/components/ui/`. Read
+`../kneuroth-ui/DESIGN.md` for the component rules and `DESIGN.md` here for the
+desk and page layouts.
+
+## The about page (the pyramid)
+
+`src/pages/about/` — `kelly.json` drawn as a three.js glass pyramid.
+
+- `pyramid-scene.ts` is **framework-free** three.js (~1.8k lines): it owns its
+  canvas, CSS3D label layer, input and render loop, and talks to React only
+  through `PyramidEvents` (`front`, `choose`) and `finish(endings)`. Keep React
+  out of it.
+- `about.tsx` mounts it in an effect and disposes it on unmount — `dispose()`
+  must keep removing everything it adds, or StrictMode's double mount shows two
+  pyramids in dev.
+- `sentence.ts` turns a choice into the words finishing each face's sentence;
+  the phrasing lives in `kelly-phrases.data.ts`, the graph in `kelly-graph.ts`.
+- `about.css` is plain CSS scoped under `.kp-about` (the scene builds its DOM
+  outside React). Type sizes there are mirrored by the `FLAT_*` constants in the
+  scene — change them together. The `--neon-*` kind colours live there too;
+  nothing else uses them.
+- The page is `React.lazy` + `Suspense` in `routes.tsx`, so three.js is its own
+  chunk (~150 kB gzipped) and the rest of the site never loads it. Vite's 500 kB
+  warning on that chunk is expected.
 
 ## Commands
 
-**Dependencies are managed with pnpm** (`pnpm-lock.yaml`, and `node_modules` is
-a pnpm store). `npm install` fails outright on this tree — use `pnpm install`.
+pnpm only.
 
 ```bash
-ng serve        # dev server at http://localhost:4200/ (or: pnpm start)
-ng build        # production build into dist/kneuroth/
-ng test         # Karma + Jasmine (Chrome launcher) — no specs in the tree today
-
-# run a single spec file, once there is one
-ng test --include='**/some.component.spec.ts'
-
-# deploy to GitHub Pages — note the required base-href
-ng deploy --base-href "/kneuroth/"
+pnpm dev          # http://localhost:5173/kneuroth/
+pnpm build        # tsc -b + vite build, then copies index.html → 404.html
+pnpm typecheck
+pnpm run deploy   # build, then push dist/ to the gh-pages branch (goes live)
+npx prettier --write "src/**/*.{ts,tsx,css}"
 ```
 
-Prettier is configured (`.prettierrc`: single quotes, 80-col,
-`proseWrap: always`).
+`404.html` is the GitHub Pages SPA fallback: a deep link like
+`/kneuroth/portfolio/3d-art` is served the app, which then routes it.
+
+**Deploying publishes the site** — Pages serves the `gh-pages` branch, and
+`pnpm run deploy` (not `pnpm deploy`, which is a pnpm built-in) overwrites it.
+Pushing `master` alone deploys nothing. Only deploy when Kelly asks.
+
+## kneuroth-ui
+
+- `src/components/ui/` is **installed code — don't hand-edit it.** Change the
+  component in `../kneuroth-ui`, then pull it:
+  `npx shadcn@latest add @kneuroth/<item> --overwrite` (`--diff` to preview).
+  `components.json` registers `@kneuroth` at the deployed registry URL.
+- The search field is in the library but deliberately not installed here yet:
+  `npx shadcn@latest add @kneuroth/search-field` when a page needs it.
+- Library `<a>`s (GlowButton/GlassButton with `href`) don't know the router. For
+  an internal link, spread `useRouterLink(to)` from `@/lib/router` onto them;
+  for a text link use `SweepNavLink`; for a swept word inside another link use
+  `SweptLabel`. Files in `public/` go through `asset()` so they resolve under
+  the base at any route depth.
 
 ## Architecture
 
-- **Standalone components throughout** — there are no NgModules. Bootstrapping
-  is `bootstrapApplication(AppComponent, appConfig)` in `src/main.ts`; providers
-  live in `src/app/app.config.ts` (router, async animations, image-aware,
-  PrimeNG Aura theme).
-- **The app shell is a photograph.** `AppComponent` mounts `<app-desk>`
-  (`src/app/desk/`) once, behind the router outlet: `opportunities.jpg` fixed
-  full-bleed under every page, with live DOM projected onto surfaces inside it
-  via the `@image-aware/angular` custom element. The home route _is_ the desk —
-  no header, no page content — and every other route lays a panel over it. See
-  DESIGN.md.
-- **Routing** is flat and component-based in `src/app/app.routes.ts`. Each route
-  sets a `title`. Routes map to page components under `src/app/pages/`.
-  `withComponentInputBinding()` is enabled, so route params bind directly to
-  component `input()`s.
-- **TypeScript path aliases** (see `tsconfig.json`) — always use these instead
-  of long relative paths:
-  - `@pages/*` → `src/app/pages/*`
-  - `@shared/*` → `src/app/shared/*`
-  - `@app/*` → `src/app/*`
-- **Reactive state uses Angular signals**, not RxJS subscriptions in components.
-  Pattern of record: state is a `signal()`, anything derived is a `computed()`,
-  and a plain service carries state that has to cross component boundaries. See
-  `desk/desk.service.ts` with `desk/desk.component.ts` — the desk writes what
-  the `<image-surface>` element reported into a signal, and the home page reads
-  it to decide whether it needs its fallback panel. `toSignal()` bridges router
-  events into a signal in `app.component.ts`.
-- **Data is hardcoded in `.data.ts` and `constants.ts` files** colocated with
-  the feature (e.g. `roadmap-item.data.ts`, `portfolio/constants.ts`). There is
-  no backend or HTTP layer — content is edited in source. Typed models live in
-  adjacent `model.ts` / `*.model.ts` files.
-- **Styling**: Tailwind 4 via PostCSS. `src/styles.css` imports tailwind and
-  defines the custom color palette, the site-wide monospace face
-  (`--font-mono` + `--default-font-family` — see DESIGN.md's Typography section)
-  and print rules in an `@theme` block. Many components use inline
-  templates/styles (configured as the schematic default in `angular.json`).
-- **Images and static assets** live in `public/` (served from root); portfolio
-  and 3D-art galleries reference files under `public/portfolio-images/` and
-  `public/3d-art/`. `opportunities.jpg` and its `opportunities.surfaces.json`
-  manifest are the desk — the manifest is edited with the `@image-aware/editor`
-  marking tool, not by hand.
+- `src/main.tsx` creates the browser router from `src/routes.tsx` (a plain route
+  table, each route's tab title in `handle.title`).
+- `src/layout.tsx` mounts the desk once, the outlet over it, scroll restoration,
+  and the tab title.
+- `src/desk/` — the photograph and everything projected onto it;
+  `desk-state.tsx` is the context that tells the home page whether the desk is
+  projecting.
+- `src/pages/` — one folder per area. Projects with a page of their own live
+  under `pages/portfolio/` and route to `/portfolio/<name>`; the cards are data
+  in `pages/portfolio/projects.ts`.
+- Icons: `lucide-react`, plus the one brand glyph (`GithubIcon`) in
+  `src/icons.tsx`. Every icon renders in `--sweep-base` via the library.
 
 ## Conventions
 
-- New components should be standalone with explicit `imports`, and use signal
-  inputs (`input()` / `input.required()`) rather than `@Input()`.
-- Strict mode is on (`strict`, `strictTemplates`,
-  `noPropertyAccessFromIndexSignature`, etc.) — expect the compiler to enforce
-  these.
-
-## Design system
-
-The site's visual language is documented in `DESIGN.md` — read it before adding
-or restyling UI. The load-bearing rule: **every clickable element uses the
-`.glow-link` treatment** (defined in `src/styles.css`). Pick the variant by
-surface — base warm on dark/photographic surfaces, `glow-link-azure` on
-light/frosted-glass ones. Don't add bare buttons or one-off hover styles.
-
-The design-system patterns are encapsulated as a small in-repo component library
-under `@shared/ui` — `<app-glow-button>` (a control that reads as a word),
-`<app-glass-button>` (one that reads as an object) and `<app-glass-panel>`
-(every frosted surface), plus the `glowSweep` and `appReveal` directives. Prefer
-these over raw markup or bare PrimeNG controls; plain non-button links stay as
-`<a class="glow-sweep …">`, and any icon is `.glow-link glow-link-icon`.
+- Prettier: single quotes, 80 cols, `proseWrap: always`.
+- Strict TS, including `noPropertyAccessFromIndexSignature`.
+- Lower case is a CSS transform; write sentence case in source. Tab titles are
+  lower case in source because CSS can't reach them.
+- No print styles — the site isn't designed for paper.
+- Every animation needs a `prefers-reduced-motion` off-switch.

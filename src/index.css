@@ -1,0 +1,125 @@
+@import 'tailwindcss';
+
+/* Site-only tokens. The design system's own (glow, --sweep-base, the cube
+   colours, the mono stack) come from components/ui — see DESIGN.md. */
+@theme {
+  --color-frenchgrey: #bbb9be;
+}
+
+/* No background: the desk photograph, fixed behind every page, is the ground. */
+body {
+  margin: 0;
+  color: #fff;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   .logo-link — the house in the header. It's an icon GlowButton like any
+   other; this adds only what's the house's own: a one-shot cube-colour bloom
+   and a vertical squash, played on the page the cube on the desk lands you on.
+   ───────────────────────────────────────────────────────────────────────── */
+.logo-link .glow-button-icon {
+  transform-origin: center;
+  will-change: transform;
+}
+
+.logo-link::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 42px;
+  height: 42px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: conic-gradient(
+    from var(--glow-angle),
+    #ffffff,
+    var(--glow-a),
+    var(--glow-b),
+    #ffffff
+  );
+  filter: blur(9px);
+  opacity: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.logo-link.animate-intro::after {
+  animation: houseLoadGlow 1.2s ease-out;
+}
+
+.logo-link.animate-intro .glow-button-icon {
+  animation: houseIntro 0.85s ease-in-out;
+}
+
+@keyframes houseIntro {
+  0% {
+    transform: scale(1, 1);
+  }
+  25% {
+    transform: scaleX(1.03) scaleY(1.18);
+  }
+  55% {
+    transform: scaleX(0.98) scaleY(0.88);
+  }
+  80% {
+    transform: scaleX(1.01) scaleY(1.06);
+  }
+  100% {
+    transform: scale(1, 1);
+  }
+}
+
+@keyframes houseLoadGlow {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(0deg) scale(0.3);
+  }
+  20% {
+    opacity: 0.9;
+    transform: translate(-50%, -50%) rotate(200deg) scale(1.35);
+  }
+  60% {
+    opacity: 0.6;
+    transform: translate(-50%, -50%) rotate(520deg) scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(720deg) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-link.animate-intro::after,
+  .logo-link.animate-intro .glow-button-icon {
+    animation: none;
+  }
+}
+
+/* A picture standing on the glass: a fixed frame with a hairline and a soft
+   fill, so a letterboxed logo and a cropped screenshot read as the same kind of
+   object. Portfolio thumbnails and the Wordle League screenshots wear it. */
+.thumb {
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  border-radius: 0.5rem;
+  border: 1px solid rgb(255 255 255 / 0.55);
+  background: rgb(255 255 255 / 0.12);
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.25);
+  transition: transform 0.3s ease;
+}
+
+.thumb:hover {
+  transform: translateY(-0.25rem) scale(1.04);
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thumb {
+    transition: none;
+  }
+  .thumb:hover {
+    transform: none;
+  }
+}

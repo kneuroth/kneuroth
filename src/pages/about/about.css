@@ -1,0 +1,323 @@
+/* The about page: the header, then the pyramid filling the rest of the screen.
+   The scene builds its own label DOM outside React, so everything here is
+   plain CSS scoped under .kp-about. */
+
+/* The pyramid codes every node by what it is, and the colour is the meaning:
+   red a bias, green a habit, blue a way of sense-making. Nothing else on the
+   site speaks in these. */
+:root {
+  --neon-bias: #ff3131;
+  --neon-habit: #39ff14;
+  --neon-sensemaking: #1f8fff;
+}
+
+.kp-about {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.kp-about .kp-stage {
+  position: relative;
+  flex: 1;
+  min-height: 28rem;
+  overflow: hidden;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  /* Dragging turns the pyramid; it mustn't scroll the page as well. */
+  touch-action: none;
+}
+
+.kp-about .kp-stage.is-dragging {
+  cursor: grabbing;
+}
+
+.kp-about .kp-stage:focus-visible {
+  outline: 2px solid var(--sweep-base);
+  outline-offset: -8px;
+  border-radius: 1.5rem;
+}
+
+.kp-about .kp-frost,
+.kp-about .kp-canvas,
+.kp-about .kp-labels {
+  position: absolute;
+  inset: 0;
+}
+
+/* The glass: the panels' frost, clipped by the scene to the pyramid's outline
+   each frame. */
+.kp-about .kp-frost {
+  pointer-events: none;
+  background: rgb(255 255 255 / 0.14);
+  -webkit-backdrop-filter: blur(9px) saturate(1.15);
+  backdrop-filter: blur(9px) saturate(1.15);
+  clip-path: polygon(0 0, 0 0, 0 0);
+}
+
+.kp-about .kp-labels {
+  pointer-events: none;
+}
+
+/* ── Nodes ───────────────────────────────────────────────────────────────
+   Each node is a zero-size box at its point on the glass: the dot is centred
+   on it and the words hang off it — below a thing, above a category, beside
+   a leaf.
+
+   Every node is printed flat on its face (CSS3D), so it's sized in world
+   units rather than screen pixels: the scene scales these pixels down and
+   zooming makes them bigger like everything else on the glass. The type
+   size, line height, padding and offsets are mirrored by the FLAT_*
+   constants in pyramid-scene.ts, which lay the labels out — change them
+   together. */
+.kp-about .kp-node {
+  width: 0;
+  height: 0;
+  --kind: #ffffff;
+  --kp-font: 20px;
+}
+
+.kp-about .kp-sensemaking {
+  --kind: var(--neon-sensemaking);
+}
+.kp-about .kp-habit {
+  --kind: var(--neon-habit);
+}
+.kp-about .kp-bias {
+  --kind: var(--neon-bias);
+}
+
+.kp-about .kp-dot {
+  position: absolute;
+  left: -6px;
+  top: -6px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--kind);
+  box-shadow:
+    0 0 6px var(--kind),
+    0 0 12px var(--kind);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.kp-about .kp-label {
+  position: absolute;
+  white-space: nowrap;
+  font-size: var(--kp-font);
+  line-height: 1.2;
+  color: color-mix(in srgb, var(--kind) 72%, white);
+  text-shadow:
+    0 0 4px var(--kind),
+    0 0 10px color-mix(in srgb, var(--kind) 60%, transparent);
+  transition:
+    color 0.25s ease,
+    text-shadow 0.25s ease,
+    background-color 0.25s ease;
+}
+
+/* Named just below the face's bottom edge — and the sentence around it:
+   "when approaching a problem" (see THING_PHRASES), which a choice finishes.
+   It's one centred block that wraps rather than one long line. The
+   max-content width is what lets it wrap at all: the node it hangs from is
+   zero-wide, which would otherwise squeeze it to its longest word. It turns
+   and zooms with its face, so its width is a share of the base edge (≈ 4.6
+   world units), not of the screen. */
+.kp-about .kp-thing .kp-label {
+  left: 0;
+  top: 8px;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 30em;
+  white-space: normal;
+  text-align: center;
+  line-height: 1.35;
+  font-size: calc(var(--kp-font) * 1.35);
+  font-weight: 600;
+  color: var(--color-frenchgrey, #bbb9be);
+  text-shadow:
+    0 1px 2px rgb(0 0 0 / 0.5),
+    0 0 10px rgb(150 190 235 / 0.45);
+}
+
+.kp-about .kp-thing-lead,
+.kp-about .kp-thing-ending {
+  font-size: 0.74em;
+  font-weight: 400;
+}
+
+.kp-about .kp-thing-lead {
+  color: rgb(255 255 255 / 0.7);
+}
+
+/* Only takes up room once a choice has finished the sentence. */
+.kp-about .kp-thing-ending {
+  display: none;
+}
+
+.kp-about .is-finished .kp-thing-ending {
+  display: inline;
+}
+
+/* The commas (and the ", and" between two kinds' parts) belong to the
+   sentence, not to either part's colour. */
+.kp-about .kp-thing-words {
+  color: rgb(255 255 255 / 0.7);
+}
+
+.kp-about .kp-thing-words::before {
+  content: ', ';
+  white-space: pre;
+}
+
+.kp-about .kp-thing-part {
+  font-weight: 600;
+  color: color-mix(in srgb, var(--kind) 55%, white);
+  text-shadow:
+    0 0 6px var(--kind),
+    0 0 16px color-mix(in srgb, var(--kind) 70%, transparent);
+}
+
+/* The X that clears the choice: the site's icon button, bare, sitting at the
+   end of the sentence's last line. */
+.kp-about .kp-thing-close {
+  display: inline-grid;
+  place-items: center;
+  vertical-align: middle;
+  width: 1.7em;
+  height: 1.7em;
+  margin-left: 0.4em;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(8 4 5 / 0.55);
+  cursor: pointer;
+  font-size: 0.9em;
+  pointer-events: auto;
+}
+
+.kp-about .kp-thing-close .glow-button-icon {
+  font-size: 0.75em;
+}
+
+/* Screen-reader copy of the sentence; the drawn one lives in the scene. */
+.kp-about .kp-spoken {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* A category's name sits above its dot, in slightly bigger type (FLAT_BIG
+   and FLAT_DROP): its stem runs down to the thing, and no leaf is placed
+   straight above it, so the words stay clear of its lines. */
+.kp-about .kp-category .kp-label {
+  left: 0;
+  bottom: 8px;
+  transform: translateX(-50%);
+  font-size: calc(var(--kp-font) * 1.15);
+  font-weight: 600;
+}
+
+/* A leaf's words sit beside its dot (FLAT_BESIDE), clear of the lines that
+   meet there — to the right, or for one whose lines come in from the
+   right, to the left. */
+.kp-about .kp-leaf .kp-label {
+  top: 0;
+  left: 14px;
+  transform: translateY(-50%);
+}
+
+.kp-about .kp-leaf.kp-beside-left .kp-label {
+  left: auto;
+  right: 14px;
+}
+
+/* A leaf under no category stands in for one, so it's as big as one. */
+.kp-about .kp-leaf.kp-big .kp-label {
+  font-size: calc(var(--kp-font) * 1.15);
+  font-weight: 600;
+}
+
+/* Leaves and categories are what gets pressed. The neon kind colour stands in
+   for the usual .glow-sweep here: the colour is the meaning.
+
+   Neon on its own doesn't hold up over the frost and the bright photograph
+   behind it — the glow bleeds into a pale ground and the words go soft. So
+   each one sits on a small dark tag (the .glass-dark fill, lighter), its text
+   mixed nearer white, with a tight dark shadow under the glow to cut the
+   letters out. The whole node fades as its face turns away, tag and all. */
+.kp-about .kp-leaf .kp-label,
+.kp-about .kp-category .kp-label {
+  pointer-events: auto;
+  cursor: pointer;
+  padding: 3px 8px;
+  border: 0;
+  border-radius: 8px;
+  background: rgb(8 4 5 / 0.55);
+  font-family: inherit;
+  color: color-mix(in srgb, var(--kind) 45%, white);
+  text-shadow:
+    0 1px 2px rgb(0 0 0 / 0.9),
+    0 0 8px color-mix(in srgb, var(--kind) 70%, transparent);
+}
+
+.kp-about .kp-node button.kp-label:hover,
+.kp-about .kp-node button.kp-label:focus-visible,
+.kp-about .is-lit .kp-label {
+  color: color-mix(in srgb, var(--kind) 35%, white);
+  text-shadow:
+    0 0 6px var(--kind),
+    0 0 16px var(--kind),
+    0 0 28px var(--kind);
+}
+
+/* The chosen chain's tags take on their kind's colour too, so the path still
+   reads as the one lit now that everything around it stays legible. */
+.kp-about .is-lit button.kp-label {
+  background: color-mix(in srgb, var(--kind) 28%, rgb(8 4 5 / 0.7));
+}
+
+.kp-about .kp-node button.kp-label:focus-visible {
+  outline: 1px solid var(--kind);
+  outline-offset: 2px;
+}
+
+.kp-about .is-lit .kp-dot {
+  transform: scale(1.5);
+  box-shadow:
+    0 0 8px var(--kind),
+    0 0 20px var(--kind),
+    0 0 32px var(--kind);
+}
+
+.kp-about .kp-thing.is-lit .kp-label {
+  color: #ffffff;
+  text-shadow:
+    0 0 8px rgb(255 255 255 / 0.9),
+    0 0 20px rgb(150 190 235 / 0.9);
+}
+
+/* A leaf of two kinds — one leaf with a line of each colour — carries its
+   second colour as a ring round its dot and a line under its words. */
+.kp-about .kp-multi .kp-dot {
+  outline: 2px solid var(--kind-2);
+  outline-offset: 1px;
+}
+
+.kp-about .kp-multi .kp-label {
+  box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--kind-2) 80%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kp-about .kp-dot,
+  .kp-about .kp-label {
+    transition: none;
+  }
+}

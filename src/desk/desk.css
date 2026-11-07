@@ -1,0 +1,366 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   The desk — the photograph the whole site sits on.
+
+   Mounted once in the layout and never re-created: navigating moves panels
+   over the room, it doesn't rebuild the room. So it's fixed to the viewport
+   behind everything, and only the veil changes between pages.
+
+   Projected content is written in each surface's DESIGN SPACE — the
+   `resolution` its manifest entry declares (laptop 490x363, notebook page
+   392x56, cube faces 87x107 and 59x105). The homography projects those CSS px
+   onto the photo, so sizes here are deliberately raw `px`: rem would couple
+   them to the root font size, which has nothing to do with how big the laptop
+   screen is in the shot. Re-marking the photo changes these numbers.
+   ───────────────────────────────────────────────────────────────────────── */
+
+.desk {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  /* Scenery by default; the desk only takes clicks on the page that is it. */
+  pointer-events: none;
+}
+
+.desk .photo,
+.desk .veil {
+  position: absolute;
+  inset: 0;
+}
+
+.desk.is-live .photo {
+  pointer-events: auto;
+}
+
+/* Off the desk the photo is a backdrop, and every page's frosted panels have to
+   read against it. On the desk it lifts entirely. */
+.veil {
+  background: linear-gradient(
+    to bottom,
+    rgb(10 22 40 / 0.46),
+    rgb(10 22 40 / 0.62)
+  );
+  transition: opacity 0.45s ease;
+}
+
+.veil.is-lifted {
+  opacity: 0;
+}
+
+/* ── The laptop screen ───────────────────────────────────────────────────
+   Near-black in the photo, so the canonical swept link reads as-is. */
+.surface-laptop {
+  box-sizing: border-box;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 26px;
+  padding: 24px;
+}
+
+.laptop-hello {
+  margin: 0;
+  font-size: 42px;
+  line-height: 1.1;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--color-frenchgrey);
+}
+
+/* Inherits the heading's tracking so the line reads as one sentence with a
+   link in it — .glow-sweep carries its own letter-spacing otherwise. */
+.laptop-name {
+  letter-spacing: inherit;
+}
+
+/* The name and its hint stack, centred on each other, while the pair still sits
+   on the heading's baseline. */
+.laptop-name-wrap {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.laptop-name-hint {
+  margin-top: 0.3em;
+  font-size: 0.3em;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  white-space: nowrap;
+  color: rgb(187 185 190 / 0.7);
+  pointer-events: none;
+}
+
+.laptop-links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.laptop-link-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* The site's icon treatment, as plain glyphs (they aren't buttons). */
+.laptop-icon {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  color: var(--sweep-base);
+  filter: drop-shadow(0 0 8px rgb(130 175 225 / 0.45));
+}
+
+.laptop-link {
+  /* Sized so the address clears 490 design px minus the padding. The surface
+     clips while projected, so an overflow is cut, not scrolled. */
+  font-size: 24px;
+  font-weight: 600;
+}
+
+/* ── Floating placements ─────────────────────────────────────────────────
+   On a phone the manifest crops in on the sill, keeps the cube projected (it's
+   the link, it has to stay on the object), and floats these out of the
+   photograph into boxes of their own. A floated surface keeps its box but loses
+   the transform, so everything is sized against the box: one min() of a vw-
+   and a vh-relative unit sets the base, and the rest is em off it.
+
+   A floated surface doesn't clip (@image-aware/element 0.1.1+), which is what
+   lets the cards show their bloom at all — so the one card that can overflow
+   asks for the clip back on itself. */
+.surface-laptop.is-floating {
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: min(2.85vw, 1.5vh);
+  gap: 0.7em;
+  padding: 0.9em 1em;
+  border-radius: 0.9em;
+  /* The material is .glass-edge + .glass-dark from the template; only the
+     strip is trimmed, because the longest line only just fits. */
+  --glass-strip: 0.3em;
+}
+
+.surface-laptop.is-floating .laptop-hello {
+  font-size: 2.2em;
+}
+
+/* Floated, `about` is a glass button of its own, so the hint has nothing left
+   to say. */
+.surface-laptop.is-floating .laptop-name-hint {
+  display: none;
+}
+
+.surface-laptop.is-floating .laptop-links {
+  gap: 0.35em;
+}
+
+.surface-laptop.is-floating .laptop-link-row {
+  gap: 0.5em;
+  font-size: 1.2em;
+}
+
+.surface-laptop.is-floating .laptop-icon {
+  width: 1.3em;
+  height: 1.3em;
+}
+
+.surface-laptop.is-floating .laptop-link {
+  font-size: 1.2em;
+}
+
+/* ── Lit objects: the cube's faces and the notebook ─────────────────────
+   Each is its own surface, so the pieces of one object share nothing but the
+   photograph. `data-group` relates them and `:has()` on the photo lets any one
+   light the whole group. Three per-object knobs, set inline: `--face` (the
+   light's colour), `--lit-opacity` (full strength) and `--lit-rest` (the share
+   of it shown untouched). */
+.cube-face,
+.notebook-face {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.surface-lit {
+  position: absolute;
+  inset: 0;
+  /* Never fully out, so the desk reads as a set of live things. */
+  opacity: calc(var(--lit-opacity, 0.9) * var(--lit-rest, 0.5));
+  transition: opacity 0.28s ease;
+  /* Light added to the object rather than paint over it. */
+  background: radial-gradient(
+    120% 120% at 50% 45%,
+    color-mix(in srgb, var(--face), white 55%) 0%,
+    color-mix(in srgb, var(--face), transparent 65%) 60%,
+    transparent 100%
+  );
+  /* The spill past the edges only shows because these surfaces set
+     `clip: false`, and it rides the homography along the object's plane. */
+  box-shadow:
+    inset 0 0 18px 4px color-mix(in srgb, var(--face), transparent 35%),
+    0 0 26px 6px color-mix(in srgb, var(--face), transparent 45%),
+    0 0 60px 22px color-mix(in srgb, var(--face), transparent 72%);
+}
+
+/* `:active` is for touch, where neither hover nor focus-visible fires. */
+.photo:has([data-group='cube']:is(:hover, :focus-visible, :active))
+  [data-group='cube']
+  .surface-lit,
+.photo:has([data-group='notebook']:is(:hover, :focus-visible, :active))
+  [data-group='notebook']
+  .surface-lit {
+  opacity: var(--lit-opacity, 0.9);
+  /* Full strength has to beat the touch breath too. */
+  animation: none;
+}
+
+/* ── Touch: the glow has to offer itself ────────────────────────────────
+   Gated on `hover: none`, the actual condition: these objects say "I am
+   interactive" by lighting under the pointer, and a device with no pointer
+   never gets told. So the glow becomes a beacon — a fainter idle, swelling to
+   full every few seconds. Both cube faces share a delay so the cube pulses as
+   one; the notebook is offset so the desk never blinks in unison. */
+@media (hover: none) {
+  .surface-lit {
+    --lit-idle: calc(var(--lit-opacity, 0.9) * 0.25);
+    animation: litBreath 7s ease-in-out var(--lit-delay, 0s) infinite;
+  }
+
+  [data-group='notebook'] .surface-lit {
+    --lit-delay: 2.8s;
+  }
+}
+
+@keyframes litBreath {
+  0%,
+  72% {
+    opacity: var(--lit-idle);
+  }
+  81%,
+  87% {
+    opacity: var(--lit-opacity, 0.9);
+  }
+  100% {
+    opacity: var(--lit-idle);
+  }
+}
+
+/* Reduced motion keeps the affordance and drops the motion. */
+@media (hover: none) and (prefers-reduced-motion: reduce) {
+  .surface-lit {
+    animation: none;
+    opacity: var(--lit-idle);
+  }
+}
+
+/* ── The words floating over them ───────────────────────────────────────
+   `portfolio` over the cube, `blog` over the notebook — each its own marked
+   surface, in design-space px. They drift on a slow loop inside their box
+   (these surfaces clip). The drift is on the root and the sweep on the word
+   inside, because both drive `animation`. */
+.surface-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  /* Stated, not inherited: projected type must match the laptop's exactly. */
+  font-family: var(--kn-font-mono);
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  text-transform: lowercase;
+  white-space: nowrap;
+  text-decoration: none;
+  animation: labelFloat 3.6s ease-in-out infinite;
+}
+
+/* A dark edge so the words hold against the photograph. drop-shadow, not
+   text-shadow: the sweep paints transparent-filled text, which a text-shadow
+   would show straight through. Both states restate the sweep's blue halo
+   because overriding `filter` replaces the whole chain. */
+.label-text {
+  display: block;
+  filter: drop-shadow(0 0 8px rgb(130 175 225 / 0.45))
+    drop-shadow(0 1px 2px rgb(6 3 4 / 0.95))
+    drop-shadow(0 0 6px rgb(6 3 4 / 0.8));
+}
+
+.surface-label:hover .label-text,
+.surface-label:focus-visible .label-text {
+  filter: drop-shadow(0 0 13px rgb(150 190 235 / 0.8))
+    drop-shadow(0 1px 2px rgb(6 3 4 / 0.95))
+    drop-shadow(0 0 6px rgb(6 3 4 / 0.8));
+}
+
+.label-text.glow-sweep-pending {
+  filter: drop-shadow(0 0 8px rgb(170 170 178 / 0.35))
+    drop-shadow(0 1px 2px rgb(6 3 4 / 0.95))
+    drop-shadow(0 0 6px rgb(6 3 4 / 0.8));
+}
+
+.surface-label:hover .label-text.glow-sweep-pending,
+.surface-label:focus-visible .label-text.glow-sweep-pending {
+  filter: drop-shadow(0 0 12px rgb(190 190 198 / 0.6))
+    drop-shadow(0 1px 2px rgb(6 3 4 / 0.95))
+    drop-shadow(0 0 6px rgb(6 3 4 / 0.8));
+}
+
+@keyframes labelFloat {
+  0%,
+  100% {
+    transform: translateY(3px);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+/* A target that never stops moving is a hostile one. */
+.photo:has([data-group='cube']:hover) [data-group='cube'].surface-label,
+.photo:has([data-group='notebook']:hover) [data-group='notebook'].surface-label,
+.surface-label:focus-visible {
+  animation-play-state: paused;
+}
+
+/* Floated on a small screen, the notebook's label slot is two glass buttons.
+   Only sizing belongs here — the material and every state are the
+   component's. */
+.notebook-buttons {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.notebook-button {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  font-size: min(6vw, 3.4vh);
+  /* Squarer than a free-standing button: it fills a wide, shallow strip. */
+  --glass-radius: 0.9em;
+}
+
+/* `about`: the blog button's box again, one gap below, out of flow so the blog
+   button still fills the placement the manifest gave it. */
+.about-button {
+  position: absolute;
+  top: calc(100% + 0.45em);
+  left: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .surface-lit,
+  .veil {
+    transition: none;
+  }
+
+  .surface-label {
+    animation: none;
+  }
+}

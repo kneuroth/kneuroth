@@ -8,13 +8,19 @@ export interface Project {
   description: string;
   /** Up to three are shown: a lead tile and the rest stacked beside it. */
   images?: string[];
+  /** The heading links to the `page` if there is one, else the `site`. */
   links?: ProjectLink[];
+  /** One of the (three) big edge-joined cards that fly in. Everything else is
+      a slim row in the list below them. */
+  featured?: boolean;
 }
 
-/** Display order down the page; sides alternate from the first. */
+/** Display order: featured cards down the page in this order (sides alternate
+    from the first), then the rest in the list below, in this order. */
 export const PROJECTS: Project[] = [
   {
     title: 'Wordle Bot',
+    featured: true,
     description: 'A chatbot that keeps the score of your Wordle games',
     images: [
       'portfolio-images/wordle-bot/scoreboard-chat.png',
@@ -30,9 +36,34 @@ export const PROJECTS: Project[] = [
     ],
   },
   {
+    title: '3D Art',
+    featured: true,
+    description: 'A collection of 3D printed art pieces',
+    images: [
+      '3d-art/bricks-thumb.JPG',
+      '3d-art/tetris-thumb.jpg',
+      '3d-art/table-top-thumb.JPG',
+    ],
+    links: [{ kind: 'page', to: '/portfolio/3d-art' }],
+  },
+  {
+    title: 'Faculty Finder',
+    featured: true,
+    description:
+      'A keyword search for OCAD U faculty for students finding MRP advisors. Based on web scrapped advisor info. Results link to the OCAD faculty page or most relevant page found',
+    images: ['portfolio-images/advisor-finder/image-1.png'],
+    links: [
+      { kind: 'site', href: 'https://kneuroth.github.io/ocad-advisor-finder/' },
+      {
+        kind: 'github',
+        href: 'https://github.com/kneuroth/ocad-advisor-finder',
+      },
+    ],
+  },
+  {
     title: 'Arcade',
     description:
-      'A retro-style arcade game collection featuring Gravity Rotator and Pong, built with Phaser 3 and React',
+      'arcade game style sandbox collection, try paddle master!',
     images: [
       'portfolio-images/arcade/image1.png',
       'portfolio-images/arcade/image2.png',
@@ -46,7 +77,7 @@ export const PROJECTS: Project[] = [
   {
     title: "Kelly's Ride to Conquer Cancer",
     description:
-      'A browser-based endless-runner game built to support a Ride to Conquer Cancer fundraiser — dodge obstacles, collect donations, murder cancer. Vanilla HTML/CSS/JS on a canvas, no build step.',
+      'endless-runner game built to support my PMRCC fundraising in 2026',
     images: [
       'portfolio-images/rtcc/logo.png',
       'portfolio-images/rtcc/biker.png',
@@ -56,15 +87,5 @@ export const PROJECTS: Project[] = [
       { kind: 'site', href: 'https://kelly-conquers-cancer.netlify.app/' },
       { kind: 'github', href: 'https://github.com/kneuroth/kellys-rtcc' },
     ],
-  },
-  {
-    title: '3D Art',
-    description: 'A collection of 3D printed art pieces',
-    images: [
-      '3d-art/bricks-thumb.JPG',
-      '3d-art/tetris-thumb.jpg',
-      '3d-art/table-top-thumb.JPG',
-    ],
-    links: [{ kind: 'page', to: '/portfolio/3d-art' }],
   },
 ];

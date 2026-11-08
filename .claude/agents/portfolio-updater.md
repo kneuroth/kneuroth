@@ -47,7 +47,12 @@ list.
   each image's own dimensions, so don't hand-tag anything. Copy real assets out
   of the source project; never fabricate a screenshot.
 
-A `Project` is `{ title, description, images?, links? }`. `links` entries are:
+A `Project` is `{ title, description, images?, links?, featured? }`.
+`featured: true` makes it one of the big edge-joined cards that fly in at the
+top — there are meant to be **three**, so don't feature a new project unless
+Kelly asks (and then ask which one it replaces). Everything else is a slim row
+in the "more projects" list below. The heading links to the `page` link if there
+is one, else the `site` link. `links` entries are:
 
 - `{ kind: 'site', href }` — the live project (external)
 - `{ kind: 'github', href }` — its repository

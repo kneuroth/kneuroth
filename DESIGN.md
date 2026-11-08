@@ -14,25 +14,28 @@ so frosted panels read against it.
 
 **On the home route the photograph is the interface.** The veil lifts and
 `<ImageSurface>` (`@image-aware/react`) projects real DOM onto the surfaces
-marked in `src/desk/opportunities.surfaces.json`, angled to match the shot:
+marked in `public/opportunities.surfaces.json` (beside the photo, where the
+editor saves it), angled to match the shot:
 
-| Surface                 | Carries                                                              |
-| ----------------------- | -------------------------------------------------------------------- |
-| `laptop`                | "Hello, I'm Kelly" (the name links to `/about`), github, email       |
-| `cube-teal`, `cube-red` | The Rubik's cube — decorative duplicates of the portfolio link       |
-| `cube-label`            | `portfolio`, the cube's real link                                    |
-| `notebook`              | Decorative duplicate of the blog link, lit grey (it's empty)         |
-| `notebook-label`        | `blog`, pending; floated on a phone, two glass buttons: blog + about |
+| Surface                 | Carries                                                                                                                                    |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `laptop`                | "Hello, I'm Kelly" (the name links to `/about`), github, email                                                                             |
+| `cube-teal`, `cube-red` | The Rubik's cube — decorative duplicates of the portfolio link                                                                             |
+| `cube-label`            | `portfolio`, the cube's real link                                                                                                          |
+| `notebook`              | Decorative duplicate of the research link, lit pale blue                                                                                   |
+| `notebook-label`        | `research` (the research wall, off-site); floated on a phone, a stack of glass buttons: research, blog, about                              |
+| `blog`, `blog-label`    | Not marked yet. The blog's face (lit grey — it's empty) and its pending word; `desk.tsx` renders them only once the manifest has these ids |
 
 The home page has **no header**: the cube is the way through to the rest of the
-site. Other pages' headers carry no "Projects" link for the same reason.
+site. Other pages' headers carry Portfolio, Research, Blog and About — Research
+leaves the site, in a new tab.
 
 Rules:
 
 - **The manifest owns the surface list.** Slot names are surface ids; re-marking
-  the photo with the image-aware editor (`pnpm mark` from a clone of
-  `image-aware-elements`) can rename or drop them. After re-marking, check every
-  `slot` in `desk.tsx` and the design-space sizes in `desk.css`.
+  the photo with the image-aware editor (`pnpm mark`) can rename or drop them.
+  After re-marking, check every `slot` in `desk.tsx` and the design-space sizes
+  in `desk.css`.
 - **Projected content is written in design space**, raw `px` (laptop 490×363,
   notebook page 392×56) — never rem.
 - **Framing is art direction in the manifest** (`variants`: crop, object
@@ -50,10 +53,15 @@ Rules:
 
 ## Layout
 
-- **Portfolio cards zig-zag**, joined to alternate screen edges
-  (`GlassPanel edge`), mirrored so the words stay against the edge and the
-  thumbnails face the middle, each flying in from its own edge (`Reveal`). Not
-  in a centred container. Keep the alternation unbroken when adding one.
+- **Three featured projects lead the portfolio, and zig-zag**: joined to
+  alternate screen edges (`GlassPanel edge`), mirrored so the words stay against
+  the edge and the thumbnails face the middle, each flying in from its own edge
+  (`Reveal`). Not in a centred container. Keep the alternation unbroken.
+- **Everything else is a quieter list below them**: slim floating panels in a
+  centred column, small tiles in a row, no entrance — the fly-in belongs to the
+  three.
+- **A project's heading is its link**: to its page on this site if it has one,
+  else the live project. The icon buttons stay as well.
 - **Thumbnails are a lead tile with the rest stacked beside it**, at most three.
   Cover vs contain is decided from each image's own dimensions — don't hand-tag
   entries.

@@ -6,10 +6,15 @@ import { GlassButton } from '@/components/ui/glass-button';
 import '@/components/ui/glass.css';
 import { SweepLink } from '@/components/ui/sweep-link';
 import { GithubIcon } from '@/icons';
+import { RESEARCH_URL, offsite } from '@/lib/links';
 import { SweepNavLink, SweptLabel, asset, useRouterLink } from '@/lib/router';
 import { useDesk } from './desk-state';
-import manifest from './opportunities.surfaces.json';
 import './desk.css';
+
+/** The squares, fetched at runtime. They sit beside the photo in `public/`
+    because that's where image-aware's editor reads and saves them
+    (`pnpm mark`). */
+const MANIFEST_URL = asset('opportunities.surfaces.json');
 
 /**
  * The desk — the photograph the whole site is built on.
@@ -23,18 +28,22 @@ import './desk.css';
  *
  * Mounted once in the layout, so navigating never rebuilds the room.
  *
- * Slot names are surface ids. Re-marking the photo with the image-aware editor
- * replaces the manifest; after that, check every `slot` below still matches an
- * id, and the design-space px in desk.css against the new `resolution`s.
+ * Slot names are surface ids. Re-marking the photo (`pnpm mark`) replaces the
+ * manifest; after that, check every `slot` below still matches an id, and the
+ * design-space px in desk.css against the new `resolution`s.
  */
 export function Desk({ live }: { live: boolean }) {
   const { projecting, setProjecting } = useDesk();
 
+  /** Ids of every surface the manifest marks, so slots for surfaces that
+      don't exist yet (the blog's, until it's marked) aren't rendered. */
+  const [surfaces, setSurfaces] = useState<ReadonlySet<string>>(new Set());
   /** Ids of the surfaces the manifest is floating rather than projecting. */
   const [floating, setFloating] = useState<ReadonlySet<string>>(new Set());
 
   const onLayout = useCallback(
     (layout: Layout) => {
+      setSurfaces(new Set(layout.surfaces.map((surface) => surface.id)));
       setProjecting(
         layout.surfaces.some((surface) => surface.placement === 'projected'),
       );
@@ -71,7 +80,7 @@ export function Desk({ live }: { live: boolean }) {
     <div className={live ? 'desk is-live' : 'desk'}>
       <ImageSurface
         className="photo"
-        manifest={manifest}
+        manifest={MANIFEST_URL}
         src={asset('opportunities.jpg')}
         fit="cover"
         onLayout={onLayout}
@@ -170,14 +179,15 @@ export function Desk({ live }: { live: boolean }) {
               <SweptLabel className="label-text">portfolio</SweptLabel>
             </Link>
 
-            {/* The notebook: the same object-and-a-word pattern. Its light is
-                grey — lit, so it's part of the desk, but dull, because the
-                blog behind it is still empty. */}
-            <Link
+            {/* The notebook is the research wall: the same object-and-a-word
+                pattern, off-site. Lit in the links' own pale blue — a live
+                place, unlike the blog's grey. */}
+            <a
               slot="notebook"
               className="notebook-face"
               data-group="notebook"
-              to="/blog"
+              href={RESEARCH_URL}
+              {...offsite}
               aria-hidden="true"
               tabIndex={-1}
             >
@@ -185,26 +195,63 @@ export function Desk({ live }: { live: boolean }) {
                 className="surface-lit"
                 style={
                   {
-                    '--face': '#b8b8c0',
-                    '--lit-opacity': 0.55,
-                    '--lit-rest': 0.75,
+                    '--face': '#a5c5de',
+                    '--lit-opacity': 0.6,
+                    '--lit-rest': 0.6,
                   } as React.CSSProperties
                 }
               />
-            </Link>
+            </a>
 
             {floating.has('notebook-label') ? (
               // Floated, there is no notebook (the manifest drops it), so the
               // word would be a stray caption on open photograph. It becomes a
               // glass button instead — dark tone, because out here the ground is
-              // the raw photograph. `about` hangs one gap below it, replacing
-              // the hint under the name, which is hidden out here.
+              // the raw photograph — with `blog` and `about` hanging below it.
+              // `about` replaces the hint under the name, hidden out here.
               <NotebookButtons />
             ) : (
-              <Link
+              <a
                 slot="notebook-label"
                 className="surface-label"
                 data-group="notebook"
+                href={RESEARCH_URL}
+                {...offsite}
+              >
+                <SweptLabel className="label-text">research</SweptLabel>
+              </a>
+            )}
+
+            {/* The blog: lit grey — part of the desk, but dull, because it's
+                still empty. It has no surface of its own until the photo is
+                re-marked with `blog` / `blog-label`; until then these simply
+                don't render. */}
+            {surfaces.has('blog') && (
+              <Link
+                slot="blog"
+                className="notebook-face"
+                data-group="blog"
+                to="/blog"
+                aria-hidden="true"
+                tabIndex={-1}
+              >
+                <span
+                  className="surface-lit"
+                  style={
+                    {
+                      '--face': '#b8b8c0',
+                      '--lit-opacity': 0.55,
+                      '--lit-rest': 0.75,
+                    } as React.CSSProperties
+                  }
+                />
+              </Link>
+            )}
+            {surfaces.has('blog-label') && !floating.has('blog-label') && (
+              <Link
+                slot="blog-label"
+                className="surface-label"
+                data-group="blog"
                 to="/blog"
               >
                 <SweptLabel pending className="label-text">
@@ -223,17 +270,31 @@ export function Desk({ live }: { live: boolean }) {
   );
 }
 
+/** The phone's floated stack: research fills the placement the manifest gave
+    the notebook's word; blog and about hang below it, one gap apart. */
 function NotebookButtons() {
   const blog = useRouterLink('/blog');
   const about = useRouterLink('/about');
   return (
     <div slot="notebook-label" className="notebook-buttons">
-      <GlassButton tone="dark" className="notebook-button" {...blog}>
+      <GlassButton
+        tone="dark"
+        className="notebook-button"
+        href={RESEARCH_URL}
+        {...offsite}
+      >
+        <SweptLabel>research</SweptLabel>
+      </GlassButton>
+      <GlassButton
+        tone="dark"
+        className="notebook-button is-stacked-1"
+        {...blog}
+      >
         <SweptLabel pending>blog</SweptLabel>
       </GlassButton>
       <GlassButton
         tone="dark"
-        className="notebook-button about-button"
+        className="notebook-button is-stacked-2"
         {...about}
       >
         <SweptLabel>about</SweptLabel>

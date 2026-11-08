@@ -1,6 +1,7 @@
 import { GlassPanel } from '@/components/ui/glass-panel';
 import { SweepLink } from '@/components/ui/sweep-link';
 import { useDesk } from '@/desk/desk-state';
+import { RESEARCH_URL, offsite } from '@/lib/links';
 import { SweepNavLink } from '@/lib/router';
 
 /**
@@ -25,6 +26,9 @@ export function Home() {
         </h1>
         <div className="mt-7 flex flex-col items-start gap-4 text-lg font-semibold">
           <SweepNavLink to="/portfolio">My projects</SweepNavLink>
+          <SweepLink href={RESEARCH_URL} {...offsite}>
+            My research
+          </SweepLink>
           <SweepNavLink to="/about">About me</SweepNavLink>
           <SweepLink
             href="https://github.com/kneuroth"

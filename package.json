@@ -9,7 +9,8 @@
     "build": "tsc -b && vite build && cp dist/index.html dist/404.html",
     "preview": "vite preview",
     "typecheck": "tsc -b",
-    "deploy": "pnpm build && gh-pages --dist dist --nojekyll"
+    "deploy": "pnpm build && gh-pages --dist dist --nojekyll",
+    "mark": "pnpm --dir ../image-aware-elements mark \"$PWD/public/opportunities.jpg\""
   },
   "dependencies": {
     "@image-aware/react": "^0.1.1",

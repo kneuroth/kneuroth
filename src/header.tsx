@@ -2,17 +2,26 @@ import { House } from 'lucide-react';
 import { GlassPanel } from '@/components/ui/glass-panel';
 import { GlowButton } from '@/components/ui/glow-button';
 import { cx } from '@/components/ui/kn-utils';
+import { SweepLink } from '@/components/ui/sweep-link';
+import { RESEARCH_URL, offsite } from '@/lib/links';
 import { SweepNavLink, useRouterLink } from '@/lib/router';
 
-/** The three places to go. No "Home" — the house beside these goes there, and
-    the home page is the one page that never shows this bar. No "Projects"
-    either: the portfolio is reached through the cube on the desk. `pending`
-    marks one that isn't ready yet. */
-const NAV = [
+/** The places to go. No "Home" — the house beside these goes there, and the
+    home page is the one page that never shows this bar. `pending` marks one
+    that isn't ready yet; `href` one that leaves the site (in a new tab). */
+const NAV: {
+  label: string;
+  to?: string;
+  href?: string;
+  pending?: boolean;
+}[] = [
   { label: 'Portfolio', to: '/portfolio' },
+  { label: 'Research', href: RESEARCH_URL },
   { label: 'Blog', to: '/blog', pending: true },
   { label: 'About', to: '/about' },
 ];
+
+const NAV_CLASS = 'rounded-2xl px-5 py-2.5 text-lg font-bold';
 
 export function Header({ animateOnLoad = false }: { animateOnLoad?: boolean }) {
   const home = useRouterLink('/');
@@ -38,16 +47,27 @@ export function Header({ animateOnLoad = false }: { animateOnLoad?: boolean }) {
             {...home}
           />
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 lg:gap-6">
-            {NAV.map((item) => (
-              <SweepNavLink
-                key={item.to}
-                to={item.to}
-                pending={item.pending}
-                className="rounded-2xl px-5 py-2.5 text-lg font-bold"
-              >
-                {item.label}
-              </SweepNavLink>
-            ))}
+            {NAV.map((item) =>
+              item.href ? (
+                <SweepLink
+                  key={item.label}
+                  href={item.href}
+                  className={NAV_CLASS}
+                  {...offsite}
+                >
+                  {item.label}
+                </SweepLink>
+              ) : (
+                <SweepNavLink
+                  key={item.label}
+                  to={item.to!}
+                  pending={item.pending}
+                  className={NAV_CLASS}
+                >
+                  {item.label}
+                </SweepNavLink>
+              ),
+            )}
           </div>
         </nav>
       </GlassPanel>

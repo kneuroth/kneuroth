@@ -213,6 +213,9 @@
   .surface-lit,
 .photo:has([data-group='notebook']:is(:hover, :focus-visible, :active))
   [data-group='notebook']
+  .surface-lit,
+.photo:has([data-group='blog']:is(:hover, :focus-visible, :active))
+  [data-group='blog']
   .surface-lit {
   opacity: var(--lit-opacity, 0.9);
   /* Full strength has to beat the touch breath too. */
@@ -233,6 +236,10 @@
 
   [data-group='notebook'] .surface-lit {
     --lit-delay: 2.8s;
+  }
+
+  [data-group='blog'] .surface-lit {
+    --lit-delay: 4.9s;
   }
 }
 
@@ -259,7 +266,8 @@
 }
 
 /* ── The words floating over them ───────────────────────────────────────
-   `portfolio` over the cube, `blog` over the notebook — each its own marked
+   `portfolio` over the cube, `research` over the notebook, `blog` over its
+   own spot once the photo marks one — each its own marked
    surface, in design-space px. They drift on a slow loop inside their box
    (these surfaces clip). The drift is on the root and the sweep on the word
    inside, because both drive `animation`. */
@@ -324,13 +332,14 @@
 /* A target that never stops moving is a hostile one. */
 .photo:has([data-group='cube']:hover) [data-group='cube'].surface-label,
 .photo:has([data-group='notebook']:hover) [data-group='notebook'].surface-label,
+.photo:has([data-group='blog']:hover) [data-group='blog'].surface-label,
 .surface-label:focus-visible {
   animation-play-state: paused;
 }
 
-/* Floated on a small screen, the notebook's label slot is two glass buttons.
-   Only sizing belongs here — the material and every state are the
-   component's. */
+/* Floated on a small screen, the notebook's label slot is a stack of glass
+   buttons: research, blog, about. Only sizing belongs here — the material and
+   every state are the component's. */
 .notebook-buttons {
   position: relative;
   width: 100%;
@@ -346,12 +355,20 @@
   --glass-radius: 0.9em;
 }
 
-/* `about`: the blog button's box again, one gap below, out of flow so the blog
-   button still fills the placement the manifest gave it. */
-.about-button {
+/* `blog` and `about`: the research button's box again, one and two gaps below,
+   out of flow so research still fills the placement the manifest gave it. */
+.notebook-button.is-stacked-1,
+.notebook-button.is-stacked-2 {
   position: absolute;
-  top: calc(100% + 0.45em);
   left: 0;
+}
+
+.notebook-button.is-stacked-1 {
+  top: calc(100% + 0.45em);
+}
+
+.notebook-button.is-stacked-2 {
+  top: calc(200% + 0.9em);
 }
 
 @media (prefers-reduced-motion: reduce) {

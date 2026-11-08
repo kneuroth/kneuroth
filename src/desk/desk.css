@@ -266,9 +266,8 @@
 }
 
 /* ── The words floating over them ───────────────────────────────────────
-   `portfolio` over the cube, `research` over the notebook, `blog` over its
-   own spot once the photo marks one — each its own marked
-   surface, in design-space px. They drift on a slow loop inside their box
+   `portfolio` over the cube, `research` over the notebook, `blog` over the
+   keyboard — each its own marked surface, in design-space px. They drift on a slow loop inside their box
    (these surfaces clip). The drift is on the root and the sweep on the word
    inside, because both drive `animation`. */
 .surface-label {

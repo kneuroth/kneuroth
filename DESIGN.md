@@ -17,14 +17,15 @@ so frosted panels read against it.
 marked in `public/opportunities.surfaces.json` (beside the photo, where the
 editor saves it), angled to match the shot:
 
-| Surface                 | Carries                                                                                                                                    |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `laptop`                | "Hello, I'm Kelly" (the name links to `/about`), github, email                                                                             |
-| `cube-teal`, `cube-red` | The Rubik's cube — decorative duplicates of the portfolio link                                                                             |
-| `cube-label`            | `portfolio`, the cube's real link                                                                                                          |
-| `notebook`              | Decorative duplicate of the research link, lit pale blue                                                                                   |
-| `notebook-label`        | `research` (the research wall, off-site); floated on a phone, a stack of glass buttons: research, blog, about                              |
-| `blog`, `blog-label`    | Not marked yet. The blog's face (lit grey — it's empty) and its pending word; `desk.tsx` renders them only once the manifest has these ids |
+| Surface                 | Carries                                                                                                       |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `laptop`                | "Hello, I'm Kelly" (the name links to `/about`), github, email                                                |
+| `cube-teal`, `cube-red` | The Rubik's cube — decorative duplicates of the portfolio link                                                |
+| `cube-label`            | `portfolio`, the cube's real link                                                                             |
+| `notebook`              | Decorative duplicate of the research link, lit pale blue                                                      |
+| `notebook-label`        | `research` (the research wall, off-site); floated on a phone, a stack of glass buttons: research, blog, about |
+| `keyboard`              | Decorative duplicate of the blog link; unlit at rest, a dim grey on hover (it's empty)                        |
+| `keyboard-label`        | `blog`, pending                                                                                               |
 
 The home page has **no header**: the cube is the way through to the rest of the
 site. Other pages' headers carry Portfolio, Research, Blog and About — Research

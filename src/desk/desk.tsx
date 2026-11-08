@@ -35,15 +35,11 @@ const MANIFEST_URL = asset('opportunities.surfaces.json');
 export function Desk({ live }: { live: boolean }) {
   const { projecting, setProjecting } = useDesk();
 
-  /** Ids of every surface the manifest marks, so slots for surfaces that
-      don't exist yet (the blog's, until it's marked) aren't rendered. */
-  const [surfaces, setSurfaces] = useState<ReadonlySet<string>>(new Set());
   /** Ids of the surfaces the manifest is floating rather than projecting. */
   const [floating, setFloating] = useState<ReadonlySet<string>>(new Set());
 
   const onLayout = useCallback(
     (layout: Layout) => {
-      setSurfaces(new Set(layout.surfaces.map((surface) => surface.id)));
       setProjecting(
         layout.surfaces.some((surface) => surface.placement === 'projected'),
       );
@@ -222,43 +218,40 @@ export function Desk({ live }: { live: boolean }) {
               </a>
             )}
 
-            {/* The blog: lit grey — part of the desk, but dull, because it's
-                still empty. It has no surface of its own until the photo is
-                re-marked with `blog` / `blog-label`; until then these simply
-                don't render. */}
-            {surfaces.has('blog') && (
-              <Link
-                slot="blog"
-                className="notebook-face"
-                data-group="blog"
-                to="/blog"
-                aria-hidden="true"
-                tabIndex={-1}
-              >
-                <span
-                  className="surface-lit"
-                  style={
-                    {
-                      '--face': '#b8b8c0',
-                      '--lit-opacity': 0.55,
-                      '--lit-rest': 0.75,
-                    } as React.CSSProperties
-                  }
-                />
-              </Link>
-            )}
-            {surfaces.has('blog-label') && !floating.has('blog-label') && (
-              <Link
-                slot="blog-label"
-                className="surface-label"
-                data-group="blog"
-                to="/blog"
-              >
-                <SweptLabel pending className="label-text">
-                  blog
-                </SweptLabel>
-              </Link>
-            )}
+            {/* The keyboard is the blog: the same object-and-a-word pattern,
+                but unlit until pointed at, and then only a dim grey — the blog
+                is still empty. (Touch screens still get the faint beacon, or
+                nothing would say it's there.) */}
+            <Link
+              slot="keyboard"
+              className="notebook-face"
+              data-group="blog"
+              to="/blog"
+              aria-hidden="true"
+              tabIndex={-1}
+            >
+              <span
+                className="surface-lit"
+                style={
+                  {
+                    // Off at rest; a dim grey only under the pointer.
+                    '--face': '#8f8f97',
+                    '--lit-opacity': 0.55,
+                    '--lit-rest': 0,
+                  } as React.CSSProperties
+                }
+              />
+            </Link>
+            <Link
+              slot="keyboard-label"
+              className="surface-label"
+              data-group="blog"
+              to="/blog"
+            >
+              <SweptLabel pending className="label-text">
+                blog
+              </SweptLabel>
+            </Link>
           </>
         )}
       </ImageSurface>

@@ -343,13 +343,19 @@
   position: relative;
   width: 100%;
   height: 100%;
+  /* The type is sized off this strip, so the longest word always fits it. */
+  container-type: inline-size;
 }
 
 .notebook-button {
   display: flex;
   width: 100%;
   height: 100%;
-  font-size: min(6vw, 3.4vh);
+  /* `research` is about 4.7em wide; with the trimmed padding that's ~5.5em,
+     so 16cqw leaves a margin either side. */
+  font-size: min(16cqw, 3.4vh);
+  padding-inline: 0.4em;
+  white-space: nowrap;
   /* Squarer than a free-standing button: it fills a wide, shallow strip. */
   --glass-radius: 0.9em;
 }
